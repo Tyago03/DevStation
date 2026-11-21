@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { mkdtemp, mkdir, writeFile, readFile, rm, readdir, symlink } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readFile, rm, readdir, symlink, realpath } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -34,6 +34,9 @@ beforeEach(async () => {
   temporary = await mkdtemp(path.join(os.tmpdir(), 'devstation-tests-'));
   repository = path.join(temporary, 'Café workspace & literal');
   await mkdir(repository);
+  // Windows runners may expose TEMP through an 8.3 alias (RUNNER~1).
+  // Stored project roots and direct Git inspection both use canonical paths.
+  repository = await realpath(repository);
   await git(['init', '-b', 'main']);
   await git(['config', 'user.name', 'DevStation Fixture']);
   await git(['config', 'user.email', 'fixture@example.invalid']);
