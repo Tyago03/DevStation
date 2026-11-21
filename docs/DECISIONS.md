@@ -44,10 +44,28 @@ Tests use synthetic temporary projects. A passing service test does not imply th
 
 The Vite development document needs inline React Refresh initialization, so its development-only CSP permits inline scripts. Production has a separate restrictive CSP without this allowance. Packaged observation uses Chromium CDP rather than turning on Node inspector fuses. Native-dialog stubs in the compiled-app test are documented explicitly; they do not verify real confirmation interaction.
 
-The 0.1.0 code is delivered as a functional preview. Real native dialogs and process/port interactions were exercised on an earlier local artifact, with synthetic screenshots. Final Windows CI passes both desktop tests. The later local rebuild is blocked by the host's Smart App Control signing policy; earlier runtime evidence does not establish acceptance of that final local binary. No policy was bypassed. Trusted signing/distribution and another local launch check remain necessary. Fault, accessibility, scaling, and offline cases remain NOT RUN; no complete P0 or universal support claim is made.
+The 0.1.0 code is delivered as a functional preview. Real native dialogs and process/port interactions were exercised on an earlier local artifact, with synthetic screenshots. Baseline Windows CI at `ed3b5db` passed both desktop tests. The later local rebuild was blocked by the host's Smart App Control signing policy; earlier runtime evidence does not establish acceptance of that local binary or a subsequent rebuild. No policy was bypassed. Trusted signing/distribution and another local launch check remain necessary. Fault, full accessibility, actual scaling, and full offline cases remain open; no complete P0 or universal support claim is made.
 
 ## ADR-009: Private repository and licensing
 
 The owner explicitly authorized creating and pushing to `Tyago03/DevStation` as a private repository on 2026-11-21. This supersedes the earlier briefing's instruction to wait for remote authorization. It does not authorize public publication.
 
 Original implementation is MIT licensed. No source from unrelated personal or work projects is imported. Dependency notices and license review remain a separate release requirement.
+
+## ADR-010: Incremental bounded output with timely partial display
+
+Decode each stdout/stderr stream incrementally with its own UTF-8 decoder and ANSI state, so byte and escape-sequence boundaries do not corrupt text. A fixed-capacity ring retains bounded recent output. Emit long output in segments of at most 16,384 UTF-16 code units, avoiding surrogate-pair splits. Flush pending text at a 200 ms first-pending deadline and on stream end; a debounce could otherwise hide continuously arriving output without newlines. Stream end cancels timers and finalizes only once.
+
+This favors timely, bounded display over preserving arbitrary source-line boundaries. A long or slowly emitted line can appear as multiple timestamped segments. Logs remain memory-only, and retention truncation remains visible. Current unit and real-process integration tests cover fragmented Unicode/ANSI, malformed escapes, segment bounds, timer cleanup, and live newline-free output. They do not establish sustained renderer responsiveness under load; T30 remains open.
+
+## ADR-011: Revalidate identity and distinguish failure from emptiness
+
+Reconfirm the canonical Git working-tree root before inspection. If a registered nested repository loses its `.git` marker, reject inspection instead of accepting Git's upward search into an ancestor repository. The regression uses only a temporary nested fixture and checks that its catalog entry remains intact.
+
+Catalog, run, and configuration loading failures must have explicit error/retry presentation rather than empty successful states. Unknown process status must remain Unknown. Dialog validation associates errors with the relevant inputs; initial focus is set after opening the modal and restored on cleanup. Current React tests cover these behaviors, and the expanded compiled Electron workflow passes after it exposed a focus regression. Its keyboard checks cover the configuration form, not every native dialog or application route.
+
+## ADR-012: Continue the existing specification and separate evidence layers
+
+The newly supplied briefing archive is exactly equivalent to the earlier manual after line-ending and outer-whitespace normalization; all six numbered documents appear verbatim in that manual. Preserve the existing private repository and authorization instead of bootstrapping again. Record the briefing hash separately from executable hashes in [ROADMAP.md](ROADMAP.md).
+
+The current compiled Electron security test exercises production CSP, denied geolocation, navigation/popups, strict IPC schemas, unauthorized-window rejection, and the help URL allowlist. It stubs only the final OS URL opener for that link check. Chromium offline Settings navigation/reload is useful bounded evidence, not proof of a physically disconnected full workflow. Current [Windows CI run 44960251660](https://github.com/Tyago03/DevStation/actions/runs/44960251660) passes 53 automated tests and 3 desktop checks on `96e6c45`, including hardened packaged startup/persistence; lint, types, build, checksums and private artifact upload also pass. The final local rebuild remains blocked by Smart App Control, as recorded in [QA.md](QA.md). The CI artifact-container digest and local application ZIP digest identify distinct objects. Historical CI and artifact results must never be promoted to a new source revision or new binary without their own execution evidence.

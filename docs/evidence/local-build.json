@@ -1,23 +1,32 @@
 {
-  "sourceCommit": "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b",
+  "sourceCommit": "96e6c45abfd007d5d9d47bea2753022df002050b",
   "filename": "DevStation-win32-x64-0.1.0.zip",
-  "bytes": 176611525,
-  "modifiedUtc": "2026-11-21T22:16:44.4697008Z",
-  "sha256": "bab21b30886079127d765686550d54d2f22eaa4e4bd8c69c8fd537faefc8a5a1",
+  "downloadsFilename": "DevStation-0.1.0-96e6c45-windows-x64.zip",
+  "bytes": 176736251,
+  "modifiedUtc": "2026-11-21T23:05:10.8840703Z",
+  "sha256": "e74cb698644cba853c62eb7abd57034c4600ac7a2da77667f2b25b541f5936fe",
   "authenticode": "NotSigned",
   "localFinalPackagedLaunch": "BLOCKED_BY_WINDOWS_SMART_APP_CONTROL",
   "policyEvidence": {
     "reason": "Executable did not meet signing level requirements",
-    "observedUtc": "2026-11-21T22:17:42Z",
+    "observedUtc": "2026-11-21T23:08:08Z",
     "eventIds": [
       3033,
-      3077,
-      3118
+      3077
     ]
   },
+  "localCompiledDesktop": "PASS",
+  "localSecurityDesktop": "PASS",
   "ci": {
     "conclusion": "success",
-    "url": "https://github.com/Tyago03/DevStation/actions/runs/44955738087",
-    "artifactName": "devstation-windows-x64-ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b"
+    "url": "https://github.com/Tyago03/DevStation/actions/runs/44960251660",
+    "jobId": 137017251900,
+    "unitTests": 19,
+    "integrationTests": 19,
+    "uiTests": 15,
+    "desktopTests": 3,
+    "artifactName": "devstation-windows-x64-96e6c45abfd007d5d9d47bea2753022df002050b",
+    "artifactId": 14728928833,
+    "artifactContainerSha256": "cf6f8aa9fd965f940ad02d2af100943c81def39df449344ff0b2c238c2a80d40"
   }
 }
