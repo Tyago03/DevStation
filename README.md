@@ -4,7 +4,11 @@
 
 DevStation is a Windows desktop workspace for local Git projects, explicit run configurations, process output, environment diagnostics, and listening TCP ports. It uses Electron, React, TypeScript, and SQLite.
 
-**Status: v0.1.0 core implemented; packaged-app verification in progress.** Local validation has passed 35 unit, integration, and React tests plus one real Electron workflow test. That Electron test uses mocked native dialogs and is not a packaged-release approval. The first packaged launch exposed a missing SQLite dependency; the packaging fix is being revalidated. See [QA](docs/QA.md) for exact evidence and remaining checks. This repository is private; there is no public release or signed installer.
+**Status: functional v0.1.0 preview; final local distribution acceptance incomplete.** Windows CI passes all 35 unit/integration/React tests, both desktop tests, packaging, and artifact upload. The latest local unsigned executable is blocked by this host's Smart App Control signing policy. It must not be described as launch-verified on this machine; trusted signing/distribution and a fresh local launch check remain required. No Windows protection was disabled or bypassed.
+
+An earlier local package passed native project import, executable selection, confirmed Start/Stop, real Python logs, TCP inspection, and a cancelable active-run close prompt. Its desktop tests verified startup without external Node and SQLite preference persistence. The screenshots below capture that earlier tested artifact. Development startup with `npm start` also passed after the final code changes. Some acceptance cases remain untested, including full keyboard navigation, scaling, offline operation, and Windows 10. See [QA](docs/QA.md), the [green Windows run](https://github.com/Tyago03/DevStation/actions/runs/44955738087), and the [artifact/checksum record](docs/RELEASE.md). The repository remains private; no public release has been published.
+
+![DevStation overview with three synthetic repositories](docs/screenshots/overview.png)
 
 ## First version
 
@@ -17,7 +21,15 @@ The implemented first-version modules cover:
 - Inspecting listening TCP ports and checking Git, Node.js, npm, and Python availability.
 - Keeping projects, configurations, and appearance preferences in a local SQLite database.
 
-No account, AI service, cloud sync, telemetry, or automatic project execution is planned for v0.1. Git operations are read-only. Shell scripts (`.cmd`, `.bat`, and PowerShell profiles), `npm run`, arbitrary PID termination, and automatic updates are outside this version.
+The app has no account, AI service, cloud sync, telemetry, or automatic project execution. Git operations are read-only. Shell scripts (`.cmd`, `.bat`, and PowerShell profiles), `npm run`, arbitrary PID termination, and automatic updates are outside this version. npm diagnostics explicitly report **Not checked** because its Windows shell wrapper is unsupported.
+
+## Screenshots
+
+These capture the earlier locally tested packaged artifact (`677acfca…`), using synthetic repositories and a live test server. Atlas API was imported through the native folder dialog. The other two fixtures had their catalog metadata seeded in SQLite; their displayed Git states came from real repositories. They do not establish successful launch of the latest local artifact (`bab21b30…`) or manual import of all three fixtures.
+
+![Git details and saved executable configuration](docs/screenshots/project-git.png)
+
+![A managed Python process with actual stdout](docs/screenshots/runs.png)
 
 ## Development
 
@@ -40,7 +52,9 @@ npm run make
 npm run test:e2e
 ```
 
-The ZIP will be written under `out/make/`. Extract the complete archive before opening `DevStation.exe`; do not copy only the executable. Electron bundles its own runtime, so the packaged application does not need a separate Node.js installation to open. Project tasks still need the executable you select, and Git inspection requires Git on the machine. Packaged-runtime verification is tracked in [QA](docs/QA.md).
+The ZIP is written under `out/make/zip/win32/x64/`. When Windows policy allows the artifact, extract the complete archive before opening `DevStation.exe`; do not copy only the executable. Electron bundles its own runtime. Startup without external Node was verified on the earlier local package and in Windows CI, while the final local package is currently blocked before startup. Project tasks still need the executable you select, and Git inspection requires Git on the machine.
+
+The preview is **unsigned**. The final local ZIP is also copied to Downloads as `DevStation-0.1.0-windows-x64.zip`; [its SHA-256](docs/RELEASE.md) identifies those exact bytes, not the separate CI archive. Follow your Windows software policy; do not disable protections to run a blocked artifact. No installer, code-signing certificate, or automatic updater is included.
 
 Native SQLite must match the runtime that loads it. Forge rebuilds native dependencies for Electron during packaging; tests and packaging must follow the repository's scripts rather than copying a binary from another Node installation. See [troubleshooting](docs/TROUBLESHOOTING.md) for ABI and Windows policy errors.
 
@@ -61,7 +75,7 @@ SQLite lives under Electron's application `userData` directory, outside imported
 - [Troubleshooting](docs/TROUBLESHOOTING.md)
 - [Security reporting](SECURITY.md)
 
-Screenshots will be added only after capturing the real application with synthetic test projects. Windows 10 compatibility, code signing, full process-tree termination, and broader platform support are not claimed.
+Windows 10 compatibility, full process-tree termination, and broader platform support are not claimed. The complete list of unverified cases remains visible in QA.
 
 ## License
 

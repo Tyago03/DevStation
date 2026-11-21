@@ -12,4 +12,4 @@ Runs display current-session state, PID when available, timing, exit code, and t
 
 Keyboard access, visible focus, semantic labels, modal focus management, reduced-motion preference, readable contrast, and layouts at Windows scaling of 125% and 150% are acceptance checks. Target layouts are 1280×800 and 1440×900 with a functional minimum around 1050 pixels. These are design targets, not completed verification claims; see [QA.md](QA.md).
 
-Real screenshots will use three synthetic Git projects and a controlled local task. Do not put real work project names, credentials, private logs, or personal paths in portfolio evidence.
+The three [screenshots](screenshots/) capture the earlier locally tested package (`677acfca…`) with synthetic Git projects and a controlled live Python task. They do not show the final local rebuild, whose startup is blocked by host signing policy. Atlas API was imported through the native picker; Workbench UI and Notes CLI had catalog metadata seeded for screenshot preparation. Git states came from real fixtures. No real work projects, credentials, or private logs appear in this evidence.

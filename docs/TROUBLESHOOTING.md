@@ -42,6 +42,6 @@ A migration backup, when available, is a recovery source. Retain the failed data
 
 ## Unsigned ZIP and removal
 
-The first package is unsigned. Windows may warn because publisher identity is not established. Verify the artifact's SHA-256 against its supplied checksum and follow your organization's software policy; do not disable Defender or SmartScreen.
+The package is unsigned. The final local rebuild was blocked by Smart App Control, producing `spawn UNKNOWN`; Code Integrity events 3077/3033/3118 identified its signing-level rejection. A successful build, checksum, earlier package run, or CI run does not remove that policy restriction. Trusted signing/distribution and another launch test are required. Verify the artifact's SHA-256 and follow your organization's software policy; do not disable Smart App Control, Defender, or SmartScreen.
 
 Extract the whole ZIP to a user-writable location and open its executable. This distribution has no installer/uninstaller. Removing the extracted application directory does not intentionally remove project repositories or the separate `userData` directory. Retaining local settings is the default; deletion of that data is a separate deliberate action.

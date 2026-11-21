@@ -2,7 +2,7 @@
 
 Original DevStation source is MIT licensed. Dependency licenses are separate and must be preserved with distribution. This document is not a substitute for the notices included by Electron and installed packages.
 
-Review status, 2026-11-21: **locked production package notices collected; final package verification pending**. No claim of a legal or vulnerability audit is made. The inventory follows `package-lock.json` entries not marked development-only, including peer/type packages that may not appear in the final bundle.
+Review status, 2026-11-21: **locked production package notices collected and retained in the Windows package**. `resources/THIRD_PARTY_NOTICES.txt` was confirmed alongside the packaged application. No claim of a legal or vulnerability audit is made. The inventory follows `package-lock.json` entries not marked development-only, including peer/type packages that may not appear in the final bundle.
 
 | Component | Purpose | Required review |
 | --- | --- | --- |
@@ -17,4 +17,4 @@ Review status, 2026-11-21: **locked production package notices collected; final 
 
 [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt) contains unmodified notice text from the nine installed production package entries. [dependency-licenses.json](dependency-licenses.json) records their names, versions, license declarations, and notice filenames. Keep this notice file with the distributed app, in addition to Electron's runtime notices.
 
-Before broad distribution, verify the final ZIP still includes these notices and review any dependencies added after this inventory. No proprietary fonts, logos, or source from other personal or work projects should be added to the package.
+The tested preview includes these notices and Electron's `LICENSE` / `LICENSES.chromium.html`. Recheck notice inclusion for later builds and review dependencies added after this inventory. No proprietary fonts, logos, or source from other personal or work projects should be added to the package.

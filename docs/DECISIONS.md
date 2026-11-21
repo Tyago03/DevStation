@@ -22,7 +22,7 @@ Bootstrap versions: Node 24.21.0 LTS, npm 11.19.0, Git 2.55.0, Electron 45.4.1, 
 
 Keep `better-sqlite3` for transactional local metadata. Use ASAR plus Forge's native unpack support and rebuild the binding for Electron. Validate persistence after packaging and after restarting. The first artifact is a Windows x64 ZIP, without code signing or auto-update. No public release is created automatically. [Native unpack documentation](https://www.electronforge.io/config/plugins/auto-unpack-natives).
 
-The initial package build succeeded, but launching its actual executable failed because `better-sqlite3` was omitted by Forge Vite's package ignore behavior. The packaging policy now explicitly retains `.vite`, `node_modules`, and `package.json`, with development dependencies pruned. This fix remains subject to a new hardened-executable launch and persistence test; an earlier successful build is not acceptance evidence for the corrected package.
+The initial package build succeeded, but launching its actual executable failed because `better-sqlite3` was omitted by Forge Vite's package ignore behavior. The packaging policy explicitly retains `.vite`, `node_modules`, and `package.json`, with development dependencies pruned. The corrected hardened executable passed startup with no external Node on PATH, SQLite appearance persistence across restart, and a separate native import/run/stop workflow. Build success alone was not used as acceptance evidence.
 
 ## ADR-005: Git inspection without automatic hooks or index writes
 
@@ -43,6 +43,8 @@ Report unchecked or unavailable tools as such. An unsafe npm version fallback is
 Tests use synthetic temporary projects. A passing service test does not imply the same UI action or packaged workflow passed. Maintain a separate acceptance matrix with PASS, FAIL, and NOT RUN. Screenshots must depict the actual application without personal or business data. Use [Playwright's Electron API](https://playwright.dev/docs/api/class-electron) where compatible and retain evidence of a hardened package launch separately.
 
 The Vite development document needs inline React Refresh initialization, so its development-only CSP permits inline scripts. Production has a separate restrictive CSP without this allowance. Packaged observation uses Chromium CDP rather than turning on Node inspector fuses. Native-dialog stubs in the compiled-app test are documented explicitly; they do not verify real confirmation interaction.
+
+The 0.1.0 code is delivered as a functional preview. Real native dialogs and process/port interactions were exercised on an earlier local artifact, with synthetic screenshots. Final Windows CI passes both desktop tests. The later local rebuild is blocked by the host's Smart App Control signing policy; earlier runtime evidence does not establish acceptance of that final local binary. No policy was bypassed. Trusted signing/distribution and another local launch check remain necessary. Fault, accessibility, scaling, and offline cases remain NOT RUN; no complete P0 or universal support claim is made.
 
 ## ADR-009: Private repository and licensing
 
