@@ -1,0 +1,23 @@
+.configuration-dialog { width: 640px; max-width: calc(100vw - 50px); max-height: calc(100vh - 60px); padding: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; color: var(--text); box-shadow: var(--shadow); overflow: auto; }
+.configuration-dialog::backdrop { background: #040a11b8; backdrop-filter: blur(3px); }
+.dialog-heading { display: flex; justify-content: space-between; gap: 25px; padding: 27px 27px 23px; border-bottom: 1px solid var(--border); }
+.dialog-heading .eyebrow { display: block; margin-bottom: 10px; font-size: 8px; }
+.dialog-heading h2 { font-size: 21px; letter-spacing: -.5px; margin-bottom: 7px; }
+.dialog-heading p { font-size: 11px; color: var(--muted); }
+.dialog-body { padding: 24px 27px; }
+.form-field { display: flex; flex-direction: column; gap: 9px; font-size: 11px; font-weight: 500; margin-bottom: 23px; }
+.form-field > input { width: 100%; }
+.field-hint { font-size: 10px; font-weight: 400; color: var(--dim); line-height: 1.7; }
+.picker-field { display: flex; gap: 8px; }
+.picker-field input { flex: 1; min-width: 0; font-family: 'Cascadia Code', Consolas, monospace; font-size: 10px; }
+.picker-field .button { font-size: 11px; }
+.arguments-field { padding: 0; border: 0; margin: 0 0 23px; }
+.arguments-field legend { display: block; width: 100%; font-size: 11px; font-weight: 500; margin-bottom: 12px; }
+.arguments-field legend span { font-size: 9px; color: var(--dim); font-weight: 400; float: right; }
+.argument-row { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.argument-row > span { font-family: Consolas, monospace; color: var(--dim); font-size: 10px; width: 18px; }
+.argument-row input { flex: 1; min-width: 0; font-family: 'Cascadia Code', Consolas, monospace; font-size: 11px; }
+.arguments-field > .text-button { font-size: 11px; }
+.arguments-field .field-hint { margin-top: 6px; }
+.dialog-body > .notice:last-child { margin-bottom: 0; font-size: 10px; }
+.dialog-footer { display: flex; justify-content: flex-end; gap: 9px; padding: 18px 27px; border-top: 1px solid var(--border); background: var(--surface); position: sticky; bottom: 0; }
