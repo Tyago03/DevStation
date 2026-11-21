@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import path from 'node:path';
 import { parsePorcelain } from '../../src/main/services/git';
 import { parseNetstat } from '../../src/main/services/ports';
-import { cleanLog, LogBuffer } from '../../src/main/services/logs';
+import { cleanLog, LogBuffer, LogStream } from '../../src/main/services/logs';
 import { isInside } from '../../src/main/security/paths';
 import { localEnvironment } from '../../src/main/services/command';
 
@@ -52,6 +52,73 @@ describe('bounded plain text logs', () => {
     const started = performance.now();
     expect(cleanLog('\x1b]'.repeat(32000))).toBe('');
     expect(performance.now() - started).toBeLessThan(1000);
+  });
+  it('preserves line, UTF-8 and ANSI state across byte-sized chunks', () => {
+    const lines: string[] = [];
+    const stream = new LogStream(line => lines.push(line));
+    const input = Buffer.from('hello \x1b[31mCafé 日本語 🙂\x1b[0m\n\nlast \x1b]0;hidden title\x07line');
+    for (const byte of input) stream.write(Buffer.from([byte]));
+    expect(lines).toEqual(['hello Café 日本語 🙂', '']);
+    stream.end(); stream.end();
+    expect(lines).toEqual(['hello Café 日本語 🙂', '', 'last line']);
+  });
+  it('segments endless lines within a fixed limit without splitting Unicode or losing content', () => {
+    const input = 'x'.repeat(16_383) + '🙂'.repeat(20_000);
+    const bytes = Buffer.from(input); const byteLines: string[] = [];
+    const byteStream = new LogStream(line => byteLines.push(line));
+    for (let index = 0; index < bytes.length; index += 1000) byteStream.write(bytes.subarray(index, index + 1000));
+    expect(byteLines.length).toBeGreaterThan(0);
+    byteStream.end();
+    expect(byteLines.join('')).toBe(input);
+    expect(byteLines.every(line => line.length <= 16_384 && !line.includes('\ufffd'))).toBe(true);
+  });
+  it('keeps malformed escape payload bounded until the stream ends', () => {
+    const lines: string[] = [];
+    const stream = new LogStream(line => lines.push(line));
+    stream.write(Buffer.from('visible\x1b]'));
+    for (let index = 0; index < 1000; index += 1) stream.write(Buffer.alloc(1024, 120));
+    stream.end();
+    expect(lines).toEqual(['visible']);
+  });
+  it('flushes partial output by its first-pending deadline and cancels timers on end', () => {
+    vi.useFakeTimers();
+    try {
+      const lines: string[] = [];
+      const stream = new LogStream(line => lines.push(line));
+      stream.write(Buffer.from('Server'));
+      vi.advanceTimersByTime(150);
+      stream.write(Buffer.from(' ready'));
+      vi.advanceTimersByTime(49);
+      expect(lines).toEqual([]);
+      expect(vi.getTimerCount()).toBe(1);
+      vi.advanceTimersByTime(1);
+      expect(lines).toEqual(['Server ready']);
+      stream.write(Buffer.from('\n\nfinal'));
+      expect(lines).toEqual(['Server ready', '']);
+      expect(vi.getTimerCount()).toBe(1);
+      stream.end();
+      expect(vi.getTimerCount()).toBe(0);
+      vi.advanceTimersByTime(1000);
+      expect(lines).toEqual(['Server ready', '', 'final']);
+    } finally { vi.useRealTimers(); }
+  });
+  it('preserves UTF-8 and ANSI state when a partial-line timer flushes', () => {
+    vi.useFakeTimers();
+    try {
+      const lines: string[] = [];
+      const stream = new LogStream(line => lines.push(line));
+      stream.write(Buffer.from('prefix \x1b[3'));
+      vi.advanceTimersByTime(200);
+      stream.write(Buffer.from('1mCaf'));
+      stream.write(Buffer.from([0xc3]));
+      vi.advanceTimersByTime(200);
+      stream.write(Buffer.from([0xa9]));
+      stream.write(Buffer.from('\x1b[0m\n'));
+      stream.end();
+      expect(lines).toEqual(['prefix ', 'Caf', 'é']);
+      expect(lines.join('')).toBe('prefix Café');
+      expect(vi.getTimerCount()).toBe(0);
+    } finally { vi.useRealTimers(); }
   });
 });
 

@@ -11,8 +11,12 @@ export interface GitState { overview?: GitOverview; error?: string; loading: boo
 export function useWorkspace() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [runs, setRuns] = useState<ManagedRun[]>([]);
+  const [runsLoading, setRunsLoading] = useState(true);
+  const [runsLoaded, setRunsLoaded] = useState(false);
+  const [runsError, setRunsError] = useState<string>();
   const [git, setGit] = useState<Record<string, GitState>>({});
   const [loading, setLoading] = useState(true);
+  const [projectsError, setProjectsError] = useState<string>();
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState<string>();
   const [settings, setSettings] = useState<Settings>({ theme: 'dark' });
@@ -20,6 +24,7 @@ export function useWorkspace() {
   const live = useRef(true);
   const pendingGit = useRef(new Set<string>());
   const pendingRuns = useRef(false);
+  const hasRunsSnapshot = useRef(false);
 
   const report = useCallback((problem: unknown) => setError(messageOf(problem)), []);
   const refreshGit = useCallback(async (projectId: string) => {
@@ -34,16 +39,21 @@ export function useWorkspace() {
     } finally { pendingGit.current.delete(projectId); }
   }, []);
 
-  const refreshRuns = useCallback(async () => {
+  const refreshRuns = useCallback(async (showLoading = false) => {
     if (pendingRuns.current) return;
     pendingRuns.current = true;
-    try { const next = valueOf(await window.devstation.runs.list()); if (live.current) setRuns(next); }
-    catch (problem) { if (live.current) report(problem); }
-    finally { pendingRuns.current = false; }
-  }, [report]);
+    if (showLoading && !hasRunsSnapshot.current) setRunsLoading(true);
+    try {
+      const next = valueOf(await window.devstation.runs.list());
+      if (live.current) { setRuns(next); setRunsLoaded(true); hasRunsSnapshot.current = true; setRunsError(undefined); }
+    }
+    catch (problem) { if (live.current) setRunsError(messageOf(problem)); }
+    finally { pendingRuns.current = false; if (live.current) setRunsLoading(false); }
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setProjectsError(undefined);
     try {
       const next = valueOf(await window.devstation.projects.list());
       if (!live.current) return;
@@ -53,9 +63,9 @@ export function useWorkspace() {
       void Promise.all(Array.from({ length: Math.min(3, next.length) }, async () => {
         while (queue.length && live.current) { const project = queue.shift(); if (project) await refreshGit(project.id); }
       }));
-    } catch (problem) { if (live.current) report(problem); }
+    } catch (problem) { if (live.current) setProjectsError(messageOf(problem)); }
     finally { if (live.current) setLoading(false); }
-  }, [refreshGit, report]);
+  }, [refreshGit]);
 
   useEffect(() => {
     live.current = true;
@@ -94,6 +104,6 @@ export function useWorkspace() {
     catch (problem) { report(problem); }
   }
 
-  return { projects, runs, git, loading, adding, error, setError, settings, version, report, refreshGit, refreshRuns, load, addProject, removeProject, updateSettings };
+  return { projects, runs, runsLoading, runsLoaded, runsError, git, loading, projectsError, adding, error, setError, settings, version, report, refreshGit, refreshRuns, load, addProject, removeProject, updateSettings };
 }
 export type Workspace = ReturnType<typeof useWorkspace>;

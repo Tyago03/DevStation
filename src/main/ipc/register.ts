@@ -33,7 +33,13 @@ export function registerIpc(window: BrowserWindow, url: string, services: Return
   handle('projects:list', noInput, () => services.projects.list());
   handle('projects:choose-and-add', noInput, async () => {
     const choice = await dialog.showOpenDialog(window, { title: 'Add a Git project', properties: ['openDirectory'] });
-    return choice.canceled || !choice.filePaths[0] ? null : services.projects.add(choice.filePaths[0]);
+    if (choice.canceled || !choice.filePaths[0]) return null;
+    const selected = await canonicalDirectory(choice.filePaths[0]);
+    const project = await services.projects.add(selected);
+    if (pathIdentity(selected) !== pathIdentity(project.path)) {
+      await dialog.showMessageBox(window, { type: 'info', title: 'Repository root found', message: 'Added the Git repository containing this folder.', detail: `Selected folder: ${selected}\nRepository root: ${project.path}`, buttons: ['OK'], noLink: true });
+    }
+    return project;
   });
   handle('projects:remove', idSchema, async id => {
     const project = services.projects.get(id);

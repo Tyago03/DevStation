@@ -10,6 +10,10 @@ export function EmptyState({ icon, title, description, action, compact = false }
   return <div className={`empty-state ${compact ? 'compact' : ''}`}><div className="empty-icon">{icon ?? <FolderPlus size={28} />}</div><h2>{title}</h2><p>{description}</p>{action}</div>;
 }
 
+export function ErrorState({ title, message, onRetry }: { title: string; message: string; onRetry: () => void }) {
+  return <div className="empty-state compact"><div className="empty-icon"><AlertCircle size={26} /></div><h2>{title}</h2><p role="alert">{message}</p><button className="button secondary" onClick={onRetry}><RefreshCw size={15} />Try again</button></div>;
+}
+
 export function Loading({ label = 'Loading workspace…' }: { label?: string }) {
   return <div className="loading" role="status"><LoaderCircle className="spin" size={18} />{label}</div>;
 }

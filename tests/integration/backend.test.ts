@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { mkdtemp, mkdir, writeFile, readFile, rm, readdir, symlink, realpath } from 'node:fs/promises';
+import { mkdtemp, mkdir, writeFile, readFile, rm, readdir, symlink, realpath, copyFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -120,6 +120,19 @@ describe('real repository and SQLite catalog', () => {
   it('handles unavailable Git and never mutates trust configuration', async () => {
     await expect(new GitService(path.join(temporary, 'missing-git.exe')).overview(repository)).rejects.toMatchObject({ code: 'TOOL_UNAVAILABLE' });
   });
+  it('refuses ancestor Git inspection after an imported nested repository loses its .git marker', async () => {
+    const app = services!;
+    await writeFile(path.join(repository, 'parent.txt'), 'ancestor fixture'); await git(['add', '.']); await git(['commit', '-m', 'parent fixture']);
+    const nested = path.join(repository, 'nested'); await mkdir(nested);
+    expect((await runCommand(gitExecutable!, ['init', '-b', 'main', nested])).code).toBe(0);
+    const project = await app.projects.add(nested);
+    expect(await app.git.overview(project.path)).toMatchObject({ isUnborn: true });
+    const parentIndex = await readFile(path.join(repository, '.git', 'index'));
+    await rm(path.join(nested, '.git'), { recursive: true });
+    await expect(app.git.overview(project.path)).rejects.toMatchObject({ code: 'NOT_GIT_REPO', message: expect.stringContaining('no longer the Git working tree you added') });
+    expect(app.projects.get(project.id)).toEqual(project);
+    expect(await readFile(path.join(repository, '.git', 'index'))).toEqual(parentIndex);
+  });
   it('preserves a corrupt database and creates a backup before a failing migration', async () => {
     const corrupt = path.join(temporary, 'corrupt.sqlite');
     await writeFile(corrupt, 'synthetic invalid database');
@@ -155,6 +168,40 @@ describe('explicit session-owned processes', () => {
     const config = await app.configs.save({ ...input, workingDir: subfolder });
     await rm(subfolder, { recursive: true }); await symlink(temporary, subfolder, 'junction');
     await expect(app.runs.start(config.id)).rejects.toMatchObject({ code: 'INVALID_CWD' });
+  });
+  it('fails safely when a saved executable disappears before Start', async () => {
+    const app = services!; const project = await app.projects.add(repository);
+    const selectedExecutable = path.join(temporary, 'selected-node.exe');
+    await copyFile(process.execPath, selectedExecutable);
+    const config = await app.configs.save({ projectId: project.id, label: 'Removed executable', executablePath: selectedExecutable, args: ['--version'], workingDir: repository });
+    expect(app.runs.list()).toEqual([]);
+    await rm(selectedExecutable);
+    await expect(app.runs.start(config.id)).rejects.toMatchObject({ code: 'EXE_NOT_FOUND' });
+    expect(app.runs.active()).toEqual([]);
+    expect(app.runs.list()[0]).toMatchObject({ state: 'failed', configId: config.id });
+    expect(app.runs.list()[0].pid).toBeUndefined();
+  });
+  it('assembles fragmented stdout/stderr, ANSI, Unicode and a final line without a newline', async () => {
+    const app = services!; const project = await app.projects.add(repository);
+    const input = Buffer.from('hello \x1b[31mCafé 日本語 🙂\x1b[0m\n\nlast \x1b]0;hidden title\x07line without newline');
+    const script = `const bytes=Buffer.from(${JSON.stringify(input.toString('base64'))},'base64');let index=0;const timer=setInterval(()=>{if(index<bytes.length){process.stdout.write(bytes.subarray(index,index+1));index+=1;}else{clearInterval(timer);process.stderr.write('err');setTimeout(()=>process.stderr.write('or tail'),20);}},4);`;
+    const config = await app.configs.save({ projectId: project.id, label: 'Fragmented output', executablePath: process.execPath, args: ['-e', script], workingDir: repository });
+    const run = await app.runs.start(config.id);
+    await waitFor(() => app.runs.get(run.id).state === 'exited' && app.runs.logs(run.id).lines.some(line => line.line === 'error tail'));
+    const lines = app.runs.logs(run.id).lines;
+    const stdout = lines.filter(line => line.stream === 'stdout').map(line => line.line);
+    // Slow delivery may produce bounded-latency segments before a newline arrives.
+    expect(stdout.join('')).toBe('hello Café 日本語 🙂last line without newline');
+    expect(stdout.filter(line => line === '')).toHaveLength(1);
+    expect(lines.filter(line => line.stream === 'stderr').map(line => line.line)).toEqual(['error tail']);
+  });
+  it('shows output from a live process that never writes a newline', async () => {
+    const app = services!; const project = await app.projects.add(repository);
+    const config = await app.configs.save({ projectId: project.id, label: 'Partial live output', executablePath: process.execPath, args: ['-e', 'process.stdout.write("Server ready");setInterval(()=>{},1000)'], workingDir: repository });
+    const run = await app.runs.start(config.id);
+    await waitFor(() => app.runs.logs(run.id).lines.some(line => line.line === 'Server ready'), 2000);
+    expect(app.runs.get(run.id).state).toBe('running');
+    expect((await app.runs.stop(run.id)).state).toBe('exited');
   });
   it('enforces concurrent-start limits, blocks active edits, and stops owned handles only', async () => {
     const app = services!; const project = await app.projects.add(repository);

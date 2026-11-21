@@ -54,6 +54,9 @@ export class GitService {
   async overview(directory: string): Promise<GitOverview> {
     const canonical = await canonicalDirectory(directory);
     if (pathIdentity(canonical) !== pathIdentity(path.normalize(directory))) throw new AppError('PATH_CHANGED', 'The saved project folder now points to a different location. Import it again after reviewing the change.');
+    // A deleted/replaced .git marker must not silently authorize ancestor worktrees.
+    const currentRoot = await this.root(canonical);
+    if (pathIdentity(currentRoot) !== pathIdentity(canonical)) throw new AppError('NOT_GIT_REPO', 'This folder is no longer the Git working tree you added. Review it and import it again.');
     const status = await this.command(canonical, ['status', '--porcelain=v1', '-z', '--untracked-files=all']);
     if (status.code !== 0) throw new AppError('NOT_GIT_REPO', 'Git could not inspect this working tree.', true);
     const [branch, head] = await Promise.all([

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import type { Workspace } from '../hooks/useWorkspace';
 import { valueOf } from '../hooks/useWorkspace';
 import { copy } from '../copy';
-import { EmptyState, ErrorBanner, fullTime, GitBadge, Loading, RefreshButton, SectionTitle } from '../components/common';
+import { EmptyState, ErrorBanner, ErrorState, fullTime, GitBadge, Loading, RefreshButton, SectionTitle } from '../components/common';
 import { RunConfigurations } from '../components/RunConfigurations';
 
 export function ProjectsPage({ workspace, selectedId, onSelect, onRun, onAdd }: { workspace: Workspace; selectedId?: string; onSelect: (id?: string) => void; onRun: (id: string) => void; onAdd: () => void }) {
@@ -17,6 +17,7 @@ export function ProjectsPage({ workspace, selectedId, onSelect, onRun, onAdd }: 
     return `${item.name} ${item.path}`.toLocaleLowerCase().includes(query.toLocaleLowerCase()) && (filter === 'all' || (filter === 'changed' ? status?.dirty === true : status?.dirty === false));
   });
   if (workspace.loading) return <Loading />;
+  if (workspace.projectsError) return <section className="panel"><ErrorState title="Your projects could not be loaded." message={workspace.projectsError} onRetry={() => { void workspace.load(); }} /></section>;
   if (project) return <>
     <button className="back-link" onClick={() => onSelect(undefined)}><ArrowLeft size={15} />All projects</button>
     <section className="panel project-detail-header"><div className="project-detail-title"><div className="project-avatar large"><FolderGit2 size={26} /></div><div><h2>{project.name}</h2><p className="mono wrap-path" title={project.path}>{project.path}</p></div></div><div className="detail-actions"><button className="button secondary" onClick={() => { void window.devstation.projects.openFolder(project.id).then(valueOf).catch(workspace.report); }}><FolderOpen size={15} />Open folder</button><button className="icon-button danger-button" title="Remove from DevStation" aria-label="Remove from DevStation" onClick={() => { void workspace.removeProject(project.id).then(removed => { if (removed) onSelect(undefined); }); }}><Trash2 size={16} /></button></div></section>

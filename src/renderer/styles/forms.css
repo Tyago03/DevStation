@@ -8,6 +8,8 @@
 .form-field { display: flex; flex-direction: column; gap: 9px; font-size: 11px; font-weight: 500; margin-bottom: 23px; }
 .form-field > input { width: 100%; }
 .field-hint { font-size: 10px; font-weight: 400; color: var(--dim); line-height: 1.7; }
+.field-error { font-size: 11px; font-weight: 400; color: var(--danger); line-height: 1.6; }
+.form-field input[aria-invalid='true'], .argument-row input[aria-invalid='true'] { border-color: var(--danger); }
 .picker-field { display: flex; gap: 8px; }
 .picker-field input { flex: 1; min-width: 0; font-family: 'Cascadia Code', Consolas, monospace; font-size: 10px; }
 .picker-field .button { font-size: 11px; }

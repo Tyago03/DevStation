@@ -1,11 +1,10 @@
 import { spawn, type ChildProcess } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { StringDecoder } from 'node:string_decoder';
 import type { LogLine, ManagedRun } from '../../shared/contracts';
 import { AppError } from '../../shared/errors';
 import type { ConfigService } from './configs';
 import { localEnvironment } from './command';
-import { LogBuffer } from './logs';
+import { LogBuffer, LogStream } from './logs';
 
 interface RunEntry { state: ManagedRun; child?: ChildProcess; logs: LogBuffer }
 const isActive = (run: ManagedRun) => ['starting', 'running', 'stopping', 'unknown'].includes(run.state);
@@ -40,17 +39,15 @@ export class RunService {
       if (state.state !== 'starting') return { ...state };
       const child = spawn(validated.executablePath, validated.args, { shell: false, windowsHide: true, cwd: validated.workingDir, env: { ...localEnvironment(), PYTHONUNBUFFERED: '1', PYTHONIOENCODING: 'utf-8' }, stdio: ['ignore', 'pipe', 'pipe'] });
       entry.child = child;
-      const publish = (stream: LogLine['stream'], value: string) => {
-        // Each chunk is bounded; newline-free streams cannot grow a pending line forever.
-        for (const line of value.split(/\r?\n/)) {
-          if (!line) continue;
-          const log = entry.logs.push(state.id, stream, line);
-          this.onLog(log);
-        }
+      const publish = (stream: LogLine['stream'], line: string) => {
+        const log = entry.logs.push(state.id, stream, line);
+        this.onLog(log);
       };
-      const stdout = new StringDecoder('utf8'); const stderr = new StringDecoder('utf8');
-      child.stdout.on('data', (chunk: Buffer) => publish('stdout', stdout.write(chunk)));
-      child.stderr.on('data', (chunk: Buffer) => publish('stderr', stderr.write(chunk)));
+      const stdout = new LogStream(line => publish('stdout', line));
+      const stderr = new LogStream(line => publish('stderr', line));
+      child.stdout.on('data', (chunk: Buffer) => stdout.write(chunk));
+      child.stderr.on('data', (chunk: Buffer) => stderr.write(chunk));
+      child.stdout.once('end', () => stdout.end()); child.stderr.once('end', () => stderr.end());
       let pipeDrainTimer: ReturnType<typeof setTimeout> | undefined;
       child.once('exit', (code) => {
         state.exitCode = code;
@@ -65,7 +62,7 @@ export class RunService {
       });
       child.once('close', () => {
         clearTimeout(pipeDrainTimer);
-        publish('stdout', stdout.end()); publish('stderr', stderr.end());
+        stdout.end(); stderr.end();
       });
       return await new Promise<ManagedRun>((resolve, reject) => {
         child.once('spawn', () => { state.pid = child.pid; state.state = 'running'; resolve({ ...state }); });
