@@ -1,5 +1,5 @@
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
-import { execFile, spawn, type ChildProcess } from 'node:child_process';
+import { execFile, spawn, type ChildProcess, type ExecFileException } from 'node:child_process';
 import { access, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import os from 'node:os';
@@ -105,6 +105,7 @@ async function removeOwnedFixture(root: string) {
 }
 
 test('hardened Windows package boots without external Node and persists SQLite preferences', async ({ browserName }, testInfo) => {
+  test.setTimeout(240000);
   test.skip(process.platform !== 'win32', 'The v0.2 preview targets Windows x64.');
   test.skip(browserName !== 'chromium', 'Electron uses the Chromium debugging protocol.');
   const root = await mkdtemp(path.join(os.tmpdir(), 'DevStation-packaged-e2e-'));
@@ -117,10 +118,20 @@ test('hardened Windows package boots without external Node and persists SQLite p
     const powershell = path.join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
     // Paths are data in environment variables, never interpolated into shell code.
     // Extract the exact release archive into this test's owned temporary directory.
-    await execFileAsync(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', '$ErrorActionPreference = "Stop"; Expand-Archive -LiteralPath $env:DEVSTATION_PACKAGE_ZIP -DestinationPath $env:DEVSTATION_PACKAGE_EXTRACT -ErrorAction Stop'], {
-      windowsHide: true, timeout: 60000, maxBuffer: 8192,
-      env: { ...isolatedEnvironment(), DEVSTATION_PACKAGE_ZIP: zip, DEVSTATION_PACKAGE_EXTRACT: extracted },
-    });
+    const extractionTimeout = 120000;
+    const extractionStarted = Date.now();
+    try {
+      await execFileAsync(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', '$ErrorActionPreference = "Stop"; Expand-Archive -LiteralPath $env:DEVSTATION_PACKAGE_ZIP -DestinationPath $env:DEVSTATION_PACKAGE_EXTRACT -ErrorAction Stop'], {
+        windowsHide: true, timeout: extractionTimeout, maxBuffer: 8192,
+        env: { ...isolatedEnvironment(), DEVSTATION_PACKAGE_ZIP: zip, DEVSTATION_PACKAGE_EXTRACT: extracted },
+      });
+    } catch (error) {
+      const failure = error as ExecFileException;
+      if (failure?.killed && failure.signal === 'SIGTERM' && failure.code !== 'ERR_CHILD_PROCESS_STDIO_MAXBUFFER' && Date.now() - extractionStarted >= extractionTimeout - 1000) {
+        throw new Error('ZIP extraction exceeded 120 seconds. The packaged application was not launched.', { cause: error });
+      }
+      throw error;
+    }
     const executable = path.join(extracted, 'DevStation.exe');
     await access(executable);
     const archivePath = path.join(extracted, 'resources', 'app.asar');

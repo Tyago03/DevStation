@@ -8,7 +8,7 @@ Published **2026-11-23**: [DevStation v0.2.1 — Guided Workspace Preview](https
 - [PR #1](https://github.com/Tyago03/DevStation/pull/1) merged the development branch without rewriting or deleting its commits.
 - [Main CI 45248171830](https://github.com/Tyago03/DevStation/actions/runs/45248171830), job 137950375012: PASS. Windows Server 2025, Node 24.21.0, npm 11.19.0.
 - TypeScript/ESLint, 50 unit + 48 integration + 45 UI tests, and 13 desktop cases passed. The actual application ZIP was extracted and launched; packaged SQLite persistence passed with external Node/Git absent from PATH.
-- Publication documentation was added to main after the tagged build; the tag identifies the exact release binary source. Later main checks remain visible in GitHub Actions.
+- Publication documentation and a test-only ZIP-extraction time-budget adjustment followed the tagged build on main. The tagged application/runtime source and release assets are unchanged. [QA](QA.md) records the follow-up extraction failure and verification scope; later main checks remain visible in GitHub Actions.
 
 ## Published files
 

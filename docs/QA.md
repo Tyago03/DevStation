@@ -29,6 +29,12 @@ Independent content review checked the ASAR/unpacked payload, all outer distribu
 
 Repository visibility and Private Vulnerability Reporting were verified anonymously after publication. PR #1 preserved all development commits. Publication documentation follows the tagged code on main; GitHub Actions records each later main verification separately.
 
+## Follow-up CI extraction limit
+
+The documentation-only main commit `d187730` ran [CI 45252029645](https://github.com/Tyago03/DevStation/actions/runs/45252029645). TypeScript, ESLint, 143 unit/integration/UI tests and 12 compiled desktop tests passed. The packaged test failed during `Expand-Archive` at approximately 60 seconds, matching its configured 60-second child-process limit, before the executable launch. This failed build produced no uploaded artifact and is not the published ZIP.
+
+The follow-up test change allows 120 seconds for ZIP extraction and 240 seconds for that test overall, with an explicit extraction-timeout diagnostic. Application startup/behavior limits, assertions, owned-fixture cleanup and security controls remain unchanged; no retry or skip is added. The original failure is preserved in [evidence](evidence/v0.2.1-post-publication-ci.json). [Main CI history](https://github.com/Tyago03/DevStation/actions/workflows/ci.yml) records subsequent verification. The release tag and exact passed release artifact remain unchanged.
+
 ## New regressions
 
 - Changed-script preview shows complete UTF-8 content up to 256 KiB, renders code as text and marks invisible controls. Larger/non-text files require external review and native reselection.

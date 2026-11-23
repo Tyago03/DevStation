@@ -1,0 +1,27 @@
+{
+  "commit": "d1877302d27cfba2cf264e00f37ceb6e9dc2f97c",
+  "runId": 45252029645,
+  "jobId": 137963909255,
+  "url": "https://github.com/Tyago03/DevStation/actions/runs/45252029645",
+  "conclusion": "failure",
+  "staticChecks": "PASS",
+  "unitIntegrationUiPassed": 143,
+  "desktopPassed": 12,
+  "desktopFailed": 1,
+  "failedCase": "packaged.spec.ts hardened Windows package",
+  "failedPhase": "Expand-Archive before executable launch",
+  "configuredExtractionTimeoutMs": 60000,
+  "reportedCaseDuration": "1.0m",
+  "diagnosis": "Failure occurred at the configured 60-second extraction limit, with no command stderr; consistent with extraction timeout. Follow-up harness adds an explicit timeout diagnostic and a larger bounded preparation budget.",
+  "followUp": {
+    "extractionTimeoutMs": 120000,
+    "testTimeoutMs": 240000,
+    "appLaunchTimeoutChanged": false,
+    "assertionsRemoved": false,
+    "retriesOrSkipsAdded": false
+  },
+  "publishedReleaseAffected": false,
+  "publishedSource": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+  "publishedZipSha256": "b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618",
+  "sourceOfPublishedAsset": "Successful main run45248171830; different build, exact ZIP test passed"
+}
