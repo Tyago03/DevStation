@@ -1,0 +1,291 @@
+{
+  "scannedAtUtc": "2026-11-23T17:52:17.243732+00:00",
+  "head": "f9ee2e3a08753f0c941ee75f11b16916d3567622",
+  "branch": "codex/v0.2-guided-workspace",
+  "reachableCommits": 5,
+  "uniqueHistoricalBlobs": 116,
+  "workingTreeFilesExamined": 118,
+  "maximumTextBlobBytes": 10485760,
+  "secretPatternCandidates": 0,
+  "countsByKind": {
+    "author_email": 5,
+    "committer_email": 5,
+    "email_address": 7
+  },
+  "limitations": [
+    "Pattern matching is not a guarantee that no secret exists.",
+    "Only reachable local refs and tracked/nonignored current files were scanned.",
+    "Ignored build/dependency files, remote-only refs, reflogs, unreachable objects and other repositories were not read.",
+    "Binary contents require manual/visual review; OCR was not performed.",
+    "Findings contain locations and redacted values only; occurrences may repeat across history/current scope."
+  ],
+  "findings": [
+    {
+      "scope": "commit_metadata",
+      "commit": "f9ee2e3a08753f0c941ee75f11b16916d3567622",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "f9ee2e3a08753f0c941ee75f11b16916d3567622",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "96e6c45abfd007d5d9d47bea2753022df002050b",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "96e6c45abfd007d5d9d47bea2753022df002050b",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "ed0cd05781c40a52e1385ba89057cacff402190b",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "ed0cd05781c40a52e1385ba89057cacff402190b",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "history",
+      "blob": "1ec2e252e18ab48bdbadf4a7cb3ccb6df62cb5f3",
+      "paths": [
+        "tests/e2e/desktop.spec.ts"
+      ],
+      "commits": [
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "kind": "email_address",
+      "line": 20,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "history",
+      "blob": "912fe5720784b3745cfad58b2235d10fd271acda",
+      "paths": [
+        "tests/integration/backend.test.ts"
+      ],
+      "commits": [
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "kind": "email_address",
+      "line": 42,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "history",
+      "blob": "091360f063fd692b1f80563dc0b951822ce6b8c8",
+      "paths": [
+        "tests/e2e/desktop.spec.ts"
+      ],
+      "commits": [
+        "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "ed0cd05781c40a52e1385ba89057cacff402190b",
+        "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b"
+      ],
+      "kind": "email_address",
+      "line": 15,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "history",
+      "blob": "9eb2c9ca92fd1d2e649c4e43624db4b0fa2bfbaf",
+      "paths": [
+        "tests/integration/backend.test.ts"
+      ],
+      "commits": [
+        "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b"
+      ],
+      "kind": "email_address",
+      "line": 42,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "history",
+      "blob": "d238d063023ad38d74c8847f196d2f8b2866d10e",
+      "paths": [
+        "tests/integration/backend.test.ts"
+      ],
+      "commits": [
+        "ed0cd05781c40a52e1385ba89057cacff402190b"
+      ],
+      "kind": "email_address",
+      "line": 39,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "working_tree",
+      "path": "tests/e2e/desktop.spec.ts",
+      "kind": "email_address",
+      "line": 20,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "working_tree",
+      "path": "tests/integration/backend.test.ts",
+      "kind": "email_address",
+      "line": 42,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    }
+  ],
+  "skipped": [
+    {
+      "scope": "history",
+      "blob": "b179545d1376a619fb6e1bc341112b8c63498933",
+      "paths": [
+        "assets/icon.ico"
+      ],
+      "commits": [
+        "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "ed0cd05781c40a52e1385ba89057cacff402190b",
+        "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 1788
+    },
+    {
+      "scope": "history",
+      "blob": "d93b72d1b754109751a9ba3984eed549b2190b9a",
+      "paths": [
+        "assets/icon.png"
+      ],
+      "commits": [
+        "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "ed0cd05781c40a52e1385ba89057cacff402190b",
+        "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 1766
+    },
+    {
+      "scope": "history",
+      "blob": "fcc292b08c57b9201a12e6fc5796368ca962d836",
+      "paths": [
+        "docs/screenshots/overview.png"
+      ],
+      "commits": [
+        "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 76313
+    },
+    {
+      "scope": "history",
+      "blob": "164d2e7814ca1db658834a5ddae21a9579430a3d",
+      "paths": [
+        "docs/screenshots/project-git.png"
+      ],
+      "commits": [
+        "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 68836
+    },
+    {
+      "scope": "history",
+      "blob": "a8dcfded48e5b54c4423c0cb4c3d0e4c098bb109",
+      "paths": [
+        "docs/screenshots/runs.png"
+      ],
+      "commits": [
+        "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 51381
+    },
+    {
+      "scope": "working_tree",
+      "path": "assets/icon.ico",
+      "reason": "binary_manual_review",
+      "bytes": 1788
+    },
+    {
+      "scope": "working_tree",
+      "path": "assets/icon.png",
+      "reason": "binary_manual_review",
+      "bytes": 1766
+    },
+    {
+      "scope": "working_tree",
+      "path": "docs/screenshots/overview.png",
+      "reason": "binary_manual_review",
+      "bytes": 76313
+    },
+    {
+      "scope": "working_tree",
+      "path": "docs/screenshots/project-git.png",
+      "reason": "binary_manual_review",
+      "bytes": 68836
+    },
+    {
+      "scope": "working_tree",
+      "path": "docs/screenshots/runs.png",
+      "reason": "binary_manual_review",
+      "bytes": 51381
+    }
+  ]
+}

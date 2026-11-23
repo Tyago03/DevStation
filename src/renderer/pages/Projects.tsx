@@ -5,6 +5,7 @@ import { valueOf } from '../hooks/useWorkspace';
 import { copy } from '../copy';
 import { EmptyState, ErrorBanner, ErrorState, fullTime, GitBadge, Loading, RefreshButton, SectionTitle } from '../components/common';
 import { RunConfigurations } from '../components/RunConfigurations';
+import { TermHelp } from '../help/HelpPage';
 
 export function ProjectsPage({ workspace, selectedId, onSelect, onRun, onAdd }: { workspace: Workspace; selectedId?: string; onSelect: (id?: string) => void; onRun: (id: string) => void; onAdd: () => void }) {
   const [query, setQuery] = useState('');
@@ -27,6 +28,7 @@ export function ProjectsPage({ workspace, selectedId, onSelect, onRun, onAdd }: 
       {overview?.warning && <div className="notice warning-notice">{overview.warning}</div>}
       <div className="last-commit"><GitCommitHorizontal size={20} /><span className="small-label">LATEST COMMIT</span>{overview?.lastCommit ? <><code>{overview.lastCommit.shortHash}</code><span className="commit-subject">{overview.lastCommit.subject}</span><time dateTime={overview.lastCommit.dateIso} title={fullTime(overview.lastCommit.dateIso)}>{new Date(overview.lastCommit.dateIso).toLocaleDateString()}</time></> : <span>{overview?.isUnborn ? 'This repository has no commits yet.' : 'Not checked yet.'}</span>}</div>
       {overview && <div className="panel-footnote">Checked {fullTime(overview.checkedAt)}. Refresh to inspect the latest changes.</div>}
+      <div className="inline-help"><TermHelp topic="git-status" summary="Clean, Staged, and Untracked explained">Clean means no pending changes at the last check. Staged changes are prepared for a future commit. Untracked files are new to Git; DevStation does not add them automatically.</TermHelp></div>
     </section>
     <RunConfigurations project={project} runs={workspace.runs} onRun={onRun} refreshRuns={workspace.refreshRuns} />
   </>;

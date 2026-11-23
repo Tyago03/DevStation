@@ -101,7 +101,7 @@ async function removeOwnedFixture(root: string) {
 }
 
 test('hardened Windows package boots without external Node and persists SQLite preferences', async ({ browserName }, testInfo) => {
-  test.skip(process.platform !== 'win32', 'The v0.1 package targets Windows x64.');
+  test.skip(process.platform !== 'win32', 'The v0.2 preview targets Windows x64.');
   test.skip(browserName !== 'chromium', 'Electron uses the Chromium debugging protocol.');
   const executable = path.resolve('out/DevStation-win32-x64/DevStation.exe');
   await access(executable).catch(() => { throw new Error('Build the genuine Windows package with npm run make before running this test.'); });
@@ -118,7 +118,7 @@ test('hardened Windows package boots without external Node and persists SQLite p
       require: typeof (window as unknown as { require?: unknown }).require,
       process: typeof (window as unknown as { process?: unknown }).process,
     }))).toEqual({ require: 'undefined', process: 'undefined' });
-    expect(unwrap(await page.evaluate(() => window.devstation.app.info()))).toMatchObject({ version: '0.1.0', platform: 'win32' });
+    expect(unwrap(await page.evaluate(() => window.devstation.app.info()))).toMatchObject({ version: '0.2.0', platform: 'win32' });
     expect(unwrap(await page.evaluate(() => window.devstation.projects.list()))).toEqual([]);
     expect(unwrap(await page.evaluate(() => window.devstation.runs.list()))).toEqual([]);
     const diagnostics = unwrap(await page.evaluate(() => window.devstation.diagnostics.check()));

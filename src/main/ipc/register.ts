@@ -1,14 +1,17 @@
 import { app, dialog, ipcMain, shell, type BrowserWindow } from 'electron';
 import type { ZodType } from 'zod';
-import { configSchema, helpSchema, idSchema, noInput, settingsSchema } from '../../shared/schemas';
+import { chooseScriptSchema, configSchema, helpSchema, idSchema, noInput, settingsSchema, shutdownActionSchema } from '../../shared/schemas';
 import { AppError } from '../../shared/errors';
-import type { Result } from '../../shared/contracts';
+import type { Result, ShutdownAction, ShutdownStatus } from '../../shared/contracts';
 import type { createServices } from '../services';
 import { isTrustedSender } from '../security/sender';
 import { canonicalDirectory, pathIdentity } from '../security/paths';
+import { inspectScript } from '../security/scripts';
 
-export function registerIpc(window: BrowserWindow, url: string, services: ReturnType<typeof createServices>) {
+interface ShutdownActions { readonly isQuitting: boolean; status(): ShutdownStatus; action(action: ShutdownAction): Promise<ShutdownStatus> }
+export function registerIpc(window: BrowserWindow, url: string, services: ReturnType<typeof createServices>, shutdown: ShutdownActions) {
   const selectedExecutables = new Set<string>();
+  const selectedScripts = new Set<string>();
   const pending = new Set<string>();
   const assertNotPending = (id: string) => { if (pending.has(id)) throw new AppError('BUSY', 'Finish the current confirmation first.'); };
   function handle<T, R>(channel: string, schema: ZodType<T>, action: (value: T) => R | Promise<R>) {
@@ -64,12 +67,27 @@ export function registerIpc(window: BrowserWindow, url: string, services: Return
     const choice = await dialog.showOpenDialog(window, { title: 'Choose a directory inside this project', defaultPath: services.projects.get(id).path, properties: ['openDirectory'] });
     return choice.canceled ? null : choice.filePaths[0] ?? null;
   });
+  handle('configs:choose-script', chooseScriptSchema, async ({ projectId, kind }) => {
+    const project = services.projects.get(projectId);
+    const choice = await dialog.showOpenDialog(window, { title: `Choose a ${kind === 'python' ? 'Python' : 'Node.js'} script inside this project`, defaultPath: project.path, properties: ['openFile'], filters: [{ name: 'Script', extensions: kind === 'python' ? ['py'] : ['js', 'mjs'] }] });
+    if (choice.canceled || !choice.filePaths[0]) return null;
+    const script = await inspectScript(project.path, choice.filePaths[0], kind);
+    selectedScripts.add(`${projectId}:${kind}:${pathIdentity(script.path)}:${script.fingerprint}`);
+    return script;
+  });
   handle('configs:save', configSchema, async input => {
     if (input.id) assertNotPending(input.id);
     if (input.id) pending.add(input.id);
     try {
       const old = input.id ? services.configs.get(input.id) : null;
       if (old?.executablePath.toLowerCase() !== input.executablePath.toLowerCase() && !selectedExecutables.has(input.executablePath.toLowerCase())) throw new AppError('EXE_NOT_SELECTED', 'Choose the executable using the file picker.');
+      if (input.recipe && input.recipe.kind !== 'python-module') {
+        const recipe = input.recipe;
+        const previous = old?.recipe && old.recipe.kind !== 'python-module' ? old.recipe : undefined;
+        const unchanged = previous?.kind === recipe.kind && previous.script.path === recipe.script.path && previous.script.fingerprint === recipe.script.fingerprint;
+        const kind = recipe.kind === 'python-script' ? 'python' : 'node';
+        if (!unchanged && !selectedScripts.has(`${input.projectId}:${kind}:${pathIdentity(recipe.script.path)}:${recipe.script.fingerprint}`)) throw new AppError('INVALID_SCRIPT', 'Choose the script using the file picker before saving this guided setup.');
+      }
       return await services.configs.save(input);
     } finally { if (input.id) pending.delete(input.id); }
   });
@@ -81,11 +99,16 @@ export function registerIpc(window: BrowserWindow, url: string, services: Return
   handle('runs:list', noInput, () => services.runs.list());
   handle('runs:logs', idSchema, id => services.runs.logs(id));
   handle('runs:start', idSchema, async id => {
+    if (shutdown.status().phase !== 'idle') throw new AppError('CLOSE_PENDING', 'Resolve the pending close or uncertain stops before starting another task.');
     assertNotPending(id); pending.add(id);
     try {
       const config = services.configs.get(id);
       const detail = `Running this tool will execute code on your computer. Only run projects and executables you trust.\n\nExecutable: ${config.executablePath}\nArguments (separate values): ${JSON.stringify(config.args)}\nWorking directory: ${config.workingDir}`;
-      return await confirm('Run locally', `Start ${config.label}?`, detail, 'Start run') ? await services.runs.start(id) : null;
+      if (!await confirm('Run locally', `Start ${config.label}?`, detail, 'Start run')) return null;
+      if (shutdown.status().phase !== 'idle') throw new AppError('CLOSE_PENDING', 'The workspace is handling a close request. No new task was started.');
+      return await services.runs.start(id, () => {
+        if (window.isDestroyed() || shutdown.isQuitting || shutdown.status().phase !== 'idle') throw new AppError('CLOSE_PENDING', 'The workspace is handling a close request. No new task was started.');
+      });
     } finally { pending.delete(id); }
   });
   handle('runs:stop', idSchema, async id => {
@@ -97,6 +120,8 @@ export function registerIpc(window: BrowserWindow, url: string, services: Return
   handle('settings:get', noInput, () => services.store.getSettings());
   handle('settings:update', settingsSchema, value => services.store.updateSettings(value));
   handle('app:info', noInput, () => ({ version: app.getVersion(), platform: process.platform }));
-  const helpUrls = { git: 'https://git-scm.com/downloads/win', node: 'https://nodejs.org/en/download', python: 'https://www.python.org/downloads/windows/', readme: 'https://github.com/Tyago03/DevStation#readme' };
+  handle('app:shutdown-status', noInput, () => shutdown.status());
+  handle('app:shutdown-action', shutdownActionSchema, action => shutdown.action(action));
+  const helpUrls = { git: 'https://git-scm.com/downloads/win', node: 'https://nodejs.org/en/download', python: 'https://www.python.org/downloads/windows/' };
   handle('app:open-help', helpSchema, target => shell.openExternal(helpUrls[target]));
 }

@@ -1,0 +1,7 @@
+{
+  "abruptMainExitCode": 86,
+  "taskAliveAfterExit": false,
+  "taskAliveAfterReopen": false,
+  "oldRunStopError": "RUN_NOT_FOUND",
+  "note": "The Windows launch environment may terminate descendants. This verifies no session ownership is restored; it does not claim every child survives a crash."
+}

@@ -1,7 +1,7 @@
 {
   "name": "devstation",
   "productName": "DevStation",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Your local development workspace, in one place.",
   "main": ".vite/build/main.cjs",
   "author": "Tyago Vitorino Ferreira",

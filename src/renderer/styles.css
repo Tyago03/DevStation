@@ -1,6 +1,7 @@
 @import './styles/layout.css';
 @import './styles/pages.css';
 @import './styles/forms.css';
+@import './styles/learning.css';
 
 :root {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -43,7 +44,7 @@
   color: var(--text); background: var(--bg);
 }
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 720px; }
+body { margin: 0; min-width: 0; }
 button, input, select { font: inherit; }
 button { cursor: pointer; }
 button:disabled { cursor: not-allowed; opacity: .55; }

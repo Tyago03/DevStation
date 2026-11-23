@@ -1,5 +1,5 @@
 export const navigation = ['Overview', 'Projects', 'Runs', 'Ports', 'Diagnostics', 'Settings'] as const;
-export type PageName = (typeof navigation)[number];
+export type PageName = (typeof navigation)[number] | 'Help';
 export const pageCopy: Record<PageName, { eyebrow: string; title: string; description: string }> = {
   Overview: { eyebrow: 'YOUR WORKSPACE', title: 'Everything in its place.', description: 'Your projects, processes, and local environment. One clear view.' },
   Projects: { eyebrow: 'LOCAL REPOSITORIES', title: 'Projects', description: 'Keep your repositories close and their status in view.' },
@@ -7,6 +7,7 @@ export const pageCopy: Record<PageName, { eyebrow: string; title: string; descri
   Ports: { eyebrow: 'LOCAL NETWORK', title: 'Ports', description: 'See what is listening on your machine. Read-only, on demand.' },
   Diagnostics: { eyebrow: 'DEVELOPMENT TOOLS', title: 'Diagnostics', description: 'Check the tools available to your local development environment.' },
   Settings: { eyebrow: 'MAKE IT YOURS', title: 'Settings', description: 'A small workspace, set up the way you like it.' },
+  Help: { eyebrow: 'OFFLINE DOCUMENTATION', title: 'Help & getting started', description: 'Plain-language guidance, available without an internet connection.' },
 };
 export const copy = {
   addProject: 'Add project',

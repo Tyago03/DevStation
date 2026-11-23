@@ -5,12 +5,14 @@ import { messageOf, valueOf } from '../hooks/useWorkspace';
 import { copy } from '../copy';
 import { EmptyState, ErrorBanner, ErrorState, isActive, Loading, SectionTitle } from './common';
 import { ConfigurationDialog } from './ConfigurationDialog';
+import { LaunchSetupDialog } from './LaunchSetupDialog';
 
 export function RunConfigurations({ project, runs, onRun, refreshRuns }: { project: Project; runs: ManagedRun[]; onRun: (id: string) => void; refreshRuns: () => Promise<void> }) {
   const [configs, setConfigs] = useState<RunConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string>();
   const [editing, setEditing] = useState<RunConfig | 'new'>();
+  const [advanced, setAdvanced] = useState(false);
   const [error, setError] = useState<string>();
   const [busyId, setBusyId] = useState<string>();
   const load = useCallback(async () => {
@@ -44,6 +46,6 @@ export function RunConfigurations({ project, runs, onRun, refreshRuns }: { proje
       return <div className="config-row" key={config.id}><div className="config-icon"><Terminal size={20} /></div><div className="config-info"><h3>{config.label}</h3><p className="mono" title={config.executablePath}>{config.executablePath}</p><div className="args-preview">{config.args.map((arg, index) => <code key={index}>{JSON.stringify(arg)}</code>)}{config.args.length === 0 && <span>No arguments</span>}</div></div><div className="config-actions"><button className="icon-button" aria-label={`Edit ${config.label}`} disabled={active || busyId === config.id} onClick={() => setEditing(config)}><Pencil size={16} /></button><button className="icon-button danger-button" aria-label={`Delete ${config.label}`} disabled={active || busyId === config.id} onClick={() => { void remove(config.id); }}><Trash2 size={16} /></button><button className="button primary" disabled={busyId === config.id || active} onClick={() => { void start(config); }}><Play size={14} />{stateLabel ?? (busyId === config.id ? 'Starting…' : 'Start')}</button></div></div>;
     })}</div>}
     <div className="panel-footnote">{copy.runTrust}</div>
-    {editing && <ConfigurationDialog project={project} config={editing === 'new' ? undefined : editing} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); void load(); }} />}
+    {editing && (advanced || (editing !== 'new' && !editing.recipe) ? <ConfigurationDialog project={project} config={editing === 'new' ? undefined : editing} onClose={() => { setEditing(undefined); setAdvanced(false); }} onSaved={() => { setEditing(undefined); setAdvanced(false); void load(); }} /> : <LaunchSetupDialog project={project} config={editing === 'new' ? undefined : editing} onAdvanced={() => setAdvanced(true)} onClose={() => setEditing(undefined)} onSaved={() => { setEditing(undefined); void load(); }} />)}
   </section>;
 }

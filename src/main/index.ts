@@ -3,13 +3,12 @@ import path from 'node:path';
 import { readFile } from 'node:fs/promises';
 import { createServices } from './services';
 import { registerIpc } from './ipc/register';
+import { ShutdownController } from './lifecycle/shutdown';
 import type { LogLine } from '../shared/contracts';
 
 protocol.registerSchemesAsPrivileged([{ scheme: 'devstation', privileges: { standard: true, secure: true, supportFetchAPI: true, corsEnabled: true } }]);
 const productionCsp = "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; object-src 'none'";
 let services: ReturnType<typeof createServices> | undefined;
-let closing = false;
-let closePrompt = false;
 if (!app.requestSingleInstanceLock()) app.quit();
 else {
   app.on('second-instance', () => { const window = BrowserWindow.getAllWindows()[0]; if (window?.isMinimized()) window.restore(); window?.focus(); });
@@ -57,16 +56,37 @@ else {
       logQueue.push(line); queuedBytes += Buffer.byteLength(line.line);
       while (logQueue.length > 2000 || queuedBytes > 2 * 1024 * 1024) queuedBytes -= Buffer.byteLength(logQueue.shift()!.line);
     });
-    registerIpc(window, new URL(expectedUrl).href, services);
+    const runServices = services;
+    const shutdown = new ShutdownController({
+      activeRuns: () => runServices.runs.active(),
+      listRuns: () => runServices.runs.list(),
+      stopAll: () => runServices.runs.stopAll(),
+      chooseClose: async (runs, alreadyBlocked) => {
+        const result = await dialog.showMessageBox(window, {
+          type: 'warning', title: alreadyBlocked ? 'Tasks may still be running' : 'Active runs',
+          message: alreadyBlocked ? 'The earlier stop could not be confirmed.' : 'Stop active runs and quit?',
+          detail: `${runs.map(run => `${run.label} — ${run.state}`).join('\n')}\n\nOnly managed main processes can be stopped. Child processes may still be running.`,
+          buttons: alreadyBlocked ? ['Keep DevStation open', 'Try again', 'Quit anyway…'] : ['Keep DevStation open', 'Stop runs and quit'],
+          defaultId: 0, cancelId: 0, noLink: true,
+        });
+        return result.response === 1 ? 'retry' : result.response === 2 && alreadyBlocked ? 'quit-anyway' : 'keep-open';
+      },
+      confirmQuitAnyway: async runs => {
+        const result = await dialog.showMessageBox(window, {
+          type: 'warning', title: 'Quit while tasks may still be running?',
+          message: 'Leave these tasks without confirming they stopped?',
+          detail: `${runs.map(run => run.label).join('\n')}\n\nThese tasks and their child processes may continue after DevStation closes. Reopening DevStation will not take ownership of them. No additional process will be terminated by this action.`,
+          buttons: ['Keep DevStation open', 'Quit anyway'], defaultId: 0, cancelId: 0, noLink: true,
+        });
+        return result.response === 1;
+      },
+      quit: () => app.quit(),
+    });
+    registerIpc(window, new URL(expectedUrl).href, services, shutdown);
     window.on('close', event => {
-      if (closing || !services?.runs.active().length) return;
+      if (shutdown.isQuitting || (shutdown.status().phase === 'idle' && runServices.runs.active().length === 0)) return;
       event.preventDefault();
-      if (closePrompt) return;
-      closePrompt = true;
-      const active = services.runs.active();
-      void dialog.showMessageBox(window, { type: 'warning', title: 'Active runs', message: 'Stop active runs and quit?', detail: `${active.map(run => run.label).join('\n')}\n\nOnly managed main processes will be stopped. Child processes may still be running.`, buttons: ['Keep DevStation open', 'Stop runs and quit'], defaultId: 0, cancelId: 0, noLink: true }).then(async result => {
-        if (result.response === 1) { await services?.runs.stopAll(); closing = true; app.quit(); }
-      }).catch(() => { dialog.showErrorBox('Unable to stop runs', 'Keep DevStation open and stop each run before quitting.'); }).finally(() => { closePrompt = false; });
+      void shutdown.requestClose();
     });
     await window.loadURL(expectedUrl);
   }).catch(() => {

@@ -57,13 +57,14 @@ test('real desktop workflows, persistence and renderer isolation', async () => {
     const addConfiguration = page.getByRole('button', { name: 'Add configuration', exact: true });
     await addConfiguration.focus(); await page.keyboard.press('Enter');
     await expect(page.getByRole('dialog')).toBeVisible();
-    await expect(page.getByRole('textbox', { name: 'Configuration name' })).toBeFocused();
+    await expect(page.getByRole('button', { name: 'Python script', exact: false })).toBeFocused();
     await page.keyboard.press('Escape');
     // Wait for React's close handler to unmount, not merely native dialog hiding.
     await expect(page.locator('dialog')).toHaveCount(0);
     await expect(addConfiguration).toBeFocused();
     await addConfiguration.press('Enter');
     await expect(page.getByRole('dialog')).toBeVisible();
+    await page.getByRole('button', { name: 'Advanced executable', exact: false }).click();
     await page.getByRole('textbox', { name: 'Configuration name' }).fill('Local API server');
     await page.getByRole('dialog').getByRole('button', { name: 'Browse', exact: true }).first().click();
     for (const [index, value] of ['-u', 'server.py'].entries()) {

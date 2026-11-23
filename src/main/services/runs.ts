@@ -22,7 +22,7 @@ export class RunService {
     return entry;
   }
   logs(id: string) { return this.entry(id).logs.snapshot(); }
-  async start(configId: string): Promise<ManagedRun> {
+  async start(configId: string, beforeSpawn?: () => void): Promise<ManagedRun> {
     const config = this.configs.get(configId);
     const active = this.active();
     if (active.length >= 5 || active.filter((run) => run.projectId === config.projectId).length >= 2) {
@@ -37,6 +37,9 @@ export class RunService {
       const validated = await this.configs.validate(config);
       // If a user canceled a pending start, do not spawn after asynchronous validation.
       if (state.state !== 'starting') return { ...state };
+      // The window/shutdown state may have changed while paths were being validated.
+      // Keep this synchronous check adjacent to spawn: no new async gap is allowed.
+      beforeSpawn?.();
       const child = spawn(validated.executablePath, validated.args, { shell: false, windowsHide: true, cwd: validated.workingDir, env: { ...localEnvironment(), PYTHONUNBUFFERED: '1', PYTHONIOENCODING: 'utf-8' }, stdio: ['ignore', 'pipe', 'pipe'] });
       entry.child = child;
       const publish = (stream: LogLine['stream'], line: string) => {
@@ -52,7 +55,7 @@ export class RunService {
       child.once('exit', (code) => {
         state.exitCode = code;
         state.endedAt = new Date().toISOString();
-        if (state.state !== 'failed') state.state = 'exited';
+        if (state.state !== 'failed') { state.state = 'exited'; delete state.error; }
         state.warning = childWarning;
         entry.child = undefined;
         // A descendant may inherit these pipes. Parent ownership ends on exit;
@@ -65,11 +68,17 @@ export class RunService {
         stdout.end(); stderr.end();
       });
       return await new Promise<ManagedRun>((resolve, reject) => {
-        child.once('spawn', () => { state.pid = child.pid; state.state = 'running'; resolve({ ...state }); });
-        child.once('error', () => {
-          state.state = 'failed'; state.endedAt = new Date().toISOString();
-          state.error = 'The selected executable could not be started. Check its permissions and arguments.';
-          reject(new AppError('PROCESS_START_FAILED', state.error, true));
+        child.once('spawn', () => { state.pid = child.pid; if (state.state === 'starting') state.state = 'running'; resolve({ ...state }); });
+        child.on('error', () => {
+          if (child.pid === undefined) {
+            state.state = 'failed'; state.endedAt = new Date().toISOString(); entry.child = undefined;
+            state.error = 'The selected executable could not be started. Check its permissions and arguments.';
+            reject(new AppError('PROCESS_START_FAILED', state.error, true));
+          } else if (child.exitCode === null && child.signalCode === null) {
+            // A later kill/control error is not evidence that a running process exited.
+            state.state = 'unknown'; state.warning = childWarning;
+            state.error = 'A process-control request failed. The managed process may still be running; try stopping it again.';
+          }
         });
       });
     } catch (error) {
@@ -95,7 +104,8 @@ export class RunService {
       done = () => { clearTimeout(timeout); resolve(); };
       child.once('exit', done);
     });
-    const terminated = child.kill();
+    let terminated = false;
+    try { terminated = child.kill(); } catch { /* Keep the live handle for an explicit retry. */ }
     if (!terminated) {
       child.removeListener('exit', done); done();
       state.state = 'unknown';

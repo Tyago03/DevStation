@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { LogLine } from '../../shared/contracts';
 import { messageOf, valueOf } from '../hooks/useWorkspace';
 import { ErrorBanner, Loading } from './common';
+import { TermHelp } from '../help/HelpPage';
 
 const MAX_LINES = 5000;
 const MAX_CHARACTERS = 1_000_000;
@@ -85,10 +86,11 @@ export function LogConsole({ runId }: { runId: string }) {
   useEffect(() => { if (!paused && viewport.current) viewport.current.scrollTop = viewport.current.scrollHeight; }, [filtered, paused]);
 
   return <section className="log-console" aria-label="Task output"><div className="console-heading"><div><Terminal size={16} /><strong>Output</strong><span>Session only</span></div><div className="console-actions"><button className="icon-button" aria-label={paused ? 'Resume autoscroll' : 'Pause autoscroll'} title={paused ? 'Resume autoscroll' : 'Pause autoscroll'} aria-pressed={paused} onClick={() => setPaused(!paused)}>{paused ? <Play size={15} /> : <Pause size={15} />}</button><button className="icon-button" aria-label="Clear view only" title="Clear view only" onClick={() => setClearAfter(latestSequence.current)}><Eraser size={16} /></button></div></div>
-    <div className="console-toolbar"><label className="search-field"><Search size={14} /><input aria-label="Search logs" value={query} placeholder="Find in output…" onChange={event => setQuery(event.target.value)} /></label><select aria-label="Filter log stream" value={stream} onChange={event => setStream(event.target.value)}><option value="all">All output</option><option value="stdout">stdout</option><option value="stderr">stderr</option></select><span>{paused ? 'Autoscroll paused' : 'Following output'}</span></div>
+    <div className="console-toolbar"><label className="search-field"><Search size={14} /><input aria-label="Search logs" value={query} placeholder="Find in output…" onChange={event => setQuery(event.target.value)} /></label><select aria-label="Filter log stream" value={stream} onChange={event => setStream(event.target.value)}><option value="all">All output</option><option value="stdout">Normal output (stdout)</option><option value="stderr">Errors / diagnostics (stderr)</option></select><span>{paused ? 'Autoscroll paused' : 'Following output'}</span></div>
     {error && <ErrorBanner message={error} />}
     {truncated && <div className="log-truncated" role="status">Older output hidden to limit memory usage.</div>}
     <div className="console-viewport" ref={viewport} tabIndex={0} aria-label="Log lines">{loading ? <Loading label="Reading task output…" /> : filtered.length === 0 ? <div className="console-empty">{query ? 'No output matches your search.' : clearAfter >= 0 ? 'View cleared. New output will appear here.' : 'Waiting for output…'}</div> : filtered.map(line => <div className={`log-line ${line.stream}`} key={line.sequence}><time title={line.timestamp}>{new Date(line.timestamp).toLocaleTimeString([], { hour12: false })}</time><span className="log-stream">{line.stream}</span><span className="log-text">{line.line || ' '}</span></div>)}</div>
     <div className="console-footer"><span>{filtered.length.toLocaleString()} lines in view</span><span>Output is kept in memory for this session.</span></div>
+    <div className="inline-help"><TermHelp topic="output" summary="What do stdout, stderr, and Clear view mean?">Normal output (stdout) holds regular messages. Errors (stderr) can include routine diagnostics. Clear view hides earlier messages; the task keeps running.</TermHelp></div>
   </section>;
 }

@@ -1,0 +1,34 @@
+# Windows signing options
+
+Research date: **2026-11-23**. Status: researched, **no purchase, enrollment, identity upload, credential request or signing performed**. Prices below are public USD list information, not a Brazilian tax-inclusive quote or a commitment to buy. Recheck eligibility, current terms and total cost before any approved purchase.
+
+The local v0.1 executable is unsigned and blocked by Smart App Control. A successful Windows CI launch does not remove that host-policy result. Signing establishes publisher/integrity information; it does not replace the exact-artifact launch and workflow checks. Microsoft requires a trusted provider for Smart App Control signing; a self-signed certificate or manually installed trust exception is not the distribution solution proposed here. [Microsoft signing guidance](https://learn.microsoft.com/en-us/windows/apps/develop/smart-app-control/code-signing-for-smart-app-control).
+
+## Options and eligibility
+
+| Option | Verified cost indication | Eligibility and DevStation consequence |
+| --- | --- | --- |
+| Microsoft Azure Artifact Signing, formerly Trusted Signing | Basic **US$9.99/month**, 5,000 signatures; Premium **US$99.99/month**, 100,000; overage **US$0.005/signature** | Microsoft's current Public Trust quickstart limits individual developers to the US or Canada. A person resident in Brazil is **not eligible under those published individual rules**. Do not open a billable account as a workaround |
+| SSL.com Individual Validation certificate plus eSigner | IV certificate **US$129/year**; IV/OV eSigner Tier 1 **US$20/month for 20 signings**, or **US$180/year for 240 signings** | The provider offers individual certificates without requiring a business entity. The reviewed pages do **not confirm acceptance of this particular Brazilian applicant**. Obtain explicit eligibility/document/cost confirmation before an approved purchase; no contact has been sent |
+| SignPath Foundation for open-source projects | Advertised free certificate/service for accepted OSS projects | Conditional future option, not an entitlement. Requires an eligible maintained, documented and already released OSS project, review/signing roles and compliance with its policy. The current private preview is not presented as qualifying |
+| Source-only publication after owner approval | No code-signing purchase required for a source-only milestone | Keep binary distribution separately labeled unapproved/unverified. This preserves a low-cost route to sharing code without claiming that the unsigned executable will run locally |
+
+Microsoft's SKU table and product FAQ supply the USD amounts. Public Trust applicant eligibility is separate from hosting region: **Brazil South availability does not make a Brazilian individual eligible**. Private Trust's broader geography does not substitute for public publisher trust. [Microsoft SKU table](https://learn.microsoft.com/en-us/azure/artifact-signing/how-to-change-sku), [product pricing FAQ](https://azure.microsoft.com/en-ca/products/artifact-signing/), [eligibility and regions](https://learn.microsoft.com/en-us/azure/artifact-signing/quickstart).
+
+Azure's pricing page states that billing begins when the signing account is created, and its monthly fee is not prorated. Its BRL note describes exchange-rate and IOF effects. No Azure resource should be created merely to test eligibility. [Azure pricing and billing notes](https://azure.microsoft.com/en-us/pricing/details/artifact-signing/).
+
+SSL.com's certificate and cloud-signing fees are separate. At the listed rates, an IV certificate plus annual Tier 1 signing is **US$309/year before taxes/FX and any additional services**, a simple 129 + 180 planning calculation, not a quote. The annual 240-signature allowance is not 240 per month. Hardware-token delivery, shipping and replacement are a different option requiring its own quote. [Certificate/cloud product](https://www.ssl.com/products/software-integrity/signing-service/), [eSigner pricing table](https://www.ssl.com/guide/esigner-pricing-for-code-signing/).
+
+Individual certificates display a verified personal identity. Identity documents and billing data would be handled directly with the provider only after owner approval, never committed to Git or pasted into an issue. Verify Brazilian residency eligibility, acceptable documents, publisher-name exposure, key storage, timestamping, renewals, cancellation and supported CI integration before selecting a plan. The product's general availability does not prove an individual application will be accepted. [SSL.com individual/organization distinctions](https://www.ssl.com/products/software-integrity/code-signing/), [validation requirements](https://www.ssl.com/how-to/validation-process-for-document-signing-code-signing-and-ev-code-signing-certificates/).
+
+SignPath's foundation certificate names the foundation as publisher. Its policy also restricts what upstream binaries it signs and requires MFA and explicit signing approval. Electron's runtime/native dependency packaging and DevStation's local-port inspection need assessment against the actual program rules; no acceptance is assumed. Publicizing the repository solely to apply is not authorized. [Foundation service](https://signpath.org/), [eligibility and signing policy](https://signpath.org/terms).
+
+## Recommended sequence
+
+1. Finish independent engineering, privacy and usability work while the repository stays private. Keep source-publication and binary-distribution checklists separate.
+2. If the owner wants a paid binary route, request a concrete provider confirmation for a Brazilian individual and a total-cost quote. Do not enroll, buy, upload ID or obtain signing credentials during this research phase.
+3. If source publication is later authorized, assess whether an OSS signing program fits the released project and dependency policy; do not promise free signing acceptance.
+4. For any approved signing implementation, review least-privilege CI identity, secret storage, signing approval and timestamping. Sign the intended distributable components, build the final ZIP, calculate its new hash, and verify the signature chain and exact binary in an appropriate Windows environment with protections intact.
+5. Record source commit, hash, signer, timestamps, OS/policy and real startup/workflow results. Keep a failed local launch visible even when another environment succeeds.
+
+No certificate purchase, public binary release, Microsoft Store submission, automatic updater, security-policy change or repository visibility change follows from this document. Current decision: **no provider selected; source-publication preparation can continue; trusted local distribution remains unresolved**.

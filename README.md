@@ -2,84 +2,76 @@
 
 **Your local development workspace, in one place.**
 
-DevStation is a Windows desktop workspace for local Git projects, explicit run configurations, process output, environment diagnostics, and listening TCP ports. It uses Electron, React, TypeScript, and SQLite.
+DevStation brings local Git projects, running tasks, output, tool checks and TCP listeners into a Windows desktop app. It uses Electron, React, TypeScript and SQLite. The interface is in English.
 
-**Status: functional v0.1.0 preview; final local distribution acceptance incomplete.** Windows CI passes all 53 unit/integration/React tests and 3 desktop tests, including the hardened package, with build artifacts and checksums uploaded privately. The latest local unsigned executable is blocked by this host's Smart App Control signing policy. Trusted signing/distribution and a fresh local launch check remain required. No Windows protection was disabled or bypassed.
+**Status: private v0.2.0 preview, under validation.** This is not a public release. [QA](docs/QA.md) records technical results and remaining gates; [RELEASE](docs/RELEASE.md) identifies exact builds. A successful CI run does not remove the local Smart App Control signing-policy block.
 
-An earlier local package passed native project import, executable selection, confirmed Start/Stop, real Python logs, TCP inspection, and a cancelable active-run close prompt. Its desktop tests verified startup without external Node and SQLite preference persistence. The screenshots below capture that earlier tested artifact. The current compiled Electron workflow also verifies two-project restart persistence, configuration form submission, and focus restoration. The baseline development startup with `npm start` passed separately. Some acceptance cases remain untested, including full keyboard navigation, scaling, offline operation, and Windows 10. See [QA](docs/QA.md), the [current Windows run](https://github.com/Tyago03/DevStation/actions/runs/44960251660), and the [artifact/checksum record](docs/RELEASE.md). The repository remains private; no public release has been published.
+## Getting started
 
-![DevStation overview with three synthetic repositories](docs/screenshots/overview.png)
+Open **Documentation** inside the app for searchable offline help. The optional five-step tour can be skipped, resumed and restarted in Settings. **Explore an example workspace** uses synthetic, in-memory data without creating files, projects, listeners or processes.
 
-The received briefing package repeats the original specification. Its [P0 roadmap](docs/ROADMAP.md) records remaining acceptance work. This iteration fixes fragmented logs, missing-output delays, Git root revalidation, misleading empty states after load errors, and keyboard/accessibility issues.
+1. Add a local Git project. Its folder stays where it is.
+2. Check its branch and changes. Inspection does not commit, fetch, push or alter Git trust.
+3. Add a launch setup: Python script, Python local web server, Node.js script or Advanced executable.
+4. Select the installed program manually. Select scripts inside the project and review the exact program, separate arguments and working folder.
+5. Save, then explicitly Start and confirm. Saving never executes a task. Follow its output in Runs.
 
-## First version
+The guided server uses Python's isolated `http.server` on **127.0.0.1 only**, with a validated port. Files in the selected folder are served to software on this computer. Current-directory module lookup cannot replace the standard-library server. Guided script selections are fingerprinted and checked on Save and Start; changes require reselection and review.
 
-The implemented first-version modules cover:
+## Included in this preview
 
-- Importing local Git working trees, searching the project catalog, and opening project folders.
-- Inspecting branch, changes, and the latest commit without changing the repository.
-- Saving a trusted Windows `.exe`, separate arguments, and a working directory inside the project.
-- Starting a configuration explicitly, reading stdout/stderr, and stopping its session-owned main process.
-- Inspecting listening TCP ports and checking Git, Node.js, npm, and Python availability.
-- Keeping projects, configurations, and appearance preferences in a local SQLite database.
+- Local catalog and read-only Git status/latest commit.
+- Guided Python/Node launch setups and manually selected advanced Windows executables.
+- Confirmed start/stop, bounded output and session-owned process control.
+- Safe closing: uncertain stops keep the window open; retry and a second Quit anyway confirmation.
+- TCP inspection and diagnostics with not-checked, failed and last-successful states.
+- Offline/contextual help, optional tour and isolated example workspace.
+- SQLite metadata/preferences, with a backed-up migration from v0.1.
 
-The app has no account, AI service, cloud sync, telemetry, or automatic project execution. Git operations are read-only. Shell scripts (`.cmd`, `.bat`, and PowerShell profiles), `npm run`, arbitrary PID termination, and automatic updates are outside this version. npm diagnostics explicitly report **Not checked** because its Windows shell wrapper is unsupported.
-
-## Screenshots
-
-These capture the earlier locally tested packaged artifact (`677acfca…`), using synthetic repositories and a live test server. Atlas API was imported through the native folder dialog. The other two fixtures had their catalog metadata seeded in SQLite; their displayed Git states came from real repositories. They do not establish successful launch of the latest local artifact (`e74cb698…`) or manual import of all three fixtures.
-
-![Git details and saved executable configuration](docs/screenshots/project-git.png)
-
-![A managed Python process with actual stdout](docs/screenshots/runs.png)
+There is no account, cloud sync, telemetry, AI integration or automatic execution. Built-in shell recipes (`npm run`, `.cmd`, `.bat`, PowerShell profiles), arbitrary PID termination and automatic updates are outside this preview. Advanced executable can launch an explicitly selected interpreter with user-supplied arguments. npm diagnostics remain **Not checked** because its Windows shell wrapper is unsupported.
 
 ## Development
 
-Use Windows x64, Node.js 24 LTS, npm, and Git. Initial development uses Node 24.21.0, npm 11.19.0, and Git 2.55.0. Exact dependency versions are recorded in `package-lock.json`.
+Use Windows x64, Node.js 24 LTS, npm and Git. Validation uses Node 24.21.0, npm 11.19.0 and Git 2.55.0; exact dependencies are locked.
 
 ```powershell
 npm ci
 npm run typecheck
 npm run lint
-npm run test:unit
-npm run test:integration
-npm run test:ui
+npm test
 npm start
 ```
 
-Build the Windows ZIP and run the desktop tests:
+Build the unsigned ZIP before desktop tests:
 
 ```powershell
-npm run make
+npm run make -- --arch=x64
 npm run test:e2e
 ```
 
-The ZIP is written under `out/make/zip/win32/x64/`. When Windows policy allows the artifact, extract the complete archive before opening `DevStation.exe`; do not copy only the executable. Electron bundles its own runtime. Startup without external Node was verified on the earlier local package and in Windows CI, while the final local package is currently blocked before startup. Project tasks still need the executable you select, and Git inspection requires Git on the machine.
+Extract the entire archive from `out/make/zip/win32/x64/` before opening `DevStation.exe`. Electron supplies its runtime; tasks need the selected program and Git inspection needs Git. Use repository scripts so SQLite matches its runtime.
 
-The preview is **unsigned**. The final local ZIP is also copied to Downloads as `DevStation-0.1.0-96e6c45-windows-x64.zip`; [its SHA-256](docs/RELEASE.md) identifies those exact bytes, not the separate CI archive. Follow your Windows software policy; do not disable protections to run a blocked artifact. No installer, code-signing certificate, or automatic updater is included.
-
-Native SQLite must match the runtime that loads it. Forge rebuilds native dependencies for Electron during packaging; tests and packaging must follow the repository's scripts rather than copying a binary from another Node installation. See [troubleshooting](docs/TROUBLESHOOTING.md) for ABI and Windows policy errors.
+Windows can block the unsigned EXE before startup. Follow the machine's software policy; do not disable protections. [Signing research](docs/SIGNING_OPTIONS.md) is preparation only. No certificate was purchased, signing performed or public download published.
 
 ## Safety and local data
 
-Removing a project removes its DevStation registration and saved configurations; it does not delete the project folder. Runs require an explicit action and a confirmation. Their output stays in a bounded memory buffer for the current session.
+Tasks use your Windows permissions. Select trusted projects/programs. Fingerprinting detects script changes; it is not a sandbox or an audit of dependencies. A file can still change between the final check and the interpreter opening it.
 
-Tasks execute with your Windows user permissions. Select only executables and projects you trust. Stopping a run targets its managed main process; child processes may remain running. The Ports page does not terminate processes.
+Stop targets only this session's managed main process; children may remain. Unknown is not Stopped. After a crash/restart, DevStation does not reclaim earlier processes. An uncertain stop keeps the app open; Quit anyway requires a separate warning confirmation.
 
-SQLite lives under Electron's application `userData` directory, outside imported projects. Before a schema migration, preserve a database backup. No credentials or project file contents belong in the database. See [security design](docs/SECURITY.md) and [recovery instructions](docs/TROUBLESHOOTING.md).
+Removing a project removes only its catalog entry and saved setups. Removing the ZIP/extracted app preserves imported projects and separate userData. SQLite stores paths, launch metadata, fingerprints, theme and tour state; output remains in bounded session memory. Upgrades back up an existing database before migration. See [recovery](docs/TROUBLESHOOTING.md) and [security design](docs/SECURITY.md).
 
-## Documentation
+## Records
 
-- [P0 roadmap and briefing provenance](docs/ROADMAP.md)
-- [Architecture](docs/ARCHITECTURE.md) and [technical decisions](docs/DECISIONS.md)
-- [Design and interaction](docs/DESIGN.md)
-- [Test evidence and acceptance matrix](docs/QA.md)
-- [Packaging and release procedure](docs/RELEASE.md)
-- [Troubleshooting](docs/TROUBLESHOOTING.md)
-- [Security reporting](SECURITY.md)
+- [v0.2 roadmap and briefing provenance](docs/ROADMAP.md)
+- [QA](docs/QA.md), [build identities](docs/RELEASE.md), [changelog](CHANGELOG.md)
+- [Architecture](docs/ARCHITECTURE.md), [decisions](docs/DECISIONS.md), [design](docs/DESIGN.md)
+- [Human study protocol](docs/USABILITY_STUDY.md) — no participant results yet
+- [Publication/privacy checklist](docs/PUBLICATION_CHECKLIST.md), [contributing](CONTRIBUTING.md)
+- [Security reporting](SECURITY.md), [third-party notices](docs/THIRD_PARTY.md)
 
-Windows 10 compatibility, full process-tree termination, and broader platform support are not claimed. The complete list of unverified cases remains visible in QA.
+Windows 10, physical offline operation, native Windows display scaling, human usability and trusted local distribution remain separate acceptance gates. Agents do not count as human participants. The repository remains private until a separate publication decision.
 
 ## License
 
-Original DevStation source is [MIT licensed](LICENSE). Third-party dependencies retain their own licenses. The dependency notice review is tracked separately in [THIRD_PARTY.md](docs/THIRD_PARTY.md).
+Original source is [MIT licensed](LICENSE). Dependencies retain their own licenses/notices.

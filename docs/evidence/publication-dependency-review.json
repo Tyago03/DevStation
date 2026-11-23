@@ -1,0 +1,26 @@
+{
+  "reviewedAt": "2026-11-23",
+  "baselineHead": "f9ee2e3a08753f0c941ee75f11b16916d3567622",
+  "scope": "Installed package notices after locked npm ci, before final v0.2 packaging",
+  "lockfileSha256AtReview": "e3f6ae880aed4b432c499cdc6ac3878b94120979893352793a970e10c6ea12d2",
+  "productionPackageEntries": 9,
+  "matchesRecordedInventory": true,
+  "allInstalledProductionNoticeTextsPresent": true,
+  "noticeInventory": "docs/dependency-licenses.json",
+  "noticeText": "docs/THIRD_PARTY_NOTICES.txt",
+  "rootLicenseFiles": ["LICENSE"],
+  "rootLicense": "MIT",
+  "githubDetectedSpdx": "MIT",
+  "npmAudit": {
+    "command": "npm audit --json",
+    "exitCode": 0,
+    "advisories": {"info": 0, "low": 0, "moderate": 0, "high": 0, "critical": 0, "total": 0},
+    "dependenciesReported": {"prod": 10, "dev": 344, "optional": 35, "peer": 11, "peerOptional": 0, "total": 353}
+  },
+  "finalPackageNotices": "NOT RUN in this review; verify exact final archive independently",
+  "limitations": [
+    "npm audit is a known-advisory database snapshot, not a guarantee of security.",
+    "Installed production notice inventory is not a legal certification or a complete audit of every bundled native/runtime component.",
+    "Dependencies or lockfile changes after this snapshot require rechecking."
+  ]
+}

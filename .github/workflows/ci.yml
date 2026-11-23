@@ -53,6 +53,7 @@ jobs:
           $archives = @(Get-ChildItem -LiteralPath out/make -Recurse -Filter *.zip)
           if ($archives.Count -eq 0) { throw 'No Windows ZIP was generated.' }
           New-Item -ItemType Directory -Path out/evidence -Force | Out-Null
+          Get-ChildItem -LiteralPath test-results -Recurse -Filter T30-measurements.json | Copy-Item -Destination out/evidence
           $archives | ForEach-Object {
             $hash = Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256
             '{0}  {1}' -f $hash.Hash.ToLowerInvariant(), $_.Name

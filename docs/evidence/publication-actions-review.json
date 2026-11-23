@@ -1,0 +1,37 @@
+{
+  "reviewedAt": "2026-11-23",
+  "scope": "All three historical Windows CI runs returned by the repository Actions listing on 2026-11-23; no raw log text retained.",
+  "listedRunIds": [44960251660, 44955738087, 44955400152],
+  "emailPatternMatches": 0,
+  "homePathReview": {
+    "ansiRemovedBeforeClassification": true,
+    "matches": 8,
+    "allClassifiedAsHostedRunnerOrPublicProfile": true,
+    "jobId": 137002255227,
+    "values": "[REDACTED]"
+  },
+  "jobs": [
+    {
+      "jobId": 137017251900,
+      "characters": 37338,
+      "secretPatternCandidates": 0,
+      "findings": []
+    },
+    {
+      "jobId": 137003299131,
+      "characters": 35703,
+      "secretPatternCandidates": 0,
+      "findings": []
+    },
+    {
+      "jobId": 137002255227,
+      "characters": 30732,
+      "secretPatternCandidates": 0,
+      "findings": []
+    }
+  ],
+  "limitations": [
+    "The listing had total_count 3 and all three recorded jobs were scanned; new runs after this review are not covered.",
+    "Pattern scan is not proof of absence of secrets; runner paths and dependency output still require final review before publication."
+  ]
+}
