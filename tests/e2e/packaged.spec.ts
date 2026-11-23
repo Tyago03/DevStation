@@ -1,6 +1,6 @@
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
 import { spawn, type ChildProcess } from 'node:child_process';
-import { access, mkdtemp, rm, stat } from 'node:fs/promises';
+import { access, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
@@ -105,6 +105,7 @@ test('hardened Windows package boots without external Node and persists SQLite p
   test.skip(browserName !== 'chromium', 'Electron uses the Chromium debugging protocol.');
   const executable = path.resolve('out/DevStation-win32-x64/DevStation.exe');
   await access(executable).catch(() => { throw new Error('Build the genuine Windows package with npm run make before running this test.'); });
+  expect(await readFile(path.join(path.dirname(executable), 'resources', 'LICENSE'), 'utf8')).toBe(await readFile('LICENSE', 'utf8'));
   const root = await mkdtemp(path.join(os.tmpdir(), 'DevStation-packaged-e2e-'));
   const data = path.join(root, 'user-data');
   let session: PackagedSession | undefined;

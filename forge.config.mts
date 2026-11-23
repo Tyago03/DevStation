@@ -8,7 +8,7 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true, executableName: 'DevStation', icon: 'assets/icon.ico',
-    appCopyright: 'Copyright © 2026 Tyago Vitorino Ferreira', extraResource: ['docs/THIRD_PARTY_NOTICES.txt'],
+    appCopyright: 'Copyright © 2026 Tyago Vitorino Ferreira', extraResource: ['LICENSE', 'docs/THIRD_PARTY_NOTICES.txt'],
     // Vite bundles JS but SQLite remains a native runtime dependency.
     // Packager prunes development packages after copying node_modules.
     ignore: file => Boolean(file) && !/^\/(?:\.vite(?:\/|$)|node_modules(?:\/|$)|package\.json$)/.test(file.replaceAll('\\', '/')),

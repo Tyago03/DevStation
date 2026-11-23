@@ -9,8 +9,9 @@ import type { ManagedRun, Project, Result, RunConfig } from '../../src/shared/co
 function unwrap<T>(result: Result<T>): T { if (!result.ok) throw new Error(`${result.error.code}: ${result.error.message}`); return result.data; }
 interface DialogRecord { title?: string; message: string; detail?: string; buttons?: string[]; defaultId?: number }
 interface MainTestControl { response: number; dialogs: DialogRecord[]; blockedPids: number[]; attempts: number[]; originalKill?: ChildProcess['kill']; killLedgerPath?: string }
-interface TaskStatus { pid: number; port: number; nonce: string; bytes: number }
+interface TaskStatus { pid: number; port: number; nonce: string; bytes: number; descendantPid?: number }
 interface TaskFixture { statusPath: string; nonce: string; config: RunConfig; run: ManagedRun }
+interface DetachedFixture { statusPath: string; nonce: string; pid: number }
 async function recordObservation(name: string, observation: object) {
   const output = test.info().outputPath(`${name}.json`);
   await writeFile(output, JSON.stringify(observation, null, 2));
@@ -22,16 +23,26 @@ async function recordObservation(name: string, observation: object) {
 const taskSource = `
 const http = require('node:http');
 const fs = require('node:fs');
-const [statusPath, nonce, mode] = process.argv.slice(2);
+const [statusPath, nonce, mode, descendantStatusPath, descendantNonce] = process.argv.slice(2);
 let bytes = 0;
 // A closed parent pipe must not accidentally turn the ownership fixture into a crash.
 for (const stream of [process.stdout, process.stderr]) stream.on('error', error => {
   if (error.code !== 'EPIPE') throw error;
 });
+// Only the T35 fixture creates a descendant. Production spawning stays unchanged.
+// Detached + ignored pipes lets this child survive the managed parent's Windows job.
+let descendantPid;
+if (mode === 'detached-parent') {
+  const child = require('node:child_process').spawn(process.execPath,
+    [__filename, descendantStatusPath, descendantNonce, 'idle'],
+    { detached: true, stdio: 'ignore', windowsHide: true });
+  descendantPid = child.pid;
+  child.unref();
+}
 const server = http.createServer((request, response) => {
   response.setHeader('Content-Type', 'application/json');
   if (request.url === '/health' && request.method === 'GET') {
-    response.end(JSON.stringify({ pid: process.pid, port: server.address().port, nonce, bytes }));
+    response.end(JSON.stringify({ pid: process.pid, port: server.address().port, nonce, bytes, descendantPid }));
   } else if (request.url === '/stop/' + nonce && request.method === 'POST') {
     response.end(JSON.stringify({ nonce, stopped: true }));
     server.close(() => process.exit(0));
@@ -39,7 +50,7 @@ const server = http.createServer((request, response) => {
   } else { response.statusCode = 403; response.end('{}'); }
 });
 server.listen(0, '127.0.0.1', () => {
-  fs.writeFileSync(statusPath, JSON.stringify({ pid: process.pid, port: server.address().port, nonce, bytes }));
+  fs.writeFileSync(statusPath, JSON.stringify({ pid: process.pid, port: server.address().port, nonce, bytes, descendantPid }));
   process.stdout.write('Owned fixture ready\\n');
   if (mode === 'flood') {
     const block = ('fixture-output '.padEnd(1023, 'x') + '\\n').repeat(64);
@@ -60,6 +71,7 @@ class DesktopFixture {
   page!: Page;
   project!: Project;
   tasks: TaskFixture[] = [];
+  descendants: DetachedFixture[] = [];
   private constructor(readonly root: string, readonly repository: string) {}
   static async create() {
     const root = await mkdtemp(path.join(os.tmpdir(), 'DevStation-lifecycle-'));
@@ -95,14 +107,14 @@ class DesktopFixture {
     await this.selectPath(process.execPath);
     expect(unwrap(await this.page.evaluate(() => window.devstation.configs.chooseExecutable()))).toBe(process.execPath);
   }
-  async startTask(label: string, mode: 'idle' | 'flood' = 'idle') {
+  async startTask(label: string, mode: 'idle' | 'flood' | 'detached-parent' = 'idle', descendant?: Pick<DetachedFixture, 'statusPath' | 'nonce'>) {
     const nonce = randomUUID();
     const script = path.join(this.repository, `owned-${nonce}.cjs`);
     const statusPath = path.join(this.repository, `status-${nonce}.json`);
     await writeFile(script, taskSource);
     const config = unwrap(await this.page.evaluate(input => window.devstation.configs.save(input), {
       projectId: this.project.id, label, executablePath: process.execPath,
-      args: [script, statusPath, nonce, mode], workingDir: this.repository,
+      args: [script, statusPath, nonce, mode, ...(descendant ? [descendant.statusPath, descendant.nonce] : [])], workingDir: this.repository,
     }));
     const run = unwrap(await this.page.evaluate(id => window.devstation.runs.start(id), config.id))!;
     expect(run.state).toBe('running'); expect(run.pid).toBeGreaterThan(0);
@@ -111,17 +123,18 @@ class DesktopFixture {
     await expect.poll(async () => (await this.health(fixture))?.pid, { message: 'The owned Node fixture should start its loopback endpoint.' }).toBe(run.pid);
     return fixture;
   }
-  async health(task: TaskFixture): Promise<TaskStatus | undefined> {
+  async health(task: TaskFixture | DetachedFixture): Promise<TaskStatus | undefined> {
     try {
       const saved = JSON.parse(await readFile(task.statusPath, 'utf8')) as TaskStatus;
       if (saved.nonce !== task.nonce || !Number.isInteger(saved.port) || saved.port < 1 || saved.port > 65535) throw new Error('Invalid fixture status.');
       const response = await fetch(`http://127.0.0.1:${saved.port}/health`, { signal: AbortSignal.timeout(1500) });
       const status = await response.json() as TaskStatus;
-      if (!response.ok || status.nonce !== task.nonce || status.pid !== task.run.pid) throw new Error('Fixture identity changed.');
+      const expectedPid = 'run' in task ? task.run.pid : task.pid;
+      if (!response.ok || status.nonce !== task.nonce || status.pid !== expectedPid) throw new Error('Fixture identity changed.');
       return status;
     } catch { return undefined; }
   }
-  async stopFixture(task: TaskFixture) {
+  async stopFixture(task: TaskFixture | DetachedFixture) {
     const status = await this.health(task);
     if (!status) return;
     const response = await fetch(`http://127.0.0.1:${status.port}/stop/${task.nonce}`, { method: 'POST', signal: AbortSignal.timeout(1500) });
@@ -181,6 +194,7 @@ class DesktopFixture {
   async cleanup() {
     const alive = () => this.processHandle?.exitCode === null && this.processHandle.signalCode === null;
     if (alive()) await this.restoreKill().catch(() => undefined);
+    for (const descendant of this.descendants) await this.stopFixture(descendant);
     for (const task of this.tasks) await this.stopFixture(task);
     if (alive()) {
       await this.response(1).catch(() => undefined);
@@ -297,17 +311,26 @@ test('T30 more than 3 MB of live stdout stays bounded while navigation remains r
   } finally { await fixture.cleanup(); }
 });
 
-test('T35 abrupt main exit and reopen preserve configuration without reclaiming prior runs', async () => {
+test('T35 abrupt main exit and reopen never reclaim or stop a surviving descendant', async () => {
   const fixture = await DesktopFixture.create();
   try {
     await fixture.launch(); await fixture.importProject();
-    const task = await fixture.startTask('Survivor from the previous session');
-    const closed = fixture.desktop!.waitForEvent('close', { timeout: 15000 });
+    const descendantNonce = randomUUID();
+    const descendantInput = { nonce: descendantNonce, statusPath: path.join(fixture.repository, `descendant-${descendantNonce}.json`) };
+    const task = await fixture.startTask('Managed parent of a surviving descendant', 'detached-parent', descendantInput);
+    const parentStatus = await fixture.health(task);
+    const descendant: DetachedFixture = { ...descendantInput, pid: parentStatus!.descendantPid! };
+    fixture.descendants.push(descendant);
+    expect(descendant.pid).toBeGreaterThan(0); expect(descendant.pid).not.toBe(task.run.pid);
+    await expect.poll(async () => (await fixture.health(descendant))?.pid).toBe(descendant.pid);
+    expect(unwrap(await fixture.page.evaluate(() => window.devstation.runs.list())).map(run => run.pid)).toEqual([task.run.pid]);
+    const closed = fixture.page.waitForEvent('close', { timeout: 15000 });
     // On Windows Playwright's handle may belong to the launcher. Terminate this
     // connected main process abruptly, without app.quit, PID lookup or tree killing.
     await fixture.desktop!.evaluate(() => { setTimeout(() => process.exit(86), 50); });
     await closed;
     const taskAliveAfterExit = Boolean(await fixture.health(task));
+    expect((await fixture.health(descendant))?.pid).toBe(descendant.pid);
     await fixture.launch();
     expect(unwrap(await fixture.page.evaluate(() => window.devstation.projects.list()))).toEqual([fixture.project]);
     expect(unwrap(await fixture.page.evaluate(id => window.devstation.configs.list(id), fixture.project.id))).toEqual([task.config]);
@@ -316,7 +339,8 @@ test('T35 abrupt main exit and reopen preserve configuration without reclaiming 
     const stopOldTask = await fixture.page.evaluate(id => window.devstation.runs.stop(id), task.run.id);
     expect(stopOldTask).toMatchObject({ ok: false, error: { code: 'RUN_NOT_FOUND' } });
     const taskAliveAfterReopen = Boolean(await fixture.health(task));
-    await recordObservation('T35-session-ownership-observation', { abruptMainExitCode: 86, taskAliveAfterExit, taskAliveAfterReopen, oldRunStopError: stopOldTask.ok ? null : stopOldTask.error.code, note: 'The Windows launch environment may terminate descendants. This verifies no session ownership is restored; it does not claim every child survives a crash.' });
+    expect((await fixture.health(descendant))?.pid).toBe(descendant.pid);
+    await recordObservation('T35-session-ownership-observation', { abruptMainExitCode: 86, managedPid: task.run.pid, survivingDescendantPid: descendant.pid, taskAliveAfterExit, taskAliveAfterReopen, descendantAliveAfterExit: true, descendantAliveAfterRejectedStop: true, oldRunStopError: stopOldTask.ok ? null : stopOldTask.error.code, note: 'A detached fixture-only descendant, distinct from the managed PID, survives the abrupt exit and reopening. It is never added to session ownership; cleanup uses its own nonce endpoint. Production spawning is unchanged.' });
     await fixture.navigate('Runs');
     await expect(fixture.page.getByText(task.run.label, { exact: true })).toHaveCount(0);
   } finally { await fixture.cleanup(); }

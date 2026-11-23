@@ -1,7 +1,11 @@
 {
   "abruptMainExitCode": 86,
-  "taskAliveAfterExit": false,
+  "managedPid": 19140,
+  "survivingDescendantPid": 25932,
+  "taskAliveAfterExit": true,
   "taskAliveAfterReopen": false,
+  "descendantAliveAfterExit": true,
+  "descendantAliveAfterRejectedStop": true,
   "oldRunStopError": "RUN_NOT_FOUND",
-  "note": "The Windows launch environment may terminate descendants. This verifies no session ownership is restored; it does not claim every child survives a crash."
+  "note": "A detached fixture-only descendant, distinct from the managed PID, survives the abrupt exit and reopening. It is never added to session ownership; cleanup uses its own nonce endpoint. Production spawning is unchanged."
 }

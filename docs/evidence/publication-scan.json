@@ -1,16 +1,16 @@
 {
-  "scannedAtUtc": "2026-11-23T17:52:17.243732+00:00",
-  "head": "f9ee2e3a08753f0c941ee75f11b16916d3567622",
+  "scannedAtUtc": "2026-11-23T17:59:21.733981+00:00",
+  "head": "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
   "branch": "codex/v0.2-guided-workspace",
-  "reachableCommits": 5,
-  "uniqueHistoricalBlobs": 116,
-  "workingTreeFilesExamined": 118,
+  "reachableCommits": 6,
+  "uniqueHistoricalBlobs": 185,
+  "workingTreeFilesExamined": 121,
   "maximumTextBlobBytes": 10485760,
   "secretPatternCandidates": 0,
   "countsByKind": {
-    "author_email": 5,
-    "committer_email": 5,
-    "email_address": 7
+    "author_email": 6,
+    "committer_email": 6,
+    "email_address": 8
   },
   "limitations": [
     "Pattern matching is not a guarantee that no secret exists.",
@@ -20,6 +20,20 @@
     "Findings contain locations and redacted values only; occurrences may repeat across history/current scope."
   ],
   "findings": [
+    {
+      "scope": "commit_metadata",
+      "commit": "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
     {
       "scope": "commit_metadata",
       "commit": "f9ee2e3a08753f0c941ee75f11b16916d3567622",
@@ -92,13 +106,12 @@
     },
     {
       "scope": "history",
-      "blob": "1ec2e252e18ab48bdbadf4a7cb3ccb6df62cb5f3",
+      "blob": "15d0c1bd219ec58b754a34d7a566d77904637959",
       "paths": [
         "tests/e2e/desktop.spec.ts"
       ],
       "commits": [
-        "96e6c45abfd007d5d9d47bea2753022df002050b",
-        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+        "d1f0e3c6b57e53de1c001865a4170e1202d4db6d"
       ],
       "kind": "email_address",
       "line": 20,
@@ -113,10 +126,26 @@
       ],
       "commits": [
         "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
       ],
       "kind": "email_address",
       "line": 42,
+      "classification": "synthetic_example",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "history",
+      "blob": "1ec2e252e18ab48bdbadf4a7cb3ccb6df62cb5f3",
+      "paths": [
+        "tests/e2e/desktop.spec.ts"
+      ],
+      "commits": [
+        "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "f9ee2e3a08753f0c941ee75f11b16916d3567622"
+      ],
+      "kind": "email_address",
+      "line": 20,
       "classification": "synthetic_example",
       "value": "[REDACTED]"
     },
@@ -192,6 +221,7 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "ed0cd05781c40a52e1385ba89057cacff402190b",
         "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
@@ -208,6 +238,7 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "ed0cd05781c40a52e1385ba89057cacff402190b",
         "ed3b5db5d62d9c2ab5e51ced1fff5e44ecf8240b",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
@@ -224,6 +255,7 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
       ],
       "reason": "binary_manual_review",
@@ -238,6 +270,7 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
       ],
       "reason": "binary_manual_review",
@@ -252,6 +285,7 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
+        "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
       ],
       "reason": "binary_manual_review",
