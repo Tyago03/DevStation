@@ -1,2 +1,1 @@
-# Local validation candidate only; final release checksums are attached to v0.2.1.
-e9285ed17e81aba3c44acd140c1f648633aaeae90a053d03d91297ef1e3405f6  DevStation-win32-x64-0.2.1.zip
+b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618  DevStation-0.2.1-windows-x64.zip

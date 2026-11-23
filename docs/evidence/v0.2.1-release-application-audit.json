@@ -1,0 +1,35 @@
+{
+  "source": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+  "zip": "out/release-v0.2.1/DevStation-0.2.1-windows-x64.zip",
+  "zipSha256": "b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618",
+  "scope": "ASAR raw bytes plus every app.asar.unpacked file; ZIP/ASAR inventory; local developer home/workspace literal paths in original/lower/upper case, slash and JSON-escaped variants, UTF-8 and UTF-16LE. No general secret proof or whole Electron binary scan.",
+  "zipEntries": 83,
+  "asarFiles": 5887,
+  "payloadFilesScanned": 9,
+  "payloadBytesScanned": 78901845,
+  "unwantedDevelopmentFiles": [],
+  "developerPathHitFiles": [],
+  "licenses": {
+    "originalMitMatchesGit": true,
+    "projectNoticesMatchGit": true,
+    "electronLicenseMatchesInstalledRuntime": true,
+    "chromiumNoticesMatchInstalledRuntime": true
+  },
+  "pass": true,
+  "credentialPrefixCheck": {
+    "scope": "Per-ASAR-file ASCII bounded high-confidence prefixes, including unpacked native entries; no raw values printed. Does not establish absence of all possible secrets.",
+    "files": 5887,
+    "bytes": 83312929,
+    "patterns": [
+      "github-classic",
+      "github-fine-grained",
+      "openai-project",
+      "private-key-header",
+      "aws-access-key",
+      "npm-token",
+      "slack-bot-token"
+    ],
+    "candidates": [],
+    "skippedLinks": []
+  }
+}

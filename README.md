@@ -6,7 +6,9 @@ Keep local Git projects, tasks, output and listening ports in a focused Windows 
 
 [Documentation](docs/README.md) · [Release records](docs/RELEASE.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md)
 
-**v0.2.1 pre-release candidate.** Twelve compiled desktop checks pass locally. The current unsigned packaged EXE is blocked by this machine's Windows signing policy. Main-branch CI and publication are pending; [QA](docs/QA.md) and the [build record](docs/RELEASE.md) distinguish these results.
+**v0.2.1 is available as a pre-release.** [Download the Windows ZIP](https://github.com/Tyago03/DevStation/releases/download/v0.2.1/DevStation-0.2.1-windows-x64.zip) · [Release notes and checksums](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1)
+
+[Main-branch CI](https://github.com/Tyago03/DevStation/actions/runs/45248171830) passed 143 automated tests and 13 desktop checks on Windows Server 2025, including the exact published ZIP. On Windows 11, 12 compiled desktop checks passed; a separately built local unsigned candidate was blocked by signing policy. [QA](docs/QA.md) and the [build record](docs/RELEASE.md) keep those artifact/environment results distinct.
 
 ![DevStation v0.2.1 workspace](docs/screenshots/v0.2.1-welcome.png)
 
@@ -31,28 +33,26 @@ Actual compiled application showing synthetic task outcomes: successful completi
 
 ## Install on Windows
 
-The release format is a **portable Windows x64 ZIP**. The [intended v0.2.1 pre-release page](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is pending publication. Consult the [build record](docs/RELEASE.md) for availability, exact checksums and the local signing-policy block; no stable or universal Windows compatibility is claimed.
-
-For a published pre-release:
+Download the **portable Windows x64 ZIP** from [v0.2.1](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1). It is an unsigned pre-release; no stable or universal Windows compatibility is claimed. The [build record](docs/RELEASE.md) identifies the tested source and exact artifact.
 
 1. Download its Windows application ZIP and SHA-256 manifest from the same release. GitHub's automatically generated source archive is for building the project.
 2. Compare the ZIP's hash with the manifest:
 
    ```powershell
-   Get-FileHash -LiteralPath .\DevStation-windows-x64.zip -Algorithm SHA256
+   Get-FileHash -LiteralPath .\DevStation-0.2.1-windows-x64.zip -Algorithm SHA256
    ```
 
-   Use the filename you downloaded.
+   Expected SHA-256: `b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618`.
 3. Extract the **entire archive** into a folder you can write to, then open `DevStation.exe`.
 4. Choose **Add project**, select a Git working folder and follow the optional tour. Create a launch setup, review it, Save, then Start only when ready.
 
-The executable is **unsigned**, and the current package is blocked locally by Windows signing policy. Other machines may also warn about or block it. Follow your machine's software policy and keep Windows protections enabled. A checksum verifies file integrity; it does not establish a trusted publisher.
+The executable is **unsigned**. Windows may warn about or block it; the separate local candidate's policy block remains documented. Follow your machine's software policy and keep Windows protections enabled. A checksum verifies file integrity; it does not establish a trusted publisher.
 
 ### Requirements
 
 | Requirement | Details |
 | --- | --- |
-| Operating system | Windows 11 x64 is the validated target. Windows 10 is not yet validated; macOS/Linux packages are not provided |
+| Operating system | Target: Windows 11 x64, with compiled desktop checks exercised locally. The published ZIP passed on Windows Server 2025 CI; general Windows 11 binary compatibility and Windows 10 remain unvalidated. No macOS/Linux package |
 | Window size | At least 1050 × 700 for the application window |
 | Git | Git for Windows is needed to import and inspect repositories |
 | Task programs | An installed Python or Node.js executable for its guided setup, or another trusted executable for Advanced |

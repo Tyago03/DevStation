@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-11-23T19:34:46.664Z",
+  "durationMs": 16486.1634,
+  "scope": "External Windows distribution files, ZIP namespace, checksum and source licenses. ASAR and its unpacked payload require the separate internal audit.",
+  "sourceCommitProvided": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+  "ciRunUrl": "https://github.com/Tyago03/DevStation/actions/runs/45248171830",
+  "sourceVersion": "0.2.1",
+  "sourceProvenance": "Source commit and expected ZIP checksum supplied from CI; license content read from this exact Git object.",
+  "zip": {
+    "filename": "DevStation-0.2.1-windows-x64.zip",
+    "sha256": "b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618",
+    "expectedCiSha256": "b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618",
+    "size": 175439941,
+    "fileCount": 83,
+    "bytesRead": 453084448,
+    "contentBytesScannedHere": 374182603,
+    "contentBytesDeferredToAsarAudit": 78901845
+  },
+  "checks": {
+    "ciZipChecksumMatches": true,
+    "archiveStructureValidated": true,
+    "mitLicenseContentMatchesSource": true,
+    "thirdPartyNoticesMatchSource": true,
+    "externalDeveloperPathsAndCredentialPatternsAbsent": false
+  },
+  "scopePassed": false,
+  "fullPackageAuditPassed": false,
+  "separateInternalAuditRequired": true,
+  "findings": [
+    {
+      "file": "DevStation.exe",
+      "categories": [
+        "unix-home-reference"
+      ]
+    }
+  ],
+  "licenseVerification": {
+    "mitExactBytesMatch": false,
+    "noticesExactBytesMatch": false,
+    "lineEndingsNormalizedForContentComparison": true
+  },
+  "method": {
+    "encodings": [
+      "UTF-8 / ASCII",
+      "UTF-16LE at both byte alignments"
+    ],
+    "chunks": "1 MiB with 8 KiB overlap; required-marker candidates decoded in bounded context windows.",
+    "categories": [
+      "windows-home-path",
+      "codex-workspace-path",
+      "devstation-ci-workspace",
+      "unix-home-reference",
+      "private-key",
+      "github-token",
+      "npm-token",
+      "aws-access-key",
+      "google-api-key",
+      "openai-token",
+      "slack-token",
+      "stripe-live-secret",
+      "auditor-home-literal",
+      "auditor-workspace-literal"
+    ],
+    "rawSensitiveValuesRecorded": false,
+    "applicationExecuted": false
+  },
+  "limitations": [
+    "Only this stated scope is evaluated; combine with the separate ASAR/unpacked audit of the same ZIP hash.",
+    "A pattern match is a review finding, not automatically a live credential.",
+    "Pattern scanning does not prove absence of arbitrary encoded secrets."
+  ],
+  "review": {
+    "reviewedScopePassed": true,
+    "unresolvedFindingCount": 0,
+    "rawAutomatedFindingsPreserved": true,
+    "classification": "The one generic Unix-home reference is byte-for-byte identical to a reference in the installed locked Electron executable. It is not a developer path introduced by the project.",
+    "evidenceFile": "v0.2.1-upstream-reference-review.json",
+    "candidateHashes": [
+      "f37698a753954c07207dfbf7017e4310c0fb96f0bc673d018e7fec8797e97794"
+    ],
+    "separateInternalAuditRequired": true,
+    "rawValuesRecorded": false
+  },
+  "finalDisposition": "External scope PASS after classifying the single upstream reference. The original automated false flags are retained; full-package acceptance also requires the separate application audit of the same ZIP."
+}

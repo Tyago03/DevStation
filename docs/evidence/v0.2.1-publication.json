@@ -1,0 +1,46 @@
+{
+  "verifiedDate": "2026-11-23",
+  "verification": "Anonymous GitHub REST reads; asset server SHA256 digests equal local files",
+  "repository": {
+    "url": "https://github.com/Tyago03/DevStation",
+    "private": false,
+    "defaultBranch": "main"
+  },
+  "release": {
+    "url": "https://github.com/Tyago03/DevStation/releases/tag/v0.2.1",
+    "id": 455903375,
+    "tag": "v0.2.1",
+    "sourceCommit": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+    "draft": false,
+    "prerelease": true,
+    "publishedAt": "2026-11-23T19:39:34Z",
+    "assets": [
+      {
+        "id": 784286472,
+        "name": "BUILD.txt",
+        "size": 1735,
+        "digest": "sha256:96427e7ebc69d41094934cde34e6bf794931705c3ec7b0846d69a9200a7aa673",
+        "browser_download_url": "https://github.com/Tyago03/DevStation/releases/download/v0.2.1/BUILD.txt"
+      },
+      {
+        "id": 784284820,
+        "name": "DevStation-0.2.1-windows-x64.zip",
+        "size": 175439941,
+        "digest": "sha256:b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618",
+        "browser_download_url": "https://github.com/Tyago03/DevStation/releases/download/v0.2.1/DevStation-0.2.1-windows-x64.zip"
+      },
+      {
+        "id": 784286421,
+        "name": "SHA256SUMS.txt",
+        "size": 100,
+        "digest": "sha256:803efd4ac4ecd3b79a3381758f86de446584539d93506244690af0487973a992",
+        "browser_download_url": "https://github.com/Tyago03/DevStation/releases/download/v0.2.1/SHA256SUMS.txt"
+      }
+    ]
+  },
+  "privateVulnerabilityReporting": {
+    "enabled": true
+  },
+  "pullRequest": "https://github.com/Tyago03/DevStation/pull/1",
+  "sourceCi": "https://github.com/Tyago03/DevStation/actions/runs/45248171830"
+}

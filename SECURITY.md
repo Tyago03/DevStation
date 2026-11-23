@@ -1,12 +1,12 @@
 # Security policy
 
-DevStation is pre-release desktop software. The v0.2.1 candidate is undergoing final CI/publication checks; no published release is claimed yet. Consult its [validation record](docs/QA.md) and [artifact identity](docs/RELEASE.md). No long-term support or response-time guarantee is currently offered.
+DevStation is pre-release desktop software. [v0.2.1](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is publicly available as a Pre-release. Consult its [validation record](docs/QA.md) and [artifact identity](docs/RELEASE.md). No long-term support or response-time guarantee is currently offered.
 
 ## Report a vulnerability privately
 
-The intended confidential route is [GitHub: Report a vulnerability](https://github.com/Tyago03/DevStation/security/advisories/new). **Private Vulnerability Reporting is being configured and must be verified as part of the initial public release. Availability is not yet claimed.** If the private form is unavailable, do not publish sensitive details in issues, pull requests or discussions.
+Use [GitHub: Report a vulnerability](https://github.com/Tyago03/DevStation/security/advisories/new). **Private Vulnerability Reporting is enabled and its configuration was verified on 2026-11-23.** If the private form is temporarily unavailable, do not publish sensitive details in issues, pull requests or discussions.
 
-Once the private route is available, include:
+Include:
 
 - Affected version or commit and Windows version.
 - Expected behavior, observed behavior and security impact.
@@ -23,6 +23,6 @@ Guided-script checks detect changes to the selected file and require a separate 
 
 Stop is limited to the process owned by the current session; descendants may remain. Unknown status is not evidence of termination. Restarting the app does not restore authority over old processes.
 
-The Windows ZIP is unsigned, and the current packaged EXE is blocked locally by Windows signing policy. Twelve passing compiled desktop checks do not override that result. When a release is published, verify its SHA-256 and follow your machine's software policy. Keep Windows protections enabled; neither a successful test nor a checksum establishes publisher trust.
+The published Windows ZIP is unsigned. It passed packaged checks on Windows Server 2025 CI. A separately built Windows 11 candidate was blocked by local signing policy, while 12 compiled desktop checks passed there. Verify the release SHA-256 and follow your machine's software policy. Keep Windows protections enabled; neither a successful test nor a checksum establishes publisher trust or general Windows 11 binary compatibility.
 
 See the [security design](docs/SECURITY.md) for Electron, IPC, path, process and storage boundaries. [QA](docs/QA.md) states what was actually exercised and what remains untested.

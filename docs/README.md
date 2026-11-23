@@ -2,7 +2,7 @@
 
 Use the application's **Documentation** page for searchable offline help and the optional tour. This directory holds contributor guidance, implementation details and evidence.
 
-Current target: **v0.2.1 pre-release candidate**. Twelve compiled desktop checks pass locally; the unsigned packaged EXE is blocked by local Windows signing policy. Main-branch CI, the confidential-reporting configuration and publication are pending. The [intended release page](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is not yet claimed as published.
+Current release: **[v0.2.1 Pre-release](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1)**. The repository is public and [Private Vulnerability Reporting](../SECURITY.md) is enabled and verified. Main CI passes 143 automated and 13 desktop checks on Windows Server 2025, including the exact published ZIP. Windows 11 has 12 passing compiled desktop checks and a signing-policy block for a separately built local candidate; the artifact/environment distinction remains in QA and RELEASE.
 
 ## Use and troubleshoot
 

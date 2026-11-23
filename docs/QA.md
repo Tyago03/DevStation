@@ -1,6 +1,6 @@
 # v0.2.1 validation
 
-Reviewed 2026-11-23. Target: unsigned Windows x64 pre-release. Human usability and broad Windows compatibility are not claimed. Historical evidence is preserved in [v0.1](history/v0.1/QA.md) and [v0.2.0](history/v0.2/QA.md).
+Reviewed 2026-11-23. [v0.2.1 pre-release](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is public; the unsigned Windows x64 ZIP is from successful main CI. Human usability and broad Windows compatibility are not claimed. Historical evidence is preserved in [v0.1](history/v0.1/QA.md) and [v0.2.0](history/v0.2/QA.md).
 
 ## Local results
 
@@ -13,11 +13,21 @@ Environment: Windows 11 Pro 10.0.26300, unelevated; Node 24.21.0, npm 11.19.0, G
 | Compiled desktop workflows | PASS | 12 Playwright tests: actual Python/Node, script review, cancellation, no autorun, logs, ports, persistence, keyboard, faults, shutdown and crash ownership |
 | Windows ZIP creation | PASS | Final local candidate after privacy fixes built successfully; exact identity in RELEASE |
 | Package contents/privacy | PASS | 5,887 files scanned, including unpacked native modules; caches and native build metadata absent, no configured credential or developer-home-path matches. MIT and third-party notices match source |
-| Local packaged EXE launch | FAIL â€” Windows signing policy | Playwright spawn rejected; Code Integrity events 3033 and 3077 at 2026-11-23T19:07:05â€“06Z state signing-level requirements were not met. No protection changed |
-| Windows CI and final main | PENDING | Must pass for the final source before publication; CI package acceptance does not erase the local block |
+| Local packaged EXE launch | FAIL - Windows signing policy | Playwright spawn rejected; Code Integrity events 3033 and 3077 at 2026-11-23T19:07:05-06Z state signing-level requirements were not met. No protection changed |
+| Windows CI / tagged main source | PASS | Source `57e30026`, [run 45248171830](https://github.com/Tyago03/DevStation/actions/runs/45248171830): TypeScript/ESLint, 50 unit + 48 integration + 45 UI tests and 13 desktop cases; the actual ZIP is extracted and launched |
 | Visual review | PASS, stated scope | Six minimum-window screens plus welcome/help/demo, script-review dialog and exit-outcome page reviewed; no horizontal clipping or overlapping controls found |
 
 The complete local desktop run was **12 PASS / 1 FAIL in 1.1 minutes**. The failed case is the genuine packaged executable, not a compiled Electron workflow. The v0.2.0 native success is historical and does not establish acceptance of these new bytes.
+
+## Published artifact and CI
+
+The release ZIP is **not** the locally blocked candidate. Its SHA-256 is `b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618`, size 175,439,941 bytes, built from `57e30026e3da69d90c022d586b8eeb0328c0ecfc`. Main CI on **Windows Server 2025** passed all **143 service/UI tests and 13 desktop cases (1.5 minutes)**. The hardened packaged case extracted the exact ZIP, opened its EXE without external Node or Git on PATH, verified renderer isolation and SQLite theme persistence across restart.
+
+The downloaded CI container and nested application ZIP were each checked against their own recorded hash. GitHub release asset digests match the uploaded local files. The EXE reports **NotSigned**; it was not launched locally as part of content inspection. CI acceptance does not establish universal Windows 11 policy acceptance.
+
+Independent content review checked the ASAR/unpacked payload, all outer distribution files, configured credential/private-path patterns and license notices. Seventy-one outer runtime files exactly match the locked Electron runtime. One generic Unix reference in the EXE also exists verbatim in upstream Electron; it is not a private project addition. MIT/project notices match tagged Git content after explicit CRLF normalization. [CI evidence](evidence/v0.2.1-ci.json), [application audit](evidence/v0.2.1-release-application-audit.json), [external audit and classification](evidence/v0.2.1-release-external-audit.json), [publication verification](evidence/v0.2.1-publication.json).
+
+Repository visibility and Private Vulnerability Reporting were verified anonymously after publication. PR #1 preserved all development commits. Publication documentation follows the tagged code on main; GitHub Actions records each later main verification separately.
 
 ## New regressions
 
@@ -39,7 +49,7 @@ A private test capture of the script-review dialog was deliberately excluded fro
 
 ## Explicitly untested or limited
 
-- Native Windows display scaling: NOT RUN. Minimum native window 1050Ã—700 and Chromium zoom 100/125/150% passed.
+- Native Windows display scaling: NOT RUN. Minimum native window 1050 x 700 and Chromium zoom 100/125/150% passed.
 - Physical network disconnect: NOT RUN. Bundled help/tour/settings passed Chromium offline emulation.
 - Complete native-picker keyboard/accessibility audit and Windows 10: NOT RUN.
 - Human usability: NOT RUN. [Study protocol](USABILITY_STUDY.md) has blank records; no agent substitutes for participants.

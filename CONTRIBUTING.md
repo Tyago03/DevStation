@@ -25,7 +25,7 @@ npm run test:e2e
 
 Run Node-based tests before packaging: Forge rebuilds native SQLite for Electron. [Troubleshooting](docs/TROUBLESHOOTING.md) explains ABI recovery. Keep compiled Electron checks separate from actual packaged-executable checks. If Windows blocks an unsigned executable, record that result and preserve the machine's protections.
 
-The current v0.2.1 candidate has 12 passing local compiled desktop checks, while its actual packaged EXE is blocked by Windows signing policy. Main-branch CI and publication remain pending. Treat [QA](docs/QA.md) and [RELEASE](docs/RELEASE.md) as the source of exact results, rather than transferring an older package's successful launch to new bytes.
+[v0.2.1](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is published. Its tested main merge passes 143 automated tests and 13 desktop checks on Windows Server 2025 CI, including the exact released ZIP. Windows 11 has 12 passing local compiled desktop checks; a separately built local candidate remains blocked by signing policy. Treat [QA](docs/QA.md) and [RELEASE](docs/RELEASE.md) as the source of exact artifact/environment results.
 
 Read the [architecture](docs/ARCHITECTURE.md) and [security design](docs/SECURITY.md) before changing privileged operations. The [documentation index](docs/README.md) links the implementation decisions and validation records.
 

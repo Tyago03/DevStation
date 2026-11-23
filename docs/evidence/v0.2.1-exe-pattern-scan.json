@@ -1,0 +1,9 @@
+{
+  "scope": "Configured high-confidence credential patterns and actual developer home/workspace literals; UTF8 and UTF16LE at both alignments in overlapping chunks",
+  "file": "DevStation.exe",
+  "sha256": "da5d37e6ae7125968261f597ddb163d11f9055ae5423fa10bca9b492b24a37fd",
+  "bytesScanned": 249978368,
+  "categoriesFound": [],
+  "pass": true,
+  "applicationExecuted": false
+}

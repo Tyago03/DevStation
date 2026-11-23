@@ -1,0 +1,16 @@
+{
+  "category": "unix-home-reference",
+  "file": "DevStation.exe",
+  "candidateCount": 1,
+  "allCandidatesAlsoPresentInLockedElectron": true,
+  "candidates": [
+    {
+      "sha256": "f37698a753954c07207dfbf7017e4310c0fb96f0bc673d018e7fec8797e97794",
+      "characters": 14,
+      "encoding": "ASCII",
+      "hasControlCharacters": false,
+      "alsoPresentInLockedElectron": true
+    }
+  ],
+  "rawValuesRecorded": false
+}

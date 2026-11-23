@@ -1,15 +1,15 @@
 {
-  "scannedAtUtc": "2026-11-23T19:14:05.942041+00:00",
-  "head": "98fe037b174cd6cf7b255ee451a38404b4be58ed",
-  "branch": "codex/v0.2-guided-workspace",
-  "reachableCommits": 11,
-  "uniqueHistoricalBlobs": 243,
-  "workingTreeFilesExamined": 145,
+  "scannedAtUtc": "2026-11-23T19:43:19.484784+00:00",
+  "head": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+  "branch": "main",
+  "reachableCommits": 14,
+  "uniqueHistoricalBlobs": 272,
+  "workingTreeFilesExamined": 152,
   "maximumTextBlobBytes": 10485760,
   "secretPatternCandidates": 0,
   "countsByKind": {
-    "author_email": 11,
-    "committer_email": 11,
+    "author_email": 14,
+    "committer_email": 14,
     "user_home_path": 2,
     "email_address": 8
   },
@@ -21,6 +21,48 @@
     "Findings contain locations and redacted values only; occurrences may repeat across history/current scope."
   ],
   "findings": [
+    {
+      "scope": "commit_metadata",
+      "commit": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+      "kind": "author_email",
+      "classification": "github_noreply",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "67530743d682870625059d9f9234afa56125eb78",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "67530743d682870625059d9f9234afa56125eb78",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
     {
       "scope": "commit_metadata",
       "commit": "98fe037b174cd6cf7b255ee451a38404b4be58ed",
@@ -182,6 +224,9 @@
         "docs/evidence/v0.2-native-review.json"
       ],
       "commits": [
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "98fe037b174cd6cf7b255ee451a38404b4be58ed",
@@ -200,6 +245,9 @@
       ],
       "commits": [
         "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "98fe037b174cd6cf7b255ee451a38404b4be58ed",
@@ -219,6 +267,9 @@
       ],
       "commits": [
         "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
@@ -327,6 +378,9 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
@@ -349,6 +403,9 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
@@ -371,6 +428,9 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
@@ -391,6 +451,9 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
@@ -411,6 +474,9 @@
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
         "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
@@ -426,9 +492,13 @@
       "scope": "history",
       "blob": "5afb3f5ce050df34240e38b383b682c746836052",
       "paths": [
-        "docs/screenshots/v0.2-demo.png"
+        "docs/screenshots/v0.2-demo.png",
+        "docs/screenshots/v0.2.1-demo.png"
       ],
       "commits": [
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "98fe037b174cd6cf7b255ee451a38404b4be58ed",
@@ -444,6 +514,9 @@
         "docs/screenshots/v0.2-help.png"
       ],
       "commits": [
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "98fe037b174cd6cf7b255ee451a38404b4be58ed",
@@ -459,6 +532,9 @@
         "docs/screenshots/v0.2-welcome.png"
       ],
       "commits": [
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+        "67530743d682870625059d9f9234afa56125eb78",
         "6f90eb6a3cafc317e30662859540a4ad5bf21c20",
         "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
         "98fe037b174cd6cf7b255ee451a38404b4be58ed",
@@ -466,6 +542,45 @@
       ],
       "reason": "binary_manual_review",
       "bytes": 113238
+    },
+    {
+      "scope": "history",
+      "blob": "046582a7e201caf91f0db46872191358e3555f47",
+      "paths": [
+        "docs/screenshots/v0.2.1-help.png"
+      ],
+      "commits": [
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 87022
+    },
+    {
+      "scope": "history",
+      "blob": "422c7dcd8a7acc2ca5a8e0578032beaac121dcb2",
+      "paths": [
+        "docs/screenshots/v0.2.1-runs.png"
+      ],
+      "commits": [
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 64365
+    },
+    {
+      "scope": "history",
+      "blob": "775fddc7192f14f44782a4f22f70ca218abb69dc",
+      "paths": [
+        "docs/screenshots/v0.2.1-welcome.png"
+      ],
+      "commits": [
+        "4914091cee984ccee329fbf4a6d231d5ae72d83f",
+        "57e30026e3da69d90c022d586b8eeb0328c0ecfc"
+      ],
+      "reason": "binary_manual_review",
+      "bytes": 113213
     },
     {
       "scope": "working_tree",

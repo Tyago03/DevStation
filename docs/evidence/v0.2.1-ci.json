@@ -1,0 +1,47 @@
+{
+  "version": "0.2.1",
+  "sourceCommit": "57e30026e3da69d90c022d586b8eeb0328c0ecfc",
+  "branch": "main",
+  "ci": {
+    "runId": 45248171830,
+    "jobId": 137950375012,
+    "url": "https://github.com/Tyago03/DevStation/actions/runs/45248171830",
+    "conclusion": "success",
+    "image": "Windows Server 2025",
+    "typecheck": "PASS",
+    "lint": "PASS",
+    "unitTests": 50,
+    "integrationTests": 48,
+    "uiTests": 45,
+    "desktopTests": 13,
+    "desktopDuration": "1.5m",
+    "exactZipExtractedAndLaunched": true,
+    "packagedPersistence": "PASS",
+    "externalNodeAndGitRemovedFromPackagedTestPath": true,
+    "nativePromptsInWorkflowTests": "Stubbed confirmations/pickers; not human usability evidence"
+  },
+  "artifact": {
+    "id": 14855790588,
+    "containerSha256": "95f4f99cb2e4585212402ae2c24c7cf0bd5c68aae3a9ab6af0370e2f06d518cb",
+    "containerBytes": 175255049,
+    "containerVerifiedAfterDownload": true,
+    "zipName": "DevStation-0.2.1-windows-x64.zip",
+    "originalCiZipName": "DevStation-win32-x64-0.2.1.zip",
+    "zipSha256": "b826d48a45b32516466f95398806a029567ea6520f6088eb8621e48199bbe618",
+    "zipBytes": 175439941,
+    "zipChecksumMatchesCiManifest": true,
+    "renameOnly": true,
+    "exeSha256": "da5d37e6ae7125968261f597ddb163d11f9055ae5423fa10bca9b492b24a37fd",
+    "authenticodeStatus": "NotSigned"
+  },
+  "logs": {
+    "scope": "Main CI job log and PR job log; configured credential patterns only",
+    "configuredCredentialCandidates": 0,
+    "rawLogsPublishedInEvidence": false
+  },
+  "limits": [
+    "CI image acceptance is not universal Windows 11 acceptance.",
+    "Local candidate e9285ed1 is a different ZIP and was blocked by Windows signing policy.",
+    "No human study, Windows 10, physical offline or native display-scaling validation claimed."
+  ]
+}

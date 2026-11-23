@@ -2,9 +2,9 @@
 
 Changes are grouped by version. Historical preview milestones are not retroactively presented as public releases.
 
-## 0.2.1 — Pre-release in preparation
+## 0.2.1 — Pre-release, 2026-11-23
 
-Main-branch CI and publication are pending. The [intended v0.2.1 pre-release](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is not yet claimed as published. [RELEASE](docs/RELEASE.md) records exact source and artifact identities.
+[v0.2.1](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is published from tested main merge commit `57e30026e3da69d90c022d586b8eeb0328c0ecfc`, following [PR #1](https://github.com/Tyago03/DevStation/pull/1). The repository is public and GitHub Private Vulnerability Reporting is enabled and verified. [RELEASE](docs/RELEASE.md) records exact source and artifact identities.
 
 ### Changed
 
@@ -15,11 +15,11 @@ Main-branch CI and publication are pending. The [intended v0.2.1 pre-release](ht
 
 ### Fixed
 
-- Pre-publication inspection found development caches and generated SQLite gyp/MSBuild files carrying build-machine paths inside the application archive. Packaging now excludes development caches and removes non-runtime native build intermediates from Forge's staged copy while retaining `.node` bindings. Final archive privacy checks and packaged validation remain required for the rebuilt release candidate.
+- Pre-publication inspection found development caches and generated SQLite gyp/MSBuild files carrying build-machine paths inside preliminary application archives. Packaging now excludes development caches and removes non-runtime native build intermediates from Forge's staged copy while retaining `.node` bindings. The exact published ZIP passed application-archive and external-file privacy/notices checks and packaged execution in CI; the affected preliminary archives were not published.
 
 ### Validation and release status
 
-Twelve compiled desktop checks pass locally. The actual unsigned packaged EXE is blocked by Windows signing policy on this machine; compiled tests and screenshots do not replace that launch check. Main-branch CI and publishing remain pending. Full counts, source/artifact identities and evidence belong to [QA](docs/QA.md) and [RELEASE](docs/RELEASE.md). Existing v0.2.0 results are not reused as proof of v0.2.1 acceptance; the intended release remains Pre-release.
+[Main CI](https://github.com/Tyago03/DevStation/actions/runs/45248171830) passed 50 unit, 48 integration and 45 UI tests (143 total), plus 13 desktop checks on Windows Server 2025. Packaged checks extracted and launched the exact ZIP attached to the release. Locally on Windows 11, 12 compiled desktop checks passed and a separately built unsigned candidate was blocked by signing policy; that failure is not attributed to different release bytes. The release is marked Pre-release and includes the ZIP, BUILD.txt and SHA256SUMS.txt. [QA](docs/QA.md) and [RELEASE](docs/RELEASE.md) preserve exact identities and remaining limitations.
 
 ## 0.2.0 — Private preview milestone, 2026-11-23
 
