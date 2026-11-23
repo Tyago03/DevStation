@@ -1,0 +1,36 @@
+{
+  "scope": "Four real v0.2.1 compiled-desktop screenshots with synthetic demo/task data",
+  "independentVisualReview": "PASS: no personal profile paths or credential visible; no clipped controls/overlap observed",
+  "files": [
+    {
+      "file": "docs/screenshots/v0.2.1-demo.png",
+      "sha256": "e0d89d00f7e306bbe895666f85475e64006c4e833b47fc83b571f62c6614e36f",
+      "bytes": 57845,
+      "textOrExifMetadata": false,
+      "trailingBytes": 0
+    },
+    {
+      "file": "docs/screenshots/v0.2.1-help.png",
+      "sha256": "10b269344e537bb1b6268021b00bc3ee5515ea273ee852b03f023ffd99c34a06",
+      "bytes": 87022,
+      "textOrExifMetadata": false,
+      "trailingBytes": 0
+    },
+    {
+      "file": "docs/screenshots/v0.2.1-runs.png",
+      "sha256": "fe62ac93baf7cf517a2bad26ad400670dfe0157d69c0854b9f9f6f0df13f39c5",
+      "bytes": 64365,
+      "textOrExifMetadata": false,
+      "trailingBytes": 0
+    },
+    {
+      "file": "docs/screenshots/v0.2.1-welcome.png",
+      "sha256": "e777f5c8be75bd081f3aaece1901ba7cef3956640c96ea1364f61523302a120b",
+      "bytes": 113213,
+      "textOrExifMetadata": false,
+      "trailingBytes": 0
+    }
+  ],
+  "excluded": "Script review dialog screenshot with a personal temp-profile path remains ignored and is not published",
+  "limits": "Visual and PNG metadata review, not steganography analysis"
+}

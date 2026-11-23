@@ -10,6 +10,7 @@ This is a design and review checklist, not a certification. Recorded results are
 | Git inspection | Literal argv, time/output limits, optional locks off, fsmonitor disabled | Test hostile repository configuration and missing Git |
 | User task | Selected `.exe`, explicit confirmation, structured argv, controlled environment | The executable can act with the user's permissions |
 | Guided script | Native selection, canonical containment, bounded hash and revalidation | Only the selected file is fingerprinted; imports and simultaneous file replacement are not sandboxed |
+| Script update review | Saved-script identity, bounded same-handle UTF-8 preview/hash, configuration-bound single-use token and default-Cancel native confirmation | Preview is the current file, not an old/new diff. Revalidate after confirmation; authorization must not execute the task |
 | HTTP template | Fixed isolated Python module arguments and loopback binding | Files in the chosen folder are served to local software; only a trusted interpreter should be selected |
 | Stop | In-memory run ownership and process handle | Windows child processes may survive; do not claim tree termination |
 | Close | Stop results verified; uncertain runs retained; separate Quit anyway confirmation | Choosing to leave can intentionally leave owned tasks/children running |
@@ -36,7 +37,11 @@ Do not use `taskkill /F /T`, `shell: true`, generic `exec()`, or a fallback shel
 
 Do not inspect `.env`, credentials, SSH keys, or project source contents for features outside the requested scope. Do not print the full environment, PATH, tokens, or remote URLs. Git metadata and task logs may still contain user-provided text; keep them local and review any evidence before sharing it.
 
-The v0.2 guided-script feature reads only the explicitly selected in-project script, up to 10 MiB, to compute SHA-256. Contents are neither returned through IPC nor stored in SQLite. This is a change-detection check, not a security audit of source/imports. The native picker grants selection authority; renderer-supplied path/hash metadata alone does not authorize a new script selection.
+The guided-script feature reads only the explicitly selected in-project script, up to 10 MiB, to compute SHA-256. The native picker grants initial selection authority; renderer-supplied path/hash metadata alone does not authorize a new script selection.
+
+In v0.2.1 an explicit review of an already saved script can return its current contents to the local renderer, limited to complete valid UTF-8 text of at most 256 KiB, without NUL bytes. The preview uses the same handle for reading and hashing, verifies file identity before/after the read and rechecks canonical containment. The source is neither uploaded nor stored in SQLite, and no previous source snapshot is retained. This is a change-detection and authorization flow, not a security audit of the script or its imports.
+
+Review tokens expire after five minutes, are bound to a configuration snapshot, are single-use even on cancellation, and are held only in main-process memory. Confirmation defaults to Cancel. Path, file identity, fingerprint and configuration/arguments are checked again before saving; changed or expired reviews must be repeated. Saving the new fingerprint does not execute the task. A final filesystem race remains possible when an interpreter later opens the file.
 
 Screenshots, tests, and CI artifacts use synthetic repositories only. Application databases, production logs, and user project files are excluded from version control. There are no analytics, cloud endpoints, automatic software installation, or automatic runs in P0.
 

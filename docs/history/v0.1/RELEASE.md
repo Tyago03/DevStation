@@ -1,5 +1,7 @@
 # Windows release procedure
 
+Archived v0.1 record. Results and pending checks below describe that historical milestone; consult [current QA](../../QA.md) for newer evidence.
+
 Version: **0.1.0 functional preview**. Distribution format: **unsigned Windows x64 ZIP**. **The final local executable is blocked by Smart App Control; local distribution acceptance is incomplete.** The current Windows CI passes all checks, and an earlier local package demonstrated the core workflow. Those results do not override the current local signing-policy block. No protection was bypassed and no public release is authorized.
 
 Source `96e6c45abfd007d5d9d47bea2753022df002050b` passes type checking, lint, 53 distinct local unit/integration/React checks (19 unit, 19 integration, 15 React), the expanded compiled desktop workflow (3.7 seconds), and the compiled security check (1.1 seconds). These counts combine completed suites; the last aggregate local run preceded two additional UI cases. [Windows CI run 44960251660](https://github.com/Tyago03/DevStation/actions/runs/44960251660), job 137017251900, independently passes all 53 tests, all 3 desktop tests (20.5 seconds), Windows packaging, checksums, and private artifact upload. The current source was rebuilt as a Windows ZIP; its packaged executable is blocked locally. Historical baseline results remain separately identified below and in [QA.md](QA.md).
@@ -20,11 +22,11 @@ Source `96e6c45abfd007d5d9d47bea2753022df002050b` passes type checking, lint, 53
 | SHA-256 | `e74cb698644cba853c62eb7abd57034c4600ac7a2da77667f2b25b541f5936fe` |
 | Local launch | Blocked by Smart App Control signing policy; packaged test reports `spawn UNKNOWN` |
 
-This hash applies to the final local ZIP and its renamed Downloads copy; a [checksum manifest](SHA256SUMS.txt) is included for the Downloads filename. [Machine-readable evidence](evidence/local-build.json) records the source, artifact, local policy block, and successful CI run. It does not identify the CI-built archive's bytes, which have their own checksum manifest. A checksum is not a signature or proof of publisher trust. This ZIP has no installer.
+This hash applies to the final local ZIP and its renamed Downloads copy; a [checksum manifest](SHA256SUMS.txt) is included for the Downloads filename. [Machine-readable evidence](../../evidence/local-build-96e6c45.json) records the source, artifact, local policy block, and successful CI run. It does not identify the CI-built archive's bytes, which have their own checksum manifest. A checksum is not a signature or proof of publisher trust. This ZIP has no installer.
 
 Windows Code Integrity events **3033 and 3077**, recorded at **2026-11-21T23:08:06–08Z**, identify rejection of the rebuilt unsigned executable's signing level. No signing certificate was introduced and no security policy was changed. Trusted signing/distribution work and a new local launch check are still needed.
 
-The previous blocked baseline ZIP (`ed3b5db`, SHA-256 `bab21b30886079127d765686550d54d2f22eaa4e4bd8c69c8fd537faefc8a5a1`, 176,611,525 bytes) has a preserved [historical evidence record](evidence/local-build-ed3b5db.json). It differs from the current archive above.
+The previous blocked baseline ZIP (`ed3b5db`, SHA-256 `bab21b30886079127d765686550d54d2f22eaa4e4bd8c69c8fd537faefc8a5a1`, 176,611,525 bytes) has a preserved [historical evidence record](../../evidence/local-build-ed3b5db.json). It differs from the current archive above.
 
 ## Current private CI artifact
 

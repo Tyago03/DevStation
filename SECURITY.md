@@ -1,17 +1,28 @@
 # Security policy
 
-DevStation is a development preview; the v0.2 cycle is in progress. No supported public binary release or complete acceptance has been declared. The recorded local unsigned v0.1 package is blocked by Smart App Control. Keep Windows protections enabled and check [QA](docs/QA.md) and [release evidence](docs/RELEASE.md) for the exact source/artifact status.
+DevStation is pre-release desktop software. The v0.2.1 candidate is undergoing final CI/publication checks; no published release is claimed yet. Consult its [validation record](docs/QA.md) and [artifact identity](docs/RELEASE.md). No long-term support or response-time guarantee is currently offered.
 
-## Reporting a vulnerability
+## Report a vulnerability privately
 
-Do not disclose vulnerability details, tokens, private project paths, database files or raw task logs in public issues, pull requests or discussions.
+The intended confidential route is [GitHub: Report a vulnerability](https://github.com/Tyago03/DevStation/security/advisories/new). **Private Vulnerability Reporting is being configured and must be verified as part of the initial public release. Availability is not yet claimed.** If the private form is unavailable, do not publish sensitive details in issues, pull requests or discussions.
 
-The intended public intake is [GitHub private vulnerability reporting](https://github.com/Tyago03/DevStation/security/advisories/new), **once enabled and verified**. As of 2026-11-23 this repository remains private, and no public confidential intake or monitored security email is claimed. GitHub documents private vulnerability reporting for public repositories; the reporting channel remains an explicit [publication gate](docs/PUBLICATION_CHECKLIST.md). If the private report form is unavailable, do not post sensitive details elsewhere. The maintainer must establish and verify a confidential route as part of the publication plan. No response-time guarantee is currently offered.
+Once the private route is available, include:
 
-When a verified private channel is available, include the affected commit/version, Windows version, expected versus observed behavior, impact and a minimal synthetic reproduction. Avoid personal or customer data. Do not run tests against unrelated projects, expose other users' data or terminate external processes to demonstrate a report. Coordinate disclosure privately before publishing technical details.
+- Affected version or commit and Windows version.
+- Expected behavior, observed behavior and security impact.
+- Minimal reproduction steps using synthetic files and projects.
+- Any relevant mitigation, without private credentials or customer data.
 
-## Trust boundaries
+Do not attach personal databases, real project contents, environment files or raw private task logs. Test only systems and fixtures you are authorized to use, and coordinate disclosure privately before publishing technical details.
 
-The application can run an executable chosen by its user. That executable runs with the user's permissions; DevStation is not a sandbox for untrusted code. Do not use it to execute projects you do not trust.
+## Trust model
 
-Security boundaries, residual risks, and verification requirements are described in [docs/SECURITY.md](docs/SECURITY.md). The actual verification status is in [docs/QA.md](docs/QA.md).
+DevStation runs programs chosen by its user with that user's Windows permissions. It is not a sandbox for untrusted code. Review projects and executables before starting a task.
+
+Guided-script checks detect changes to the selected file and require a separate authorization before an updated version can be saved. They do not audit imports, eliminate every filesystem race or make the selected code safe. Save and authorization do not execute the script.
+
+Stop is limited to the process owned by the current session; descendants may remain. Unknown status is not evidence of termination. Restarting the app does not restore authority over old processes.
+
+The Windows ZIP is unsigned, and the current packaged EXE is blocked locally by Windows signing policy. Twelve passing compiled desktop checks do not override that result. When a release is published, verify its SHA-256 and follow your machine's software policy. Keep Windows protections enabled; neither a successful test nor a checksum establishes publisher trust.
+
+See the [security design](docs/SECURITY.md) for Electron, IPC, path, process and storage boundaries. [QA](docs/QA.md) states what was actually exercised and what remains untested.

@@ -1,56 +1,56 @@
-# Source-publication preparation
+# Publication and pre-release checklist
 
-Reviewed: **2026-11-23**. Repository: **Tyago03/DevStation, private**. Validated v0.2 source: `3092f81a37b575296e9e7afdef8d6e990cfe49c6` on `codex/v0.2-guided-workspace`. Status: **private technical milestone validated; full acceptance and publication remain open**.
+Reviewed: **2026-11-23**. Target: **v0.2.1 pre-release**, Windows x64 ZIP and open-source repository. The owner explicitly authorized merging to main, changing visibility to Public and publishing this release **after satisfactory security/privacy and final validation**. No additional general publication approval is missing. History rewriting, signing purchases and changes to Windows protections are not authorized.
 
-This checklist prepares a future source-only milestone. It does not authorize changing visibility, publishing binaries, rewriting history, buying signing services or modifying Windows protections. A green build does not resolve privacy, usability or distribution gates.
+Current status: **12 local compiled desktop checks PASS; actual packaged EXE blocked by local Windows signing policy; main CI and publication pending**. The v0.2.0 private milestone remains historical evidence. The [intended v0.2.1 pre-release](https://github.com/Tyago03/DevStation/releases/tag/v0.2.1) is not claimed as published. [Current QA](QA.md) · [Release record](RELEASE.md) · [Documentation index](README.md)
 
-## Current audit and reproducibility
+## Initial privacy and security review
 
-`python scripts/audit-publication.py` scans current tracked/nonignored files and text blobs reachable from all local refs. It saves only finding categories, relative locations, commit/blob IDs and redacted values in [publication-scan.json](evidence/publication-scan.json). It does not print matched secrets or read other repositories. Rerun it on the final proposed source commit; an in-progress tree is not a permanent clearance.
+The read-only scan at source `706fc9b` covered eight reachable commits, 208 unique historical blobs and 127 tracked/nonignored current files. It found **zero configured secret-pattern candidates**. Eight content-email occurrences are synthetic test addresses; the shared Public fixture path in `v0.2-native-review.json` appears in current/history scope. No tracked EXE, ZIP, database, private log or key file was found. This is bounded pattern review, not a guarantee that no secret exists.
 
-The latest scan's source identity and coverage counts are recorded in [publication-scan.json](evidence/publication-scan.json). No configured secret pattern matched in the recorded scan. This is a bounded heuristic result, not proof that no secret exists. Checks include private-key markers, common provider tokens, credential assignments/URLs, suspicious filenames, email addresses and user-home paths. Binary contents require separate review; ignored outputs, unreachable objects and reflogs are outside the scan. Rerun after the final documentation changes and before any publication decision.
+The one non-noreply address used by author/committer metadata was compared in memory with anonymously accessible GitHub commit metadata. An exact existing public match was confirmed; the address itself is not copied into evidence. It is already-public authorship attribution, not an unresolved exclusively private fact or credential. The prior email review gate is therefore resolved without rewriting history. [Redacted audit and public comparison source](evidence/v0.2.1-publication-audit.json).
 
-GitHub recognizes the root license as **MIT**. Three historical Actions runs were reviewed using redacted token-pattern scans: successful jobs `137017251900` and `137003299131`, and failed job `137002255227`. No configured secret or email pattern matched; eight home-path occurrences in the failed run were hosted-runner/public profiles after ANSI normalization. See [historical Actions scan evidence](evidence/publication-actions-review.json).
+At the initial audit, eight historical binary blobs corresponded to two icon files and six screenshots. Those captures and the PNG logo were inspected; PNG text/EXIF metadata chunks and trailing data were absent. Four newer v0.2.1 captures—workspace, Runs, Help and demo—were also visually reviewed: synthetic data and no visible personal path or credential. They show the compiled application, not a successful packaged-EXE launch. This is not steganography analysis.
 
-The current private-branch [CI run 45233998754](https://github.com/Tyago03/DevStation/actions/runs/45233998754) independently confirms the validated source, **98 unit/integration/UI tests and 11 desktop checks passed**. Its complete job log contained 40,392 characters; the configured credential, email and home-path patterns returned zero candidates. Raw logs were not copied into the repository. [Current CI evidence](evidence/v0.2-ci.json) records durations and private artifact metadata. The CI artifact digest identifies its container, not the local application ZIP. Recheck new runs, branches, tags, artifacts and PR/discussion content before publication.
+Subsequent inspection of generated packages found development-cache and SQLite gyp/MSBuild files containing build-machine paths. Packaging fixes exclude the caches and strip non-runtime intermediates from the staged copy. The earlier zero-candidate source/log scans did not cover that generated content. Final exact-archive clearance is a separate gate recorded in [QA](QA.md), [RELEASE](RELEASE.md) and the audit evidence; no older CI archive is assumed clean from its log scan alone.
 
-### Finding requiring a privacy decision
+The root MIT license remains unchanged. Nine production dependency entries match the recorded inventory. `npm audit --json` returned zero known advisories across all severities on this review date; the final package must still include and verify its own original MIT, Electron, Chromium and dependency notices.
 
-Author and committer email metadata in the reviewed history, including the validated source commit, is **not a GitHub noreply address**. Values are deliberately `[REDACTED]`; the exact commit locations appear in the scan report. This is a publication review item, not evidence of a credential leak. The owner must decide whether that existing attribution may become public or whether a separately authorized history-remediation plan is needed. No history rewrite or credential rotation has been performed. The existing copyright name in LICENSE is intentional authorship attribution and remains unchanged.
+Initial Electron/privileged-source inspection confirmed isolation, sandbox/CSP, narrow typed IPC with sender/schema checks, native-selection authority, path/fingerprint validation, explicit confirmations, session ownership, hardened production fuses and read-only CI permissions. Independent read-only review of the new v0.2.1 review/outcome flow found no actionable blocker. The 12 local compiled desktop checks pass; exact automated-suite counts and remaining package/CI results belong to QA. Neither inspection nor an audit database certifies absence of defects.
 
-If a real secret is discovered later, first coordinate revocation/rotation and impact review. Deleting it in a new commit does not remove it from history. Any destructive history remediation and force-push require a concrete, reviewed plan and authorization.
+## Release gates
 
-## Checklist
-
-PASS applies only to the described scope. NOT RUN or OPEN means the gate still needs evidence or a decision.
+PASS is limited to the stated scope. PENDING means final evidence or the actual operation is still required.
 
 | Gate | Status | Evidence / next action |
 | --- | --- | --- |
-| Repository stays private | PASS | GitHub repository metadata on 2026-11-23; no visibility mutation performed |
-| Current and historical text scan | PASS, bounded | Source identity, coverage and zero configured secret candidates in publication-scan.json; repeat on final target |
-| Commit-author privacy | OPEN | Non-noreply author/committer addresses remain in reviewed history; owner decision required before exposure |
-| Binary screenshots/resources | PASS, reviewed baseline | Three screenshots and icon reviewed; synthetic projects, Public Documents fixture paths, no personal username/token visible. This is visual inspection, not steganography analysis |
-| v0.2 screenshots | PASS, visual/privacy review | Actual compiled v0.2 welcome/help/demo captures use synthetic data and were visually checked without personal data visible. [Screenshot identities and preparation](evidence/v0.2-screenshots.json). These are not packaged-EXE acceptance evidence |
-| Root license | PASS | One root LICENSE, MIT text and existing copyright preserved; package declares MIT; GitHub metadata reports SPDX MIT |
-| Dependency notice inventory | PASS, installed source scope | Nine production package entries still match the recorded names/versions/licenses; complete installed notice texts occur in THIRD_PARTY_NOTICES.txt; [review snapshot](evidence/publication-dependency-review.json) |
-| New package notices | PASS, final local package | Original MIT resources/LICENSE matches the root LICENSE exactly; Electron LICENSE, LICENSES.chromium.html and resources/THIRD_PARTY_NOTICES.txt are present. Exact local ZIP identity is recorded in RELEASE |
-| Dependency vulnerabilities | PASS, database snapshot only | `npm audit --json` on 2026-11-23 returned zero advisories across all severities. This is not a guarantee against undisclosed defects |
-| Ignore rules | PASS, source review | Rules cover dependency/build/test outputs, .env, SQLite/databases, logs, loose ZIP/EXE/MSI files, PFX/P12/PEM/key material, dumps and Python caches. Keep local captures inside ignored output directories; explicitly review approved documentation screenshots |
-| Actions permissions | PASS, source review | `contents: read`, pinned action commits, checkout credentials not persisted; no publish job or signing secrets configured |
-| Actions output/privacy | PASS, recorded run scope | Three historical jobs plus current job 137900734248 scanned with no credential candidates. Upload paths are build ZIPs/evidence; current artifact metadata reviewed, contents not downloaded by the log reviewer. Review subsequent output separately |
-| Contributor documentation | PASS, preparation | CONTRIBUTING.md describes tests, safe fixtures, reporting and scope |
-| Change history | PASS, preparation | CHANGELOG.md has an Unreleased v0.2 section; no new tag or public release asserted |
-| Security contact | OPEN | No verified public confidential intake is active while private. SECURITY.md states the limitation and planned GitHub private-report route; verify/enable an approved channel before publication |
-| Help and public documentation | PASS behavior; final editorial review open | Bundled searchable help, optional tour and demo passed compiled desktop checks, including Chromium offline simulation. Recheck final README, examples and links before publication |
-| v0.2 private technical milestone | PASS, stated scopes | Source 3092f81: local 98 tests/11 E2E and matching CI passed. Actual unsigned package passed native pickers, Save-without-start, confirmed Start/logs/loopback Ports/Stop, close/reopen persistence and final exit. Full native keyboard, Windows DPI, physical offline and usability remain separate |
-| Human usability study | NOT RUN | Protocol and blank P01-P05 sheets in USABILITY_STUDY.md; no results invented |
-| Signing/distribution | OPEN | Current unsigned v0.2 package launches and completes the recorded native workflow locally. Earlier SAC failures concern v0.1 only. Trusted signing, broader Windows validation and distribution approval remain open; see SIGNING_OPTIONS.md |
-| Owner public-visibility approval | NOT GIVEN | Final review and explicit authorization required before Private becomes Public |
+| Owner authorization | GIVEN, conditional | Explicit request covers public visibility, main integration and v0.2.1 pre-release after satisfactory checks |
+| Initial current/history privacy scan | PASS, bounded | Source 706fc9b, eight commits/208 blobs/127 files; zero secret candidates; generated-package findings are recorded separately |
+| Author/committer email classification | RESOLVED | Exact address already appears in public GitHub commit metadata; retain attribution and history |
+| Final current/history scan | PENDING | Run `python scripts/audit-publication.py` after final source/docs changes and classify every candidate without exposing values |
+| Existing screenshots/icons | PASS, reviewed scope | Synthetic screenshots; no personal data visible; PNG metadata review recorded |
+| v0.2.1 screenshots | PASS, visual scope | Four actual compiled captures with synthetic data reviewed; source/runtime/hash belong to the screenshot evidence. Not packaged-launch proof |
+| Root license | PASS | Original MIT text/name preserved; one root LICENSE |
+| Dependency inventory/audit | PASS, review snapshot | Recorded names/versions/licenses unchanged; zero known npm advisories at review; recheck dependency changes |
+| Final package notices | PENDING | Verify original MIT resources/LICENSE matches root; retain Electron LICENSE, Chromium and third-party notices in exact ZIP |
+| Privileged changes and regressions | PASS reviewed/compiled scope | Independent source review found no actionable blocker; compiled workflows verify separate authorization/Start and evidence-based outcomes. Full test evidence belongs to QA |
+| Local compiled desktop checks | PASS | 12 checks; actual static/unit/integration/UI counts are recorded separately in QA |
+| Exact packaged native workflow | BLOCKED LOCALLY | Current unsigned EXE is rejected by Windows signing policy; compiled tests/screenshots do not override this result |
+| Final archive privacy and package checks | PENDING final record | Verify exact rebuilt ZIP/ASAR after the cache/intermediate fixes, including packaged runtime/notices; source/log scans alone are insufficient |
+| Main integration and CI | PENDING | Preserve development commits, preferably merge by PR, and verify CI for final main |
+| CI permissions and output | PASS existing design; final output pending | contents:read, pinned actions, checkout credentials not persisted; scan new logs and inspect intended uploads |
+| Confidential reporting | PENDING | Enable and verify GitHub Private Vulnerability Reporting as part of the authorized public transition; update SECURITY.md only after confirmation |
+| Public visibility | AUTHORIZED; NOT YET VERIFIED | Change only after final checks are satisfactory; record actual repository state |
+| GitHub pre-release and assets | AUTHORIZED; NOT YET VERIFIED | Tag/version/source, unsigned Windows ZIP, SHA-256 manifest, requirements and limits must match tested bytes |
+| Human usability / Windows 10 / display scaling / physical offline | NOT RUN in complete scopes | Disclose in QA and pre-release limits; do not imply agent/Chromium checks replace these observations |
+| Trusted code signing | NOT PERFORMED | Keep unsigned status explicit; no paid enrollment or policy bypass |
 
-## Final source-only review packet
+## Final review packet
 
-Before requesting publication approval, prepare a concrete packet: proposed commit/tag, final source diff, current CI URL, license/notices review, current/historical privacy findings with decisions, verified reporting channel, screenshots, honest README/QA/release status and results of any human study. Review all public-facing links and GitHub history/Actions/artifact exposure. Explain any remaining gates instead of calling the whole v0.2 cycle complete.
+Retain the final source/main commit, CI URL, exact local and uploaded artifact hashes, license/notices checks, redacted privacy classifications, screenshot provenance, confidential-reporting verification and release URL. Review intended public Actions/artifact exposure. A CI artifact-container digest is not the application ZIP checksum.
 
-For GitHub private vulnerability reporting, current official documentation describes availability on **public repositories**. The repository metadata confirms private visibility; it does not prove an intake form is enabled. No feature was toggled. After an authorized public transition, an owner must enable and test the intended report route, or establish another verified confidential route as part of the coordinated publication plan. Do not invent an email address or promise response times. [GitHub reporting configuration](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository).
+The intended release will be marked **Pre-release**, not stable or fully validated for every environment. The current local package is blocked by signing policy; successful compiled checks or another machine's launch cannot erase that observation. Keep source/runtime evidence, simulated conditions and native observations distinct.
 
-Do not publish a Windows download as an official ready binary unless its exact signed/distributed bytes have their own approved validation record. Keep CI archive hashes, application ZIP hashes, source commits and signing status distinct. Source publication, release tagging, binary distribution and spending are separate decisions.
+If a new confidential finding appears, stop only publication, explain the affected file/commit without revealing its value, and propose a concrete remedy. Do not silently rewrite history, force-push, rotate credentials or weaken protections. Already-public authorship metadata does not by itself require destructive remediation.
+
+GitHub documents Private Vulnerability Reporting for public repositories. Root will verify the configured state during the coordinated public transition before claiming availability in SECURITY.md. Do not invent a security email or response-time promise. [Official configuration guidance](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository).

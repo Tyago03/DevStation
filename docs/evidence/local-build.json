@@ -1,22 +1,18 @@
 {
-  "sourceCommit": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
-  "version": "0.2.0",
-  "filename": "DevStation-win32-x64-0.2.0.zip",
-  "downloadsFilename": "DevStation-0.2.0-3092f81-windows-x64.zip",
-  "bytes": 175781625,
-  "modifiedUtc": "2026-11-23T18:02:23.9794879Z",
-  "sha256": "2e38b79ae2e5aa59d78bdd77370cc716db67cdfb71617c4ce3f7bad013e0a882",
-  "downloadsCopySha256": "2e38b79ae2e5aa59d78bdd77370cc716db67cdfb71617c4ce3f7bad013e0a882",
+  "version": "0.2.1",
+  "sourceCommit": "98fe037b174cd6cf7b255ee451a38404b4be58ed",
+  "purpose": "Local candidate only; not the final release asset",
+  "filename": "DevStation-win32-x64-0.2.1.zip",
+  "bytes": 175439794,
+  "sha256": "e9285ed17e81aba3c44acd140c1f648633aaeae90a053d03d91297ef1e3405f6",
   "authenticode": "NotSigned",
-  "executableSha256": "571d8dd217575915ba6312566a741c8ee94181ff69322693bd4205fe94dcfa6c",
-  "localFinalPackagedLaunch": "PASS",
-  "localNativeWorkflow": "PASS; real dialogs, guided Python task, log/PID/port, Stop and restart persistence",
+  "localFinalPackagedLaunch": "FAIL: Windows signing-level policy; CodeIntegrity events 3033/3077",
   "localAutomated": {
-    "tests": 98,
-    "files": 11,
-    "durationSeconds": 23.81,
-    "desktopTests": 11,
-    "desktopReportedDuration": "1.1m",
+    "tests": 143,
+    "files": 13,
+    "durationSeconds": 27.96,
+    "desktopPassed": 12,
+    "desktopFailed": 1,
     "typecheck": "PASS",
     "lint": "PASS"
   },
@@ -25,50 +21,7 @@
     "privileges": "unelevated",
     "policyChanged": false
   },
-  "packagedNotices": {
-    "checkedInsideZip": true,
-    "originalMitMatchesRoot": true,
-    "entries": [
-      {
-        "path": "LICENSE",
-        "bytes": 1096,
-        "sha256": "5154e165bd6c2cc0cfbcd8916498c7abab0497923bafcd5cb07673fe8480087d"
-      },
-      {
-        "path": "LICENSES.chromium.html",
-        "bytes": 5705935,
-        "sha256": "7dac8267ac6da8d959cfe88f5f055b18a397f10230380b5329125e167bf5639b"
-      },
-      {
-        "path": "resources/LICENSE",
-        "bytes": 1080,
-        "sha256": "e22cd6a6268df899c3089f6c983cb4bb3682248a5b1993b480054a26bec4c62f"
-      },
-      {
-        "path": "resources/THIRD_PARTY_NOTICES.txt",
-        "bytes": 12573,
-        "sha256": "ea68390a9359e096160a37ecbd450b1af6b0e9d52c4ca23d97c845f314926c35"
-      }
-    ]
-  },
-  "ci": {
-    "conclusion": "success",
-    "url": "https://github.com/Tyago03/DevStation/actions/runs/45233998754",
-    "jobId": 137900734248,
-    "unitTests": 42,
-    "integrationTests": 28,
-    "uiTests": 28,
-    "desktopTests": 11,
-    "artifactId": 14848631749,
-    "artifactContainerBytes": 175456916,
-    "artifactContainerSha256": "c74389937115d191ed1b728624c7a86df7cf31d8e08a61c0d645e47f08accedb",
-    "artifactContainerIsNotLocalZip": true
-  },
-  "limitations": [
-    "Private preview only; no release/tag created.",
-    "Local unsigned launch PASS does not guarantee other host-policy acceptance.",
-    "Historical v0.1 SAC failures remain recorded separately; no cause for changed acceptance established.",
-    "CI artifact-container digest is not the application ZIP checksum.",
-    "Human study, Windows 10, Windows display scaling, physical offline and trusted distribution remain open."
-  ]
+  "packagePrivacyAudit": "v0.2.1-package-audit.json",
+  "historicalV020": "local-build-3092f81.json",
+  "finalReleaseEvidence": "See the release BUILD.txt and SHA256SUMS.txt for the exact published CI artifact."
 }

@@ -1,0 +1,167 @@
+{
+  "reviewedDate": "2026-11-23",
+  "sourceCommitAtInitialReview": "706fc9b7e44c07161ddf42a208ad2eaf846e930c",
+  "phase": "Source review and local package privacy validation complete; final main CI artifact and publication pending",
+  "repository": "Tyago03/DevStation",
+  "visibilityAtReview": "private",
+  "ownerPublicReleaseAuthorization": "Explicit, conditional on satisfactory safety/privacy and final validation; no history rewrite authorized",
+  "textScan": {
+    "reachableLocalCommits": 8,
+    "uniqueHistoricalBlobs": 208,
+    "workingTreeFilesExamined": 127,
+    "secretPatternCandidates": 0,
+    "authorEmailOccurrences": 8,
+    "committerEmailOccurrences": 8,
+    "contentEmailOccurrences": 8,
+    "contentEmailClassification": "Synthetic example addresses in test fixtures, repeated across current/history scope",
+    "homePathOccurrences": 2,
+    "homePathClassification": "One shared Public profile path used by a synthetic fixture in docs/evidence/v0.2-native-review.json:19, repeated in current/history scope",
+    "matchedValues": "[REDACTED]",
+    "trackedSensitiveFileExtensions": []
+  },
+  "commitEmailReview": {
+    "distinctAddresses": 1,
+    "githubNoreply": false,
+    "publicProfileEmailPresent": false,
+    "anonymousPublicCommitSearch": {
+      "query": "author:Tyago03",
+      "totalResultsReported": 116,
+      "resultsExamined": 100,
+      "exactAddressMatches": 1,
+      "matchingRoles": [
+        "author",
+        "committer"
+      ],
+      "publicEvidenceUrl": "https://github.com/Tyago03/Ayla/commit/16dbb046af7cfe6e407d37cf55918735eb5a6338"
+    },
+    "classification": "Existing public authorship attribution, not a credential or an exclusively private address",
+    "publicationFinding": "No privacy blocker identified solely from this already-public address; retain attribution without rewriting history",
+    "value": "[REDACTED]"
+  },
+  "binaryReview": {
+    "historicalUniqueBinaryBlobs": 8,
+    "allCorrespondToCurrentFiles": true,
+    "files": [
+      "assets/icon.ico",
+      "assets/icon.png",
+      "docs/screenshots/overview.png",
+      "docs/screenshots/project-git.png",
+      "docs/screenshots/runs.png",
+      "docs/screenshots/v0.2-welcome.png",
+      "docs/screenshots/v0.2-help.png",
+      "docs/screenshots/v0.2-demo.png"
+    ],
+    "visualResult": "Six screenshots and PNG logo independently viewed; only synthetic projects/Public fixture locations visible, no personal profile path or credential visible",
+    "pngTextOrExifMetadataChunks": 0,
+    "pngTrailingBytes": 0,
+    "icoImageCount": 1,
+    "icoTrailingBytes": 0,
+    "limitation": "Visual/metadata inspection is not steganography analysis; final v0.2.1 screenshots require their own review"
+  },
+  "licensesAndDependencies": {
+    "rootLicenseFiles": [
+      "LICENSE"
+    ],
+    "license": "MIT",
+    "rootLicenseSha256": "e22cd6a6268df899c3089f6c983cb4bb3682248a5b1993b480054a26bec4c62f",
+    "productionInventoryEntries": 9,
+    "inventoryMatchesCurrentLockNamesVersionsLicenses": true,
+    "npmAuditCommand": "npm audit --json",
+    "npmAuditExitCode": 0,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependenciesReported": {
+      "prod": 10,
+      "dev": 344,
+      "optional": 35,
+      "peer": 11,
+      "peerOptional": 0,
+      "total": 353
+    },
+    "finalV021PackageNotices": "Local candidate verified byte-for-byte; final CI asset pending"
+  },
+  "sourceSecurityReview": {
+    "scope": "Initial source and final v0.2.1 script-review/exit-outcome changes reviewed independently; no actionable blocker found. Includes post-confirm canonical executable/cwd guards.",
+    "observedControls": [
+      "Local production renderer with restrictive CSP, sandbox, context isolation, disabled renderer Node and web security enabled",
+      "Window/navigation/webview denial and permission-request/check denial",
+      "Narrow typed preload, exact sender/top-level-frame checks and strict payload schemas",
+      "Native file-selection authority, canonical containment, bounded script fingerprint and pre-start revalidation",
+      "Explicit confirmation, shell:false, in-memory run ownership and no arbitrary-PID termination API",
+      "Production Node/inspect/environment-option fuses disabled; ASAR-only loading and integrity validation configured",
+      "CI contents:read, immutable action references and checkout credentials not persisted"
+    ],
+    "residualLimits": [
+      "Tasks run with the user's permissions; selected-script fingerprinting does not audit imports or sandbox executables",
+      "Filesystem changes between final validation and interpreter access remain possible",
+      "Unsigned artifacts do not establish publisher identity or universal Windows policy acceptance"
+    ]
+  },
+  "subsequentPackagePrivacyReview": {
+    "findingStatus": "FIXED and independently verified in local candidate 98fe037; final CI asset still requires exact-byte validation",
+    "reportedBy": "Root agent inspecting the actual locally built package",
+    "scope": "Generated app.asar and staged native dependency build metadata; outside the initial tracked-source scan",
+    "findings": [
+      {
+        "category": "Development cache included in runtime archive",
+        "location": "node_modules/.vitest-cache inside app.asar",
+        "privateDataType": "Absolute developer home/checkout paths in cached development content",
+        "values": "[REDACTED]",
+        "fixCommit": "f4b19972daf30ea89bdb05238fd067f77aceb7d6",
+        "fix": "Exclude node_modules .vitest-cache, .vite, .cache and .bin directories while copying the package"
+      },
+      {
+        "category": "Generated SQLite build intermediates included in runtime archive",
+        "observedFiles": 11,
+        "location": "node_modules/better-sqlite3/build",
+        "privateDataType": "Absolute build-machine paths in gyp/MSBuild intermediate files",
+        "values": "[REDACTED]",
+        "fixCommit": "98fe037b174cd6cf7b255ee451a38404b4be58ed",
+        "fix": "After Forge pruning and before ASAR creation, remove non-.node files only from the staged better-sqlite3 build directory; preserve runtime native bindings"
+      }
+    ],
+    "independentHookReview": {
+      "mode": "Read-only source review; no build, application, test or cleanup operation executed by this reviewer",
+      "result": "No actionable blocker found for the trusted Forge staging invocation",
+      "observedControls": [
+        "Resolve Forge stage to a canonical path and reject the source checkout itself",
+        "Target only staged node_modules/better-sqlite3/build, not the source dependency directory",
+        "Reject redirected/non-directory build roots and symbolic-link entries",
+        "Validate relative containment before visiting each staged entry",
+        "Unlink only non-.node regular files; preserve .node runtime files"
+      ],
+      "scopeLimit": "The hook is a packaging operation over a trusted stage, not an atomic filesystem-race defense against concurrent malicious stage mutation"
+    },
+    "regressionAdded": "Packaged checks reject development caches and generated build metadata, and scan app.asar for the build home/checkout paths in ordinary, slash-normalized and escaped UTF-8 plus UTF-16LE forms",
+    "regressionResultForFinalRebuild": "Local archive content assertions passed; packaged launch blocked by host signing policy",
+    "finalExactArchivePrivacyScan": "Local candidate PASS, evidence in v0.2.1-package-audit.json; final CI asset pending",
+    "historicalScope": {
+      "priorLocalV020Zip": "Private Downloads/build artifact; never publicly distributed according to the release record",
+      "priorCiArtifactContents": "Not independently audited by the earlier log review; do not infer safe archive contents from zero log-scan matches",
+      "priorCiLogs": "The recorded log-pattern scan found zero credential candidates; this statement is limited to logs"
+    }
+  },
+  "publicationGates": {
+    "initialTrackedSourcePrivacyBlockerFound": false,
+    "subsequentPackagePrivacyFindingFound": true,
+    "finalPackagePrivacyClearance": "PENDING after cache/intermediate exclusion fixes; do not publish the affected preliminary archive",
+    "finalSourceAndNewScreenshots": "Source scan 98fe037: zero configured credential candidates; four new screenshots independently reviewed, PNG metadata checked",
+    "finalMainCiAndExactPackage": "Pending v0.2.1 validation",
+    "confidentialReporting": "Private Vulnerability Reporting planned; root must enable and verify before claiming availability",
+    "visibilityAndRelease": "Authorized conditionally; not performed by this review"
+  },
+  "limitations": [
+    "Pattern matching is not proof that no secret exists",
+    "Only reachable local refs and tracked/nonignored current files were scanned; ignored outputs, reflogs, unreachable objects and remote-only refs are outside that scan",
+    "Public commit comparison read anonymous GitHub metadata only; no private repository or credential store was searched",
+    "Raw email/token/path matches were not copied into this evidence",
+    "Zero configured credential candidates in tracked source or CI logs does not establish absence of private paths/content in ignored build output or release archives",
+    "Final publication clearance requires rescanning the exact rebuilt artifact after the recorded packaging fixes"
+  ]
+}

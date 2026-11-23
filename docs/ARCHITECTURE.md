@@ -1,6 +1,6 @@
 # Architecture
 
-The implementation targets Windows x64 first. This document describes the v0.2 preview; test outcomes belong in [QA.md](QA.md).
+The implementation targets Windows x64 first. This document describes the v0.2.1 pre-release implementation; test outcomes belong in [QA.md](QA.md).
 
 ## Boundaries
 
@@ -41,7 +41,13 @@ A configuration contains a label, selected `.exe`, `args: string[]`, and a canon
 
 Guided recipes compile to that same structure. Main independently checks the expected interpreter filename, exact argument prefix and recipe values. Script pickers enforce extension, canonical containment, a 10 MiB limit and content fingerprint, rechecked on Save/Start. The fixed HTTP server recipe uses `-I -u -m http.server <port> --bind 127.0.0.1`; no current-directory Python module lookup or free-form module name is accepted.
 
+An explicit changed-script review reads only the script already saved in that guided configuration. The preview is complete UTF-8 text up to 256 KiB; larger, binary or invalid UTF-8 files require external review and the existing Edit setup/file-picker flow. Read and hash use the same open file handle, with before/after identity checks and canonical project/path revalidation. The previous file contents are not stored, so the UI shows the current version rather than a historical diff.
+
+Main issues a configuration-bound review token lasting five minutes, with at most 20 pending reviews and one per configuration. Authorization consumes it once, including cancellation, uses a default-Cancel native confirmation, and rechecks configuration, paths, file identity/hash and arguments before updating the saved fingerprint. It never starts a task. Source text is returned only for this explicit local preview and is not persisted in SQLite.
+
 Start and Stop are explicit confirmed actions. Child processes use `shell: false`, hidden console windows, separate stdout/stderr streams, and a controlled environment. Each run has a random internal ID and an in-memory process handle. Stop never accepts an arbitrary PID. A main-process exit is not proof that every descendant exited.
+
+After confirmed exit, code zero is `completed`, including a race with an accepted Stop request. Otherwise an accepted Stop followed by exit is `stopped-by-user`; a nonzero code without Stop is `error`; an indeterminate exit without Stop is `unknown`. Canceling a pending start before spawn is also `stopped-by-user`, with no PID or invented exit code because no process was created. An unconfirmed stop remains an active Unknown run. The optional exit signal is recorded separately, and the UI must not infer successful completion from an absent exit code.
 
 Logs are text, not HTML. ANSI/control sequences are sanitized and storage is bounded. The frontend receives only serialized log entries; subscriptions must be disposed when their view closes. Concurrency limits protect against accidental process storms. Closing with active runs requires a decision that explains the limits of termination.
 

@@ -8,9 +8,19 @@ If Git reports dubious ownership, DevStation must show the refusal without chang
 
 ## A task does not start
 
-Select an existing Windows `.exe`. The first version does not run `.cmd`, `.bat`, or shell command strings. For example, choose `python.exe` and use separate arguments `-u`, `-m`, `http.server`, and a free port number. `-u` helps make Python output immediately visible. The working directory must resolve inside the imported project, including when junctions are involved.
+Select an existing Windows `.exe`. The app does not offer built-in `.cmd`, `.bat` or shell-command recipes. For a local web server, choose the guided Python server setup, select a trusted `python.exe` and use a free port. It fixes isolated/unbuffered Python arguments and binds to `127.0.0.1`. The working directory must resolve inside the imported project, including when junctions are involved.
 
 Executable files can disappear or permissions can change after saving; Start must validate again and report the error. Arguments containing `&`, `|`, spaces, or quotes are passed as argument values rather than shell syntax. A nonzero exit code is a task result: inspect its stderr without assuming DevStation itself failed.
+
+## A saved script has changed
+
+Choose **Review changes and authorize** to inspect the current saved script. The app does not keep its old contents, so the preview is the current file rather than a historical diff. Review it, request authorization and confirm the native prompt only if you trust the change. Cancellation preserves the previous saved configuration. Authorization saves the new fingerprint; Start is still a separate action and confirmation.
+
+A review expires after five minutes and must be repeated if the script or configuration changes again. Files larger than 256 KiB, binary files or invalid UTF-8 cannot use the in-app preview. Review those in an editor, then use Edit setup and the native file picker to select and save the script again. Path changes and files outside the registered project remain rejected.
+
+## Understand an ended task
+
+**Completed successfully** means confirmed exit with code zero, including when it races with Stop. Otherwise, **Stopped by user** means an accepted Stop followed by confirmed exit; it also covers canceling a pending start before any process was created. **Exited with error** means a nonzero exit without an accepted Stop. **Unknown** means the outcome could not be determined reliably; an unconfirmed stop remains active rather than being presented as exited. These states describe the managed process only, not all descendants.
 
 ## Stop leaves a service running
 
@@ -20,7 +30,7 @@ Stop targets the managed main process, and Windows does not guarantee that desce
 
 TCP inspection uses the operating system's `netstat.exe`; a timeout or denied operation should display an error, not an empty successful result. Some endpoint/PID information may be unavailable. All-interface binding describes local listeners; firewall and routing determine external reachability.
 
-`npm` commonly resolves to `npm.cmd` on Windows. If a safe diagnostic is unavailable, **Not checked** is expected in P0. DevStation does not install tools or use a fallback shell silently.
+`npm` commonly resolves to `npm.cmd` on Windows. **Not checked** is expected for that unsupported diagnostic. DevStation does not install tools or use a fallback shell silently.
 
 ## SQLite fails to load during development
 
@@ -42,6 +52,6 @@ A migration backup, when available, is a recovery source. Retain the failed data
 
 ## Unsigned ZIP and removal
 
-The package is unsigned. The final local rebuild was blocked by Smart App Control, producing `spawn UNKNOWN`; Code Integrity events 3077/3033/3118 identified its signing-level rejection. A successful build, checksum, earlier package run, or CI run does not remove that policy restriction. Trusted signing/distribution and another launch test are required. Verify the artifact's SHA-256 and follow your organization's software policy; do not disable Smart App Control, Defender, or SmartScreen.
+The package is unsigned. Windows may block it according to the machine's policy. Verify the artifact's SHA-256 and follow your organization's software policy; do not disable Smart App Control, Defender or SmartScreen. The specific v0.1 blocks and later v0.2.0 local successes are historical observations about different bytes; neither guarantees that another build will launch. [Release evidence](RELEASE.md) identifies the current tested artifact and environment.
 
 Extract the whole ZIP to a user-writable location and open its executable. This distribution has no installer/uninstaller. Removing the extracted application directory does not intentionally remove project repositories or the separate `userData` directory. Retaining local settings is the default; deletion of that data is a separate deliberate action.

@@ -1,5 +1,7 @@
 # P0 implementation and acceptance roadmap
 
+Archived v0.1 record. Results and pending checks below describe that historical milestone; consult [current QA](../../QA.md) for newer evidence.
+
 Reviewed: 2026-11-21. This roadmap continues the existing private DevStation repository. It does not restart the project or declare the complete P0 accepted.
 
 ## Briefing provenance and scope
@@ -22,7 +24,7 @@ Application source was implemented at `ed0cd05`; `ed3b5db` corrected Windows tem
 
 An earlier local package demonstrated native import, executable selection, Start/Stop confirmation, real Python output, listening-port inspection, and canceling an active-run close prompt. The later local unsigned package is blocked by Smart App Control. Earlier package and CI results remain valid within their recorded scope; they do not prove that the latest local executable can start.
 
-The baseline executable ZIP, distinct from the briefing archive above, is 176,611,525 bytes with SHA-256 `bab21b30886079127d765686550d54d2f22eaa4e4bd8c69c8fd537faefc8a5a1`. The current source is `96e6c45abfd007d5d9d47bea2753022df002050b`; its local ZIP is 176,736,251 bytes with SHA-256 `e74cb698644cba853c62eb7abd57034c4600ac7a2da77667f2b25b541f5936fe`. That rebuilt executable is also blocked by host signing policy. See [QA](QA.md), [release evidence](RELEASE.md), and [machine-readable build evidence](evidence/local-build.json) for separate artifact records.
+The baseline executable ZIP, distinct from the briefing archive above, is 176,611,525 bytes with SHA-256 `bab21b30886079127d765686550d54d2f22eaa4e4bd8c69c8fd537faefc8a5a1`. The current source is `96e6c45abfd007d5d9d47bea2753022df002050b`; its local ZIP is 176,736,251 bytes with SHA-256 `e74cb698644cba853c62eb7abd57034c4600ac7a2da77667f2b25b541f5936fe`. That rebuilt executable is also blocked by host signing policy. See [QA](QA.md), [release evidence](RELEASE.md), and [machine-readable build evidence](../../evidence/local-build-96e6c45.json) for separate artifact records.
 
 ## Phases and remaining acceptance
 

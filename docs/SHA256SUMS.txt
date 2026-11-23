@@ -1,1 +1,2 @@
-e74cb698644cba853c62eb7abd57034c4600ac7a2da77667f2b25b541f5936fe  DevStation-0.1.0-96e6c45-windows-x64.zip
+# Local validation candidate only; final release checksums are attached to v0.2.1.
+e9285ed17e81aba3c44acd140c1f648633aaeae90a053d03d91297ef1e3405f6  DevStation-win32-x64-0.2.1.zip

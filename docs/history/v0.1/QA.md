@@ -1,5 +1,7 @@
 # QA and acceptance evidence
 
+Archived v0.1 record. Results and pending checks below describe that historical milestone; consult [current QA](../../QA.md) for newer evidence.
+
 Date: 2026-11-21. Target: v0.1.0, Windows x64. Status: **functional preview; current Windows CI passes 53 automated and 3 desktop checks**. The final local unsigned package is blocked by Smart App Control; distribution acceptance and remaining P0 checks are incomplete.
 
 PASS means the described check was actually executed with the expected result. FAIL means an observed failure. NOT RUN means no qualifying execution evidence has been recorded. Code inspection, a mock, or a passing unit test must not be relabeled as a complete packaged workflow.
@@ -59,7 +61,7 @@ Local environment: Microsoft Windows 11 Pro, version 10.0.26300, build 26300; pr
 
 All scenarios use synthetic temporary repositories. PASS rows identify their evidence layer and artifact; they do not imply that the final local unsigned executable can launch. Earlier P/M results remain valid observations of the earlier package, while final local distribution is blocked. Untested native interactions, fault conditions, or packaged behavior remain NOT RUN.
 
-Evidence keys: **U** = [backend unit tests](../tests/unit/backend.test.ts), **I** = [backend integration tests](../tests/integration/backend.test.ts), **R** = [workspace React tests](../tests/ui/workspace.test.tsx), **L** = [log React tests](../tests/ui/logs.test.tsx), **A** = [recovery/accessibility React tests](../tests/ui/recovery-accessibility.test.tsx), **S** = [compiled Electron security test](../tests/e2e/security.spec.ts), **E** = [compiled Electron workflow](../tests/e2e/desktop.spec.ts), **P** = [hardened packaged smoke](../tests/e2e/packaged.spec.ts), **M** = earlier native packaged procedure below. Current U/I/R/L/A targeted runs and compiled E/S pass locally; all also pass in current CI, including P. Current local P is blocked by host policy. The older baseline U/I/R/L/E/P passed in CI, and E/P passed on the earlier local artifact. E mocks native dialogs; M used real native dialogs on `677acfca…`.
+Evidence keys: **U** = [backend unit tests](../../../tests/unit/backend.test.ts), **I** = [backend integration tests](../../../tests/integration/backend.test.ts), **R** = [workspace React tests](../../../tests/ui/workspace.test.tsx), **L** = [log React tests](../../../tests/ui/logs.test.tsx), **A** = [recovery/accessibility React tests](../../../tests/ui/recovery-accessibility.test.tsx), **S** = [compiled Electron security test](../../../tests/e2e/security.spec.ts), **E** = [compiled Electron workflow](../../../tests/e2e/desktop.spec.ts), **P** = [hardened packaged smoke](../../../tests/e2e/packaged.spec.ts), **M** = earlier native packaged procedure below. Current U/I/R/L/A targeted runs and compiled E/S pass locally; all also pass in current CI, including P. Current local P is blocked by host policy. The older baseline U/I/R/L/E/P passed in CI, and E/P passed on the earlier local artifact. E mocks native dialogs; M used real native dialogs on `677acfca…`.
 
 | ID | Scenario | Expected outcome | Result | Evidence / scope |
 | --- | --- | --- | --- | --- |
@@ -129,7 +131,7 @@ This procedure used the **earlier local package with SHA-256 `677acfca…`**, be
 
 The resulting fixture server ran as PID 6388, printed real stdout, and listened on `127.0.0.1:8765`. Alt+F4 displayed the active-run confirmation; canceling kept the run active. The native Stop confirmation was then accepted, the run exited, and its listener disappeared. This verifies those actual native interaction paths; configuration form behavior is separately covered by React tests.
 
-Three screenshots were captured from this packaged application and visually reviewed: [Overview](screenshots/overview.png), [Git details](screenshots/project-git.png), and [Runs](screenshots/runs.png). **Workbench UI** and **Notes CLI** were real synthetic Git repositories whose catalog metadata was seeded in SQLite for the screenshots; only Atlas API's import was exercised through the native picker. Displayed Git states and the active process were real, not rendered mock data.
+Three screenshots were captured from this packaged application and visually reviewed: [Overview](../../screenshots/overview.png), [Git details](../../screenshots/project-git.png), and [Runs](../../screenshots/runs.png). **Workbench UI** and **Notes CLI** were real synthetic Git repositories whose catalog metadata was seeded in SQLite for the screenshots; only Atlas API's import was exercised through the native picker. Displayed Git states and the active process were real, not rendered mock data.
 
 P launches with test-only `--remote-debugging-port`, `--remote-debugging-address=127.0.0.1`, and an isolated `--user-data-dir`. Its PATH contains Windows system directories only. It performs no Node-inspector attachment to the packaged main process and deletes only its own temporary fixture directory.
 
