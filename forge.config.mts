@@ -4,6 +4,29 @@ import { VitePlugin } from '@electron-forge/plugin-vite';
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import { lstat, readdir, realpath, unlink } from 'node:fs/promises';
+import path from 'node:path';
+
+/** Remove generated build metadata only from Forge's staged dependency copy. */
+async function stripNativeBuildMetadata(buildPath: string) {
+  const stage = await realpath(buildPath);
+  if (stage.toLowerCase() === (await realpath('.')).toLowerCase()) throw new Error('Refusing to clean the source checkout.');
+  const expected = path.join(stage, 'node_modules', 'better-sqlite3', 'build');
+  const info = await lstat(expected).catch((error: NodeJS.ErrnoException) => { if (error.code === 'ENOENT') return undefined; throw error; });
+  if (!info) return;
+  if (info.isSymbolicLink() || !info.isDirectory() || (await realpath(expected)).toLowerCase() !== expected.toLowerCase()) throw new Error('Refusing a redirected native build directory.');
+  async function visit(directory: string) {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const file = path.resolve(directory, entry.name);
+      const relative = path.relative(expected, file);
+      if (!relative || path.isAbsolute(relative) || relative === '..' || relative.startsWith(`..${path.sep}`) || entry.isSymbolicLink()) throw new Error('Refusing an unsafe staged build entry.');
+      if (entry.isDirectory()) await visit(file);
+      // Keep runtime bindings if this dependency was built from source.
+      else if (entry.isFile() && !entry.name.endsWith('.node')) await unlink(file);
+    }
+  }
+  await visit(expected);
+}
 
 const config: ForgeConfig = {
   packagerConfig: {
@@ -20,6 +43,11 @@ const config: ForgeConfig = {
     },
   },
   rebuildConfig: {},
+  hooks: {
+    // Forge rebuilds before pruning. Generated gyp/MSBuild files must be removed
+    // after that step, before ASAR and integrity fuses are generated.
+    packageAfterPrune: async (_config, buildPath) => stripNativeBuildMetadata(buildPath),
+  },
   makers: [new MakerZIP({}, ['win32'])],
   plugins: [
     new AutoUnpackNativesPlugin({}),

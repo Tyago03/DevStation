@@ -107,7 +107,14 @@ test('hardened Windows package boots without external Node and persists SQLite p
   const executable = path.resolve('out/DevStation-win32-x64/DevStation.exe');
   await access(executable).catch(() => { throw new Error('Build the genuine Windows package with npm run make before running this test.'); });
   const packagedFiles = listPackage(path.join(path.dirname(executable), 'resources', 'app.asar'), { isPack: false });
-  expect(packagedFiles.filter(file => /(?:^|[\\/])(?:\.vitest-cache|\.cache|tests|test-results)(?:[\\/]|$)/.test(file))).toEqual([]);
+  expect(packagedFiles.filter(file => /(?:^|[\\/])(?:\.vitest-cache|\.cache)(?:[\\/]|$)|^[\\/](?:tests|test-results)(?:[\\/]|$)|better-sqlite3[\\/]build[\\/].*\.(?:gypi|vcxproj|filters|recipe|tlog|lastbuildstate)$/.test(file))).toEqual([]);
+  const archiveBytes = await readFile(path.join(path.dirname(executable), 'resources', 'app.asar'));
+  for (const machinePath of [os.homedir(), process.cwd()]) {
+    for (const spelling of [machinePath, machinePath.replaceAll('\\', '/'), machinePath.replaceAll('\\', '\\\\')]) {
+      expect(archiveBytes.includes(Buffer.from(spelling)), 'No local build path in the distributable').toBe(false);
+      expect(archiveBytes.includes(Buffer.from(spelling, 'utf16le')), 'No UTF-16 local build metadata in the distributable').toBe(false);
+    }
+  }
   expect(await readFile(path.join(path.dirname(executable), 'resources', 'LICENSE'), 'utf8')).toBe(await readFile('LICENSE', 'utf8'));
   const root = await mkdtemp(path.join(os.tmpdir(), 'DevStation-packaged-e2e-'));
   const data = path.join(root, 'user-data');
