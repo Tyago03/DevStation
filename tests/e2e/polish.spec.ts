@@ -46,7 +46,8 @@ async function cleanup(root: string, app: ElectronApplication) {
   await rm(resolved, { recursive: true, force: true, maxRetries: 5, retryDelay: 250 });
 }
 
-test('changed scripts require a complete review, explicit authorization and a separate Start', async (_, testInfo) => {
+test('changed scripts require a complete review, explicit authorization and a separate Start', async ({ browserName }, testInfo) => {
+  test.skip(browserName !== 'chromium', 'Electron uses Chromium.');
   const f = await fixture();
   try {
     const script = path.join(f.projectPath, 'greeting.py');
@@ -103,7 +104,8 @@ test('changed scripts require a complete review, explicit authorization and a se
   } finally { await cleanup(f.root, f.app); }
 });
 
-test('real exit evidence distinguishes completion, errors and user stops', async (_, testInfo) => {
+test('real exit evidence distinguishes completion, errors and user stops', async ({ browserName }, testInfo) => {
+  test.skip(browserName !== 'chromium', 'Electron uses Chromium.');
   const f = await fixture();
   try {
     for (const item of [
