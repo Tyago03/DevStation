@@ -11,7 +11,13 @@ const config: ForgeConfig = {
     appCopyright: 'Copyright © 2026 Tyago Vitorino Ferreira', extraResource: ['LICENSE', 'docs/THIRD_PARTY_NOTICES.txt'],
     // Vite bundles JS but SQLite remains a native runtime dependency.
     // Packager prunes development packages after copying node_modules.
-    ignore: file => Boolean(file) && !/^\/(?:\.vite(?:\/|$)|node_modules(?:\/|$)|package\.json$)/.test(file.replaceAll('\\', '/')),
+    ignore: file => {
+      const normalized = file.replaceAll('\\', '/');
+      // Development caches can contain source text and absolute machine paths.
+      // Pruning devDependencies alone does not remove these hidden directories.
+      if (/(?:^|\/)node_modules\/(?:\.vitest-cache|\.vite|\.cache|\.bin)(?:\/|$)/.test(normalized)) return true;
+      return Boolean(file) && !/^\/(?:\.vite(?:\/|$)|node_modules(?:\/|$)|package\.json$)/.test(normalized);
+    },
   },
   rebuildConfig: {},
   makers: [new MakerZIP({}, ['win32'])],
