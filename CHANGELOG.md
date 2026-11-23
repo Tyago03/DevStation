@@ -28,8 +28,9 @@ The guided-workspace implementation is a private 0.2.0 preview. Validation is re
 ### Release status
 
 - Repository remains private; no v0.2 tag or public binary release has been created.
-- The historical v0.1 local unsigned package is blocked by Smart App Control. A new artifact needs its own hash, environment and launch evidence.
-- User study, final v0.2 validation and publication approval remain separate gates.
+- Source `3092f81` passes 98 automated and 11 desktop checks locally and in Windows CI; the identified unsigned v0.2 package also passes a local workflow with real native dialogs and persistence after restart.
+- The historical v0.1 Smart App Control failure remains recorded for those old bytes. No protection was disabled; the reason for different local acceptance was not established.
+- User study, Windows display scaling, physical offline, trusted distribution and publication approval remain separate gates.
 
 ## 0.1.0 preview - 2026-11-21
 

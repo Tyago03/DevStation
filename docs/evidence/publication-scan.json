@@ -1,16 +1,17 @@
 {
-  "scannedAtUtc": "2026-11-23T17:59:21.733981+00:00",
-  "head": "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
+  "scannedAtUtc": "2026-11-23T18:20:47.293140+00:00",
+  "head": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
   "branch": "codex/v0.2-guided-workspace",
-  "reachableCommits": 6,
-  "uniqueHistoricalBlobs": 185,
-  "workingTreeFilesExamined": 121,
+  "reachableCommits": 7,
+  "uniqueHistoricalBlobs": 191,
+  "workingTreeFilesExamined": 127,
   "maximumTextBlobBytes": 10485760,
   "secretPatternCandidates": 0,
   "countsByKind": {
-    "author_email": 6,
-    "committer_email": 6,
-    "email_address": 8
+    "author_email": 7,
+    "committer_email": 7,
+    "email_address": 8,
+    "user_home_path": 1
   },
   "limitations": [
     "Pattern matching is not a guarantee that no secret exists.",
@@ -20,6 +21,20 @@
     "Findings contain locations and redacted values only; occurrences may repeat across history/current scope."
   ],
   "findings": [
+    {
+      "scope": "commit_metadata",
+      "commit": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+      "kind": "author_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "commit_metadata",
+      "commit": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+      "kind": "committer_email",
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
     {
       "scope": "commit_metadata",
       "commit": "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
@@ -111,6 +126,7 @@
         "tests/e2e/desktop.spec.ts"
       ],
       "commits": [
+        "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
         "d1f0e3c6b57e53de1c001865a4170e1202d4db6d"
       ],
       "kind": "email_address",
@@ -125,6 +141,7 @@
         "tests/integration/backend.test.ts"
       ],
       "commits": [
+        "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
         "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
@@ -196,6 +213,14 @@
     },
     {
       "scope": "working_tree",
+      "path": "docs/evidence/v0.2-native-review.json",
+      "kind": "user_home_path",
+      "line": 19,
+      "classification": "review",
+      "value": "[REDACTED]"
+    },
+    {
+      "scope": "working_tree",
       "path": "tests/e2e/desktop.spec.ts",
       "kind": "email_address",
       "line": 20,
@@ -220,6 +245,7 @@
       ],
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
         "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "ed0cd05781c40a52e1385ba89057cacff402190b",
@@ -237,6 +263,7 @@
       ],
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
         "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "ed0cd05781c40a52e1385ba89057cacff402190b",
@@ -254,6 +281,7 @@
       ],
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
         "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
@@ -269,6 +297,7 @@
       ],
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
         "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
@@ -284,6 +313,7 @@
       ],
       "commits": [
         "1b827e72b1fa704fa0dc85c17833db2bc1e07889",
+        "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
         "96e6c45abfd007d5d9d47bea2753022df002050b",
         "d1f0e3c6b57e53de1c001865a4170e1202d4db6d",
         "f9ee2e3a08753f0c941ee75f11b16916d3567622"
@@ -320,6 +350,24 @@
       "path": "docs/screenshots/runs.png",
       "reason": "binary_manual_review",
       "bytes": 51381
+    },
+    {
+      "scope": "working_tree",
+      "path": "docs/screenshots/v0.2-demo.png",
+      "reason": "binary_manual_review",
+      "bytes": 57845
+    },
+    {
+      "scope": "working_tree",
+      "path": "docs/screenshots/v0.2-help.png",
+      "reason": "binary_manual_review",
+      "bytes": 87088
+    },
+    {
+      "scope": "working_tree",
+      "path": "docs/screenshots/v0.2-welcome.png",
+      "reason": "binary_manual_review",
+      "bytes": 113238
     }
   ]
 }

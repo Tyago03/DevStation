@@ -1,0 +1,25 @@
+{
+  "sourceCommit": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+  "capturedDate": "2026-11-23",
+  "reviewedDate": "2026-11-23",
+  "runtime": "Compiled Electron 45.4.1 renderer in final guided desktop suite",
+  "fixture": "isolated userData; empty workspace and bundled synthetic in-memory demo",
+  "review": "Visually inspected actual captures. No personal user path, token or real project data visible. Not evidence of packaged-executable acceptance.",
+  "files": [
+    {
+      "path": "docs/screenshots/v0.2-welcome.png",
+      "bytes": 113238,
+      "sha256": "4f9b7c8d268e699524a31052cf874b9140759ccbc67d440b2b4ab93eb402b288"
+    },
+    {
+      "path": "docs/screenshots/v0.2-help.png",
+      "bytes": 87088,
+      "sha256": "ff1cde7a0068146be922569a9d1e63c295a1cc4aec9c4ef708722fbd3ffc0c9d"
+    },
+    {
+      "path": "docs/screenshots/v0.2-demo.png",
+      "bytes": 57845,
+      "sha256": "e0d89d00f7e306bbe895666f85475e64006c4e833b47fc83b571f62c6614e36f"
+    }
+  ]
+}

@@ -4,7 +4,11 @@
 
 DevStation brings local Git projects, running tasks, output, tool checks and TCP listeners into a Windows desktop app. It uses Electron, React, TypeScript and SQLite. The interface is in English.
 
-**Status: private v0.2.0 preview, under validation.** This is not a public release. [QA](docs/QA.md) records technical results and remaining gates; [RELEASE](docs/RELEASE.md) identifies exact builds. A successful CI run does not remove the local Smart App Control signing-policy block.
+**Status: private v0.2.0 preview, technically validated.** Source `3092f81` passed 98 automated tests and 11 desktop checks locally and in [Windows CI](https://github.com/Tyago03/DevStation/actions/runs/45233998754). The unsigned packaged app also passed a local workflow using real Windows dialogs. [QA](docs/QA.md) records the scopes and remaining gates; [RELEASE](docs/RELEASE.md) identifies the exact ZIP. No public release is claimed.
+
+![DevStation v0.2 welcome screen](docs/screenshots/v0.2-welcome.png)
+
+Actual compiled renderer, synthetic empty workspace. [Offline help](docs/screenshots/v0.2-help.png) and [example workspace](docs/screenshots/v0.2-demo.png) are also captured; screenshot provenance is in [QA](docs/QA.md).
 
 ## Getting started
 
