@@ -6,9 +6,16 @@ import type { ConfigService } from './configs';
 import { localEnvironment } from './command';
 import { LogBuffer, LogStream } from './logs';
 
-interface RunEntry { state: ManagedRun; child?: ChildProcess; logs: LogBuffer }
+interface RunEntry { state: ManagedRun; child?: ChildProcess; logs: LogBuffer; stopAccepted?: boolean }
 const isActive = (run: ManagedRun) => ['starting', 'running', 'stopping', 'unknown'].includes(run.state);
 const childWarning = 'Only the process started by DevStation is managed. Child processes may still be running.';
+function recordExitReason(entry: RunEntry) {
+  const state = entry.state;
+  if (state.state !== 'exited') return;
+  // Zero is positive success evidence even if a late Stop raced natural completion.
+  state.exitReason = state.exitCode === 0 ? 'completed' : entry.stopAccepted ? 'stopped-by-user'
+    : typeof state.exitCode === 'number' && Number.isInteger(state.exitCode) ? 'error' : 'unknown';
+}
 
 export class RunService {
   private entries = new Map<string, RunEntry>();
@@ -52,10 +59,12 @@ export class RunService {
       child.stderr.on('data', (chunk: Buffer) => stderr.write(chunk));
       child.stdout.once('end', () => stdout.end()); child.stderr.once('end', () => stderr.end());
       let pipeDrainTimer: ReturnType<typeof setTimeout> | undefined;
-      child.once('exit', (code) => {
+      child.once('exit', (code, signal) => {
         state.exitCode = code;
+        state.exitSignal = signal ?? null;
         state.endedAt = new Date().toISOString();
         if (state.state !== 'failed') { state.state = 'exited'; delete state.error; }
+        recordExitReason(entry);
         state.warning = childWarning;
         entry.child = undefined;
         // A descendant may inherit these pipes. Parent ownership ends on exit;
@@ -92,7 +101,9 @@ export class RunService {
     if (!isActive(state)) return { ...state };
     state.warning = childWarning;
     if (!child) {
+      // Canceling a reserved start is confirmed locally: no process was created.
       state.state = 'exited'; state.endedAt = new Date().toISOString();
+      state.exitReason = 'stopped-by-user';
       return { ...state };
     }
     // Only this live ChildProcess handle is eligible. Never accept or reacquire a PID.
@@ -106,8 +117,11 @@ export class RunService {
     });
     let terminated = false;
     try { terminated = child.kill(); } catch { /* Keep the live handle for an explicit retry. */ }
+    if (terminated) { entry.stopAccepted = true; recordExitReason(entry); }
     if (!terminated) {
       child.removeListener('exit', done); done();
+      // A natural exit may have arrived during the attempt; never overwrite its evidence.
+      if (this.get(id).state === 'exited') return { ...state };
       state.state = 'unknown';
       state.error = 'The managed process could not be stopped. Its status is unknown.';
       return { ...state };

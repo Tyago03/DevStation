@@ -30,7 +30,7 @@ export function ProjectsPage({ workspace, selectedId, onSelect, onRun, onAdd }: 
       {overview && <div className="panel-footnote">Checked {fullTime(overview.checkedAt)}. Refresh to inspect the latest changes.</div>}
       <div className="inline-help"><TermHelp topic="git-status" summary="Clean, Staged, and Untracked explained">Clean means no pending changes at the last check. Staged changes are prepared for a future commit. Untracked files are new to Git; DevStation does not add them automatically.</TermHelp></div>
     </section>
-    <RunConfigurations project={project} runs={workspace.runs} onRun={onRun} refreshRuns={workspace.refreshRuns} />
+    <RunConfigurations key={project.id} project={project} runs={workspace.runs} onRun={onRun} refreshRuns={workspace.refreshRuns} />
   </>;
   if (workspace.projects.length === 0) return <section className="panel"><EmptyState title={copy.emptyProjects} description={copy.emptyProjectsDescription} action={<button className="button primary" onClick={onAdd} disabled={workspace.adding}><Plus size={16} />Add your first project</button>} /></section>;
 

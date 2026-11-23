@@ -61,6 +61,8 @@ test('production document enforces CSP, permissions, IPC sender and local-only n
     expect(await page.evaluate(() => window.devstation.settings.update({ theme: 'light', tour: { status: 'completed', step: 99 } }))).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
     expect(await page.evaluate(() => window.devstation.app.shutdownAction({ action: 'retry', pid: 1 } as unknown as 'retry'))).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
     expect(await page.evaluate(() => window.devstation.configs.chooseScript('not-a-project', 'python'))).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
+    expect(await page.evaluate(() => window.devstation.configs.reviewScript('not-a-config'))).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
+    expect(await page.evaluate(() => window.devstation.configs.authorizeScript('11111111-1111-4111-8111-111111111111', 'not-a-review'))).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
     expect(await page.evaluate(() => window.devstation.app.openHelp('readme' as 'git'))).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });
     const invalidHelp = await page.evaluate(() => window.devstation.app.openHelp('https://devstation-test.invalid' as 'git'));
     expect(invalidHelp).toMatchObject({ ok: false, error: { code: 'INVALID_INPUT' } });

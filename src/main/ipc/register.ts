@@ -1,6 +1,6 @@
 import { app, dialog, ipcMain, shell, type BrowserWindow } from 'electron';
 import type { ZodType } from 'zod';
-import { chooseScriptSchema, configSchema, helpSchema, idSchema, noInput, settingsSchema, shutdownActionSchema } from '../../shared/schemas';
+import { authorizeScriptSchema, chooseScriptSchema, configSchema, helpSchema, idSchema, noInput, settingsSchema, shutdownActionSchema } from '../../shared/schemas';
 import { AppError } from '../../shared/errors';
 import type { Result, ShutdownAction, ShutdownStatus } from '../../shared/contracts';
 import type { createServices } from '../services';
@@ -74,6 +74,21 @@ export function registerIpc(window: BrowserWindow, url: string, services: Return
     const script = await inspectScript(project.path, choice.filePaths[0], kind);
     selectedScripts.add(`${projectId}:${kind}:${pathIdentity(script.path)}:${script.fingerprint}`);
     return script;
+  });
+  handle('configs:review-script', idSchema, async id => {
+    assertNotPending(id); pending.add(id);
+    try { return await services.configs.reviewScript(id); }
+    finally { pending.delete(id); }
+  });
+  handle('configs:authorize-script', authorizeScriptSchema, async ({ configId, token }) => {
+    assertNotPending(configId); pending.add(configId);
+    try {
+      return await services.configs.authorizeScript(configId, token, async review => {
+        const approved = await confirm('Authorize reviewed script', `Authorize the reviewed version for ${review.label}?`, `Only approve code you have reviewed and trust. Imported modules and other project files are not covered by this script review.\n\nScript: ${review.scriptPath}\nSHA-256: ${review.fingerprint}\n\nThis updates the saved setup. It does not run the script; Start remains a separate action.`, 'Authorize version');
+        if (window.isDestroyed() || shutdown.isQuitting) throw new AppError('CLOSE_PENDING', 'The workspace is closing. The script was not authorized.');
+        return approved;
+      });
+    } finally { pending.delete(configId); }
   });
   handle('configs:save', configSchema, async input => {
     if (input.id) assertNotPending(input.id);

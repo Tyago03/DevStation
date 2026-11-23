@@ -110,7 +110,7 @@ test('offline help, persistent optional tour, isolated demo and keyboard navigat
     const launch = () => electron.launch({ args: ['.', `--user-data-dir=${root}`], env: environment() });
     desktop = await launch(); let page = await desktop.firstWindow();
     await expect(page.getByRole('button', { name: 'Start tour', exact: true })).toBeVisible();
-    await page.screenshot({ path: testInfo.outputPath('v0.2-welcome.png') });
+    await page.screenshot({ path: testInfo.outputPath('v0.2.1-welcome.png') });
     await page.getByRole('button', { name: 'Start tour', exact: true }).click();
     const tour = page.getByRole('region', { name: 'Getting started tour' });
     await tour.getByRole('button', { name: 'Next', exact: true }).click();
@@ -124,7 +124,7 @@ test('offline help, persistent optional tour, isolated demo and keyboard navigat
     await expect(page.getByRole('button', { name: 'Start tour', exact: true })).toHaveCount(0);
     await page.context().setOffline(true);
     await page.getByRole('button', { name: 'Documentation', exact: true }).click();
-    await page.screenshot({ path: testInfo.outputPath('v0.2-help.png') });
+    await page.screenshot({ path: testInfo.outputPath('v0.2.1-help.png') });
     await page.getByRole('textbox', { name: 'Search offline help' }).fill('PID');
     await expect(page.getByRole('article')).toContainText('PID');
     await page.getByRole('navigation', { name: 'Main navigation' }).getByRole('button', { name: 'Settings', exact: true }).click();
@@ -137,7 +137,7 @@ test('offline help, persistent optional tour, isolated demo and keyboard navigat
     await page.getByRole('button', { name: 'Explore an example workspace', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'A workspace you can try.' })).toBeVisible();
     await page.getByRole('button', { name: 'Preview example setup', exact: true }).click();
-    await page.screenshot({ path: testInfo.outputPath('v0.2-demo.png') });
+    await page.screenshot({ path: testInfo.outputPath('v0.2.1-demo.png') });
     await page.getByRole('button', { name: 'Sample output', exact: true }).click();
     await page.getByRole('button', { name: 'Sample ports', exact: true }).click();
     await page.getByRole('button', { name: 'Offline help', exact: true }).click();
@@ -160,6 +160,7 @@ test('offline help, persistent optional tour, isolated demo and keyboard navigat
         await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
         const dimensions = await page.evaluate(() => ({ width: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
         expect(dimensions.scroll, `No horizontal clipping on ${name} at ${zoom}`).toBeLessThanOrEqual(dimensions.width + 1);
+        if (zoom === 1) await page.screenshot({ path: testInfo.outputPath(`review-${name}-minimum.png`) });
       }
       await page.screenshot({ path: testInfo.outputPath(`minimum-zoom-${zoom}.png`) });
     }

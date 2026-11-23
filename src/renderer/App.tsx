@@ -41,6 +41,7 @@ function LiveWorkspace({ onExample }: { onExample: () => void }) {
   const helpForPage: Record<PageName, HelpTopicId> = { Overview: 'getting-started', Projects: 'projects', Runs: 'running-tasks', Ports: 'ports', Diagnostics: 'diagnostics', Settings: 'privacy', Help: 'getting-started' };
 
   return <div className="app-shell">
+    <a className="skip-link" href="#main-content" onClick={event => { event.preventDefault(); document.getElementById('main-content')?.focus(); }}>Skip to content</a>
     <aside className="sidebar">
       <div className="brand"><div className="brand-symbol"><SquareTerminal size={24} strokeWidth={1.8} /></div><div><strong>DevStation</strong><span>LOCAL WORKSPACE</span></div></div>
       <div className="nav-caption">WORKSPACE</div>
@@ -49,7 +50,7 @@ function LiveWorkspace({ onExample }: { onExample: () => void }) {
     </aside>
     <div className="workspace-main">
       <header className="topbar"><div className="breadcrumb">Workspace <span>/</span> <strong>{page}</strong></div><div className="topbar-status"><span className="local-dot" />Local environment<span className="topbar-divider" /><button className="text-button muted" onClick={() => setPage('Runs')}><Play size={13} />{runSummary}</button></div></header>
-      <main className="page-content" id="main-content">
+      <main className="page-content" id="main-content" tabIndex={-1}>
         <div className="page-heading"><div><div className="eyebrow">{copy.eyebrow}</div><h1>{copy.title}</h1><p>{copy.description}</p></div>{(page === 'Overview' || page === 'Projects') && <button className="button primary" onClick={() => { void addProject(); }} disabled={workspace.adding}><Plus size={17} />{workspace.adding ? 'Choosing folder…' : 'Add project'}</button>}</div>
         {workspace.error && <ErrorBanner message={workspace.error} onDismiss={() => workspace.setError(undefined)} />}
         {workspace.shutdownError && <ErrorBanner message={`Close status could not be checked: ${workspace.shutdownError}${workspace.shutdown ? ' The last known close state remains below.' : ''}`} onRetry={() => { void workspace.refreshShutdown(); }} />}

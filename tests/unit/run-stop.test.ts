@@ -24,13 +24,13 @@ function simulatedProcess() {
   // This isolated unit double bypasses filesystem setup, never a production IPC path.
   const configs = { get: () => config, validate: async () => config } as unknown as ConfigService;
   const runs = new RunService(configs);
-  const exit = () => {
-    child.exitCode = 0; child.emit('exit', 0); child.stdout.end(); child.stderr.end(); child.emit('close', 0);
+  const exit = (code: number | null = 0, signal: NodeJS.Signals | null = null) => {
+    child.exitCode = code; child.signalCode = signal; child.emit('exit', code, signal); child.stdout.end(); child.stderr.end(); child.emit('close', code, signal);
   };
   return { child, runs, exit };
 }
 
-afterEach(() => { vi.clearAllMocks(); });
+afterEach(() => { vi.clearAllMocks(); vi.useRealTimers(); });
 
 describe('pending start and shutdown', () => {
   function pendingStart() {
@@ -48,6 +48,7 @@ describe('pending start and shutdown', () => {
     expect(runs.active()).toHaveLength(1);
     expect(runs.active()[0].state).toBe('starting');
     expect((await runs.stopAll())[0].state).toBe('exited');
+    expect(runs.list()[0].exitReason).toBe('stopped-by-user');
     validate();
     expect((await pending).state).toBe('exited');
     expect(guard).not.toHaveBeenCalled();
@@ -67,6 +68,7 @@ describe('pending start and shutdown', () => {
     expect(runs.active()).toHaveLength(0);
     expect(runs.list()[0]).toMatchObject({ state: 'failed' });
     expect(runs.list()[0].pid).toBeUndefined();
+    expect(runs.list()[0].exitReason).toBeUndefined();
   });
 });
 
@@ -76,9 +78,12 @@ describe('owned handle stop failures', () => {
     const started = await runs.start('fixture-config');
     child.kill.mockImplementationOnce(() => { throw new Error('synthetic permission failure'); });
     expect((await runs.stop(started.id)).state).toBe('unknown');
+    expect(runs.get(started.id).exitReason).toBeUndefined();
+    expect(runs.get(started.id).endedAt).toBeUndefined();
     expect(runs.active()).toHaveLength(1);
-    child.kill.mockImplementationOnce(() => { queueMicrotask(exit); return true; });
+    child.kill.mockImplementationOnce(() => { queueMicrotask(() => exit(null, 'SIGTERM')); return true; });
     expect((await runs.stop(started.id)).state).toBe('exited');
+    expect(runs.get(started.id).exitReason).toBe('stopped-by-user');
     expect(child.kill).toHaveBeenCalledTimes(2);
     await runs.stop(started.id);
     expect(child.kill).toHaveBeenCalledTimes(2);
@@ -104,6 +109,7 @@ describe('owned handle stop failures', () => {
     exit();
     expect(runs.get(started.id).state).toBe('exited');
     expect(runs.get(started.id).error).toBeUndefined();
+    expect(runs.get(started.id).exitReason).toBe('completed');
     expect(runs.get(started.id).warning).toContain('Child processes may still be running');
   });
 
@@ -113,5 +119,44 @@ describe('owned handle stop failures', () => {
     await expect(runs.stop('external-id')).rejects.toMatchObject({ code: 'RUN_NOT_FOUND' });
     expect(child.kill).not.toHaveBeenCalled();
     exit();
+  });
+});
+
+describe('evidence-based exit reasons', () => {
+  it.each([
+    { code: 0, signal: null, reason: 'completed' },
+    { code: 7, signal: null, reason: 'error' },
+    { code: null, signal: 'SIGTERM' as const, reason: 'unknown' },
+    { code: null, signal: null, reason: 'unknown' },
+  ])('records $reason only after a confirmed natural exit', async ({ code, signal, reason }) => {
+    const { runs, exit } = simulatedProcess();
+    const started = await runs.start('fixture-config');
+    expect(started.exitReason).toBeUndefined(); expect(started.endedAt).toBeUndefined();
+    exit(code, signal);
+    expect(runs.get(started.id)).toMatchObject({ state: 'exited', exitCode: code, exitSignal: signal, exitReason: reason });
+    expect(runs.get(started.id).endedAt).toBeDefined();
+  });
+
+  it.each([false, true])('does not relabel success when a racing Stop returns %s', async accepted => {
+    const { child, runs, exit } = simulatedProcess();
+    const started = await runs.start('fixture-config');
+    child.kill.mockImplementationOnce(() => { exit(0); return accepted; });
+    expect(await runs.stop(started.id)).toMatchObject({ state: 'exited', exitReason: 'completed', exitCode: 0 });
+    expect(runs.get(started.id).error).toBeUndefined();
+  });
+
+  it('keeps an accepted but unconfirmed stop Unknown until an exit actually arrives', async () => {
+    vi.useFakeTimers();
+    const { child, runs, exit } = simulatedProcess();
+    const started = await runs.start('fixture-config');
+    child.kill.mockReturnValue(true);
+    const stopped = runs.stop(started.id);
+    expect(runs.get(started.id)).toMatchObject({ state: 'stopping' });
+    expect(runs.get(started.id).exitReason).toBeUndefined();
+    await vi.advanceTimersByTimeAsync(3000);
+    expect((await stopped).state).toBe('unknown');
+    expect(runs.get(started.id).exitReason).toBeUndefined(); expect(runs.get(started.id).endedAt).toBeUndefined();
+    exit(null, 'SIGTERM');
+    expect(runs.get(started.id)).toMatchObject({ state: 'exited', exitReason: 'stopped-by-user', exitSignal: 'SIGTERM' });
   });
 });

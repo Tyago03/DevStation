@@ -34,9 +34,15 @@ export function GitBadge({ overview, error, loading }: { overview?: GitOverview;
   return <Badge tone={overview.dirty ? 'warning' : 'success'}>{overview.dirty ? 'Changes' : 'Clean'}</Badge>;
 }
 
+export function runOutcome(run: ManagedRun) {
+  if (run.state !== 'exited') return undefined;
+  return run.exitReason ?? (run.exitCode === 0 ? 'completed' : typeof run.exitCode === 'number' ? 'error' : 'unknown');
+}
+
 export function RunBadge({ run }: { run: ManagedRun }) {
-  const label = run.state === 'exited' ? `Exited (${run.exitCode ?? 'unknown'})` : run.state.charAt(0).toUpperCase() + run.state.slice(1);
-  const tone = run.state === 'running' ? 'success' : run.state === 'failed' || (run.state === 'exited' && run.exitCode !== 0) ? 'danger' : run.state === 'unknown' ? 'warning' : 'neutral';
+  const outcome = runOutcome(run);
+  const label = outcome === 'stopped-by-user' ? 'Stopped by user' : outcome === 'completed' ? 'Completed successfully' : outcome === 'error' ? 'Exited with error' : outcome === 'unknown' ? 'Unknown' : run.state.charAt(0).toUpperCase() + run.state.slice(1);
+  const tone = run.state === 'running' || outcome === 'completed' ? 'success' : run.state === 'failed' || outcome === 'error' ? 'danger' : run.state === 'unknown' || outcome === 'unknown' ? 'warning' : 'neutral';
   return <Badge tone={tone}>{label}</Badge>;
 }
 

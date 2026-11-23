@@ -1,4 +1,29 @@
 .context-help-row { display: flex; justify-content: flex-end; gap: 24px; margin: -4px 0 16px; }
+.skip-link { position: fixed; z-index: 100; top: 8px; left: 12px; transform: translateY(-160%); padding: 12px 16px; border-radius: 7px; background: var(--accent); color: var(--accent-ink); font-size: 13px; font-weight: 600; }
+.skip-link:focus { transform: none; }
+.script-changed-notice { display: flex; gap: 18px; align-items: center; padding: 18px 22px; margin: 0 22px 18px; border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent); border-radius: 8px; background: var(--warning-soft); }
+.script-changed-notice > div { flex: 1; min-width: 0; }
+.script-changed-notice strong { font-size: 13px; overflow-wrap: anywhere; }
+.script-changed-notice p { margin-top: 6px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.script-review-dialog { width: 900px; }
+.script-review-dialog .dialog-heading p { max-width: 650px; line-height: 1.7; }
+.script-review-dialog .dialog-footer { flex-wrap: wrap; }
+.script-review-path { font-size: 12px; line-height: 1.8; overflow-wrap: anywhere; direction: ltr; unicode-bidi: isolate; }
+.script-review-summary { display: flex; align-items: flex-start; gap: 10px; color: var(--muted); font-size: 12px; line-height: 1.8; margin: 15px 0; }
+.script-review-summary svg { color: var(--accent); margin-top: 3px; }
+.script-source-heading { display: flex; justify-content: space-between; align-items: center; gap: 15px; margin: 19px 0 10px; }
+.script-source-heading span { color: var(--dim); font-size: 10px; }
+.script-source { max-height: 42vh; overflow: auto; padding: 18px; margin: 0 0 16px; background: var(--console); color: var(--text); border: 1px solid var(--border); border-radius: 7px; white-space: pre-wrap; overflow-wrap: anywhere; tab-size: 4; font: 12px/1.85 'Cascadia Code', Consolas, monospace; direction: ltr; unicode-bidi: isolate; }
+.script-source code { font: inherit; }
+.script-review-metadata { color: var(--muted); font-size: 11px; line-height: 1.8; margin-bottom: 17px; }
+.script-review-metadata summary { color: var(--accent); cursor: pointer; }
+.script-review-metadata dt { margin-top: 10px; }
+.script-review-metadata dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+.script-review-empty { font-size: 12px; color: var(--muted); line-height: 1.8; }
+.run-outcome-note { font-size: 12px; line-height: 1.8; color: var(--muted); margin: 0 0 15px; }
+.run-detail-heading { gap: 15px; }
+.run-detail-heading > div { min-width: 0; }
+.run-detail-heading h2 { overflow-wrap: anywhere; }
 .tour-invitation, .tour-panel { border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border)); background: var(--accent-soft); border-radius: 10px; padding: 20px 23px; margin-bottom: 20px; }
 .tour-invitation { display: flex; align-items: center; gap: 18px; }
 .tour-invitation > div { flex: 1; }
@@ -66,6 +91,9 @@
   .example-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 720px) {
+  .script-changed-notice { flex-wrap: wrap; }
+  .script-changed-notice > div { flex-basis: 100%; }
+  .script-source-heading { flex-wrap: wrap; gap: 6px; }
   .tour-invitation { flex-wrap: wrap; }
   .tour-invitation > div { flex-basis: calc(100% - 50px); }
   .tour-invitation > .button:first-of-type { margin-left: auto; }

@@ -17,4 +17,5 @@ export const tourSchema = z.object({ status: z.enum(['not-started', 'in-progress
 export const settingsSchema = z.object({ theme: z.enum(['dark', 'light', 'system']), tour: tourSchema.optional() }).strict();
 export const helpSchema = z.enum(['git', 'node', 'python']);
 export const chooseScriptSchema = z.object({ projectId: idSchema, kind: z.enum(['python', 'node']) }).strict();
+export const authorizeScriptSchema = z.object({ configId: idSchema, token: idSchema }).strict();
 export const shutdownActionSchema = z.enum(['retry', 'keep-open', 'quit-anyway']);

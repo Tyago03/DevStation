@@ -119,7 +119,7 @@ test('hardened Windows package boots without external Node and persists SQLite p
       require: typeof (window as unknown as { require?: unknown }).require,
       process: typeof (window as unknown as { process?: unknown }).process,
     }))).toEqual({ require: 'undefined', process: 'undefined' });
-    expect(unwrap(await page.evaluate(() => window.devstation.app.info()))).toMatchObject({ version: '0.2.0', platform: 'win32' });
+    expect(unwrap(await page.evaluate(() => window.devstation.app.info()))).toMatchObject({ version: '0.2.1', platform: 'win32' });
     expect(unwrap(await page.evaluate(() => window.devstation.projects.list()))).toEqual([]);
     expect(unwrap(await page.evaluate(() => window.devstation.runs.list()))).toEqual([]);
     const diagnostics = unwrap(await page.evaluate(() => window.devstation.diagnostics.check()));

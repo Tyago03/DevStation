@@ -6,11 +6,13 @@ export interface GitOverview {
   lastCommit: { shortHash: string; subject: string; dateIso: string } | null; checkedAt: string; warning?: string;
 }
 export interface ScriptSelection { path: string; fingerprint: string }
+export interface ScriptReview { token: string; configId: string; label: string; scriptPath: string; previousFingerprint: string; fingerprint: string; content: string; byteLength: number; changed: boolean; expiresAt: string }
 export type RunRecipe = { kind: 'python-script' | 'node-script'; script: ScriptSelection } | { kind: 'python-module'; module: 'http.server'; port: number };
 export interface RunConfig { id: string; projectId: string; label: string; executablePath: string; args: string[]; workingDir: string; recipe?: RunRecipe }
 export type SaveRunConfig = Omit<RunConfig, 'id'> & { id?: string };
 export type RunState = 'starting' | 'running' | 'stopping' | 'exited' | 'failed' | 'unknown';
-export interface ManagedRun { id: string; configId: string; projectId: string; label: string; pid?: number; state: RunState; startedAt: string; endedAt?: string; exitCode?: number | null; error?: string; warning?: string }
+export type RunExitReason = 'stopped-by-user' | 'completed' | 'error' | 'unknown';
+export interface ManagedRun { id: string; configId: string; projectId: string; label: string; pid?: number; state: RunState; startedAt: string; endedAt?: string; exitCode?: number | null; exitSignal?: string | null; exitReason?: RunExitReason; error?: string; warning?: string }
 export interface LogLine { sequence: number; runId: string; timestamp: string; stream: 'stdout' | 'stderr'; line: string }
 export interface RunLogs { lines: LogLine[]; truncated: boolean }
 export interface ListeningPort { protocol: 'tcp'; address: string; port: number; pid: number | null; visibility: 'loopback' | 'all-interfaces' | 'other' }
@@ -22,7 +24,7 @@ export type ShutdownAction = 'retry' | 'keep-open' | 'quit-anyway';
 export interface AppInfo { version: string; platform: string }
 export interface DevStationApi {
   projects: { list(): Promise<Result<Project[]>>; chooseAndAdd(): Promise<Result<Project | null>>; remove(projectId: string): Promise<Result<void>>; gitOverview(projectId: string): Promise<Result<GitOverview>>; openFolder(projectId: string): Promise<Result<void>> };
-  configs: { list(projectId: string): Promise<Result<RunConfig[]>>; save(config: SaveRunConfig): Promise<Result<RunConfig>>; delete(configId: string): Promise<Result<void>>; chooseExecutable(): Promise<Result<string | null>>; chooseWorkingDir(projectId: string): Promise<Result<string | null>>; chooseScript(projectId: string, kind: 'python' | 'node'): Promise<Result<ScriptSelection | null>> };
+  configs: { list(projectId: string): Promise<Result<RunConfig[]>>; save(config: SaveRunConfig): Promise<Result<RunConfig>>; delete(configId: string): Promise<Result<void>>; chooseExecutable(): Promise<Result<string | null>>; chooseWorkingDir(projectId: string): Promise<Result<string | null>>; chooseScript(projectId: string, kind: 'python' | 'node'): Promise<Result<ScriptSelection | null>>; reviewScript(configId: string): Promise<Result<ScriptReview>>; authorizeScript(configId: string, token: string): Promise<Result<RunConfig | null>> };
   runs: { list(): Promise<Result<ManagedRun[]>>; start(configId: string): Promise<Result<ManagedRun | null>>; stop(runId: string): Promise<Result<ManagedRun | null>>; logs(runId: string): Promise<Result<RunLogs>>; onLog(runId: string, callback: (line: LogLine) => void): () => void };
   ports: { list(): Promise<Result<{ ports: ListeningPort[]; checkedAt: string }>> };
   diagnostics: { check(): Promise<Result<ToolDiagnostic[]>> };
