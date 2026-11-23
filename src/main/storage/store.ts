@@ -5,11 +5,12 @@ import { randomUUID } from 'node:crypto';
 import type { Project, RunConfig, SaveRunConfig, Settings } from '../../shared/contracts';
 import { AppError } from '../../shared/errors';
 import { pathIdentity } from '../security/paths';
+import { settingsSchema, tourSchema } from '../../shared/schemas';
 
 interface ProjectRow { id: string; display_name: string; canonical_path: string; added_at: string }
-interface ConfigRow { id: string; project_id: string; display_name: string; executable_path: string; args_json: string; working_dir: string }
+interface ConfigRow { id: string; project_id: string; display_name: string; executable_path: string; args_json: string; working_dir: string; recipe_json: string | null }
 const projectFromRow = (row: ProjectRow): Project => ({ id: row.id, name: row.display_name, path: row.canonical_path, addedAt: row.added_at });
-const configFromRow = (row: ConfigRow): RunConfig => ({ id: row.id, projectId: row.project_id, label: row.display_name, executablePath: row.executable_path, args: JSON.parse(row.args_json) as string[], workingDir: row.working_dir });
+const configFromRow = (row: ConfigRow): RunConfig => ({ id: row.id, projectId: row.project_id, label: row.display_name, executablePath: row.executable_path, args: JSON.parse(row.args_json) as string[], workingDir: row.working_dir, ...(row.recipe_json ? { recipe: JSON.parse(row.recipe_json) as RunConfig['recipe'] } : {}) });
 
 export class Store {
   private db: Database.Database;
@@ -24,14 +25,15 @@ export class Store {
       const integrity = this.db.pragma('quick_check', { simple: true });
       if (integrity !== 'ok') throw new Error('integrity check failed');
       const version = this.db.pragma('user_version', { simple: true }) as number;
-      if (version > 1) throw new AppError('SQLITE_NEWER_SCHEMA', 'This database belongs to a newer DevStation version. Update DevStation; your data was left untouched.');
-      if (version < 1) {
+      if (version > 2) throw new AppError('SQLITE_NEWER_SCHEMA', 'This database belongs to a newer DevStation version. Update DevStation; your data was left untouched.');
+      if (version < 2) {
         if (wasExisting) {
           const backup = `${filename}.backup-${new Date().toISOString().replace(/[:.]/g, '-')}`;
           this.db.prepare('VACUUM INTO ?').run(backup);
         }
         this.db.transaction(() => {
-          this.db.exec(`
+          if (version < 1) {
+            this.db.exec(`
             CREATE TABLE projects (
               id TEXT PRIMARY KEY,
               display_name TEXT NOT NULL,
@@ -52,8 +54,11 @@ export class Store {
             CREATE TABLE settings (key TEXT PRIMARY KEY, json_value TEXT NOT NULL);
             CREATE TABLE migrations (version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
           `);
-          this.db.prepare('INSERT INTO migrations VALUES (?, ?)').run(1, new Date().toISOString());
-          this.db.pragma('user_version = 1');
+            this.db.prepare('INSERT INTO migrations VALUES (?, ?)').run(1, new Date().toISOString());
+          }
+          this.db.exec('ALTER TABLE run_configs ADD COLUMN recipe_json TEXT');
+          this.db.prepare('INSERT INTO migrations VALUES (?, ?)').run(2, new Date().toISOString());
+          this.db.pragma('user_version = 2');
         })();
       }
       this.db.pragma('journal_mode = WAL');
@@ -96,25 +101,32 @@ export class Store {
     if (input.id) {
       const existing = this.getConfig(input.id);
       if (existing.projectId !== input.projectId) throw new AppError('INVALID_CONFIG', 'A configuration cannot be moved to another project.');
-      this.db.prepare('UPDATE run_configs SET display_name = ?, executable_path = ?, args_json = ?, working_dir = ?, updated_at = ? WHERE id = ?').run(input.label, input.executablePath, JSON.stringify(input.args), input.workingDir, now, id);
+      this.db.prepare('UPDATE run_configs SET display_name = ?, executable_path = ?, args_json = ?, working_dir = ?, recipe_json = ?, updated_at = ? WHERE id = ?').run(input.label, input.executablePath, JSON.stringify(input.args), input.workingDir, input.recipe ? JSON.stringify(input.recipe) : null, now, id);
     } else {
-      this.db.prepare('INSERT INTO run_configs (id, project_id, display_name, executable_path, args_json, working_dir, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run(id, input.projectId, input.label, input.executablePath, JSON.stringify(input.args), input.workingDir, now, now);
+      this.db.prepare('INSERT INTO run_configs (id, project_id, display_name, executable_path, args_json, working_dir, recipe_json, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').run(id, input.projectId, input.label, input.executablePath, JSON.stringify(input.args), input.workingDir, input.recipe ? JSON.stringify(input.recipe) : null, now, now);
     }
     return this.getConfig(id);
   }
   deleteConfig(id: string): void { this.getConfig(id); this.db.prepare('DELETE FROM run_configs WHERE id = ?').run(id); }
   getSettings(): Settings {
+    const settings: Settings = { theme: 'dark' };
     const row = this.db.prepare('SELECT json_value FROM settings WHERE key = ?').get('appearance') as { json_value: string } | undefined;
-    if (!row) return { theme: 'dark' };
-    try {
+    if (row) try {
       const value = JSON.parse(row.json_value) as Settings;
-      if (['dark', 'light', 'system'].includes(value.theme)) return { theme: value.theme };
+      if (['dark', 'light', 'system'].includes(value.theme)) settings.theme = value.theme;
     } catch { /* Unsupported local preference falls back without deleting data. */ }
-    return { theme: 'dark' };
+    const tour = this.db.prepare('SELECT json_value FROM settings WHERE key = ?').get('tour') as { json_value: string } | undefined;
+    if (tour) try { const parsed = tourSchema.safeParse(JSON.parse(tour.json_value)); if (parsed.success) settings.tour = parsed.data; } catch { /* Retain malformed data for recovery. */ }
+    return settings;
   }
   updateSettings(settings: Settings): Settings {
-    if (!['dark', 'light', 'system'].includes(settings.theme)) throw new AppError('INVALID_SETTINGS', 'Choose a valid appearance.');
-    this.db.prepare('INSERT INTO settings (key, json_value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET json_value = excluded.json_value').run('appearance', JSON.stringify(settings));
+    const parsed = settingsSchema.safeParse(settings);
+    if (!parsed.success) throw new AppError('INVALID_SETTINGS', 'Choose valid appearance and tour settings.');
+    this.db.transaction(() => {
+      const update = this.db.prepare('INSERT INTO settings (key, json_value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET json_value = excluded.json_value');
+      update.run('appearance', JSON.stringify({ theme: parsed.data.theme }));
+      if (parsed.data.tour) update.run('tour', JSON.stringify(parsed.data.tour));
+    })();
     return this.getSettings();
   }
 }

@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "auditedAt": "2026-11-23T19:06:58.101Z",
+  "sourceCommitObserved": "98fe037b174cd6cf7b255ee451a38404b4be58ed",
+  "sourcePrefixExpected": "98fe037",
+  "sourceMatchesExpected": true,
+  "releaseStage": "Local pre-release validation; this is not the final main-branch release artifact.",
+  "archive": {
+    "path": "out/DevStation-win32-x64/resources/app.asar",
+    "sha256": "8d2150c6ab46c17d23ecd6c84365650dc0d7777fd7c54516a791b921aae999e2",
+    "size": 61633973,
+    "entryCount": 5983,
+    "fileCount": 5887,
+    "scannedBytesIncludingUnpackedFiles": 83308329,
+    "unpackedNativeFileCount": 8,
+    "packagedVersion": "0.2.1"
+  },
+  "zip": {
+    "path": "out/make/zip/win32/x64/DevStation-win32-x64-0.2.1.zip",
+    "sha256": "e9285ed17e81aba3c44acd140c1f648633aaeae90a053d03d91297ef1e3405f6",
+    "size": 175439794,
+    "containsMatchingAsar": true
+  },
+  "checks": {
+    "cacheFilesAbsent": true,
+    "nativeBuildMetadataAbsent": true,
+    "developerHomeAndWorkspacePathsAbsent": true,
+    "highConfidenceCredentialPatternsAbsent": true,
+    "mitLicenseDeclared": true,
+    "mitLicenseMatchesSourceInZip": true,
+    "thirdPartyNoticesMatchSourceInZip": true
+  },
+  "findings": {
+    "cacheFiles": [],
+    "nativeMetadataFiles": [],
+    "privatePaths": [],
+    "credentialPatternFiles": [],
+    "thirdPartyUnixReferenceFiles": [
+      "node_modules/better-sqlite3/deps/sqlite3/sqlite3.c",
+      "node_modules/better-sqlite3/deps/sqlite3/sqlite3.h",
+      "node_modules/better-sqlite3/prebuilds/linuxmusl-arm64.node",
+      "node_modules/better-sqlite3/prebuilds/linuxmusl-x64.node"
+    ]
+  },
+  "method": {
+    "archiveReader": "@electron/asar, fresh Node process",
+    "encodings": [
+      "UTF-8 (includes ASCII)",
+      "UTF-16LE"
+    ],
+    "credentialPatternCategories": [
+      "private-key",
+      "github-token",
+      "npm-token",
+      "aws-access-key",
+      "google-api-key",
+      "openai-token",
+      "slack-token"
+    ],
+    "rawSensitiveValuesRecorded": false
+  },
+  "notes": [
+    "ASAR extraction also inspected its unpacked native files.",
+    "Four Unix-home-like references, if present, belong to upstream SQLite source or bundled Linux musl binaries; no developer Windows home values were recorded.",
+    "Pattern scanning is bounded evidence, not a proof that arbitrary encoded secrets cannot exist.",
+    "No application was launched, no rebuild or tests were run, and no artifact was modified.",
+    "Rebuild from the final main commit and refresh artifact hashes before publishing the release."
+  ]
+}

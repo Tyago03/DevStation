@@ -1,10 +1,14 @@
 import { test, expect, chromium, type Browser, type Page } from '@playwright/test';
-import { spawn, type ChildProcess } from 'node:child_process';
-import { access, mkdtemp, rm, stat } from 'node:fs/promises';
+import { execFile, spawn, type ChildProcess } from 'node:child_process';
+import { access, mkdtemp, readFile, rm, stat } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
 import type { Result } from '../../src/shared/contracts';
+import { listPackage, statFile } from '@electron/asar';
+
+const execFileAsync = promisify(execFile);
 
 function unwrap<T>(result: Result<T>): T {
   if (!result.ok) throw new Error(`${result.error.code}: ${result.error.message}`);
@@ -101,14 +105,37 @@ async function removeOwnedFixture(root: string) {
 }
 
 test('hardened Windows package boots without external Node and persists SQLite preferences', async ({ browserName }, testInfo) => {
-  test.skip(process.platform !== 'win32', 'The v0.1 package targets Windows x64.');
+  test.skip(process.platform !== 'win32', 'The v0.2 preview targets Windows x64.');
   test.skip(browserName !== 'chromium', 'Electron uses the Chromium debugging protocol.');
-  const executable = path.resolve('out/DevStation-win32-x64/DevStation.exe');
-  await access(executable).catch(() => { throw new Error('Build the genuine Windows package with npm run make before running this test.'); });
   const root = await mkdtemp(path.join(os.tmpdir(), 'DevStation-packaged-e2e-'));
   const data = path.join(root, 'user-data');
   let session: PackagedSession | undefined;
   try {
+    const zip = path.resolve('out/make/zip/win32/x64/DevStation-win32-x64-0.2.1.zip');
+    await access(zip).catch(() => { throw new Error('Build the Windows distribution ZIP with npm run make before running this test.'); });
+    const extracted = path.join(root, 'distribution');
+    const powershell = path.join(process.env.SystemRoot ?? 'C:\\Windows', 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
+    // Paths are data in environment variables, never interpolated into shell code.
+    // Extract the exact release archive into this test's owned temporary directory.
+    await execFileAsync(powershell, ['-NoLogo', '-NoProfile', '-NonInteractive', '-Command', '$ErrorActionPreference = "Stop"; Expand-Archive -LiteralPath $env:DEVSTATION_PACKAGE_ZIP -DestinationPath $env:DEVSTATION_PACKAGE_EXTRACT -ErrorAction Stop'], {
+      windowsHide: true, timeout: 60000, maxBuffer: 8192,
+      env: { ...isolatedEnvironment(), DEVSTATION_PACKAGE_ZIP: zip, DEVSTATION_PACKAGE_EXTRACT: extracted },
+    });
+    const executable = path.join(extracted, 'DevStation.exe');
+    await access(executable);
+    const archivePath = path.join(extracted, 'resources', 'app.asar');
+    const packagedFiles = listPackage(archivePath, { isPack: false })
+      .filter(file => !('files' in statFile(archivePath, file.replace(/^[\\/]/, ''))));
+    expect(packagedFiles.filter(file => /(?:^|[\\/])(?:\.vitest-cache|\.cache)(?:[\\/]|$)|^[\\/](?:tests|test-results)(?:[\\/]|$)|better-sqlite3[\\/]build[\\/].*\.(?:gypi|vcxproj|filters|recipe|tlog|lastbuildstate)$/.test(file))).toEqual([]);
+    const archiveBytes = await readFile(archivePath);
+    for (const machinePath of [os.homedir(), process.cwd()]) {
+      for (const spelling of [machinePath, machinePath.replaceAll('\\', '/'), machinePath.replaceAll('\\', '\\\\')]) {
+        expect(archiveBytes.includes(Buffer.from(spelling)), 'No local build path in the distributable').toBe(false);
+        expect(archiveBytes.includes(Buffer.from(spelling, 'utf16le')), 'No UTF-16 local build metadata in the distributable').toBe(false);
+      }
+    }
+    expect(await readFile(path.join(extracted, 'resources', 'LICENSE'), 'utf8')).toBe(await readFile('LICENSE', 'utf8'));
+    for (const notice of ['LICENSE', 'LICENSES.chromium.html']) expect((await stat(path.join(extracted, notice))).size, `${notice} is included in the extracted distribution`).toBeGreaterThan(0);
     session = await launchPackaged(executable, data);
     const page = session.page!;
     await expect(page.getByRole('heading', { name: 'Everything in its place.', exact: true })).toBeVisible();
@@ -118,7 +145,7 @@ test('hardened Windows package boots without external Node and persists SQLite p
       require: typeof (window as unknown as { require?: unknown }).require,
       process: typeof (window as unknown as { process?: unknown }).process,
     }))).toEqual({ require: 'undefined', process: 'undefined' });
-    expect(unwrap(await page.evaluate(() => window.devstation.app.info()))).toMatchObject({ version: '0.1.0', platform: 'win32' });
+    expect(unwrap(await page.evaluate(() => window.devstation.app.info()))).toMatchObject({ version: '0.2.1', platform: 'win32' });
     expect(unwrap(await page.evaluate(() => window.devstation.projects.list()))).toEqual([]);
     expect(unwrap(await page.evaluate(() => window.devstation.runs.list()))).toEqual([]);
     const diagnostics = unwrap(await page.evaluate(() => window.devstation.diagnostics.check()));

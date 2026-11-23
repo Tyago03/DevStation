@@ -4,16 +4,50 @@ import { VitePlugin } from '@electron-forge/plugin-vite';
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
+import { lstat, readdir, realpath, unlink } from 'node:fs/promises';
+import path from 'node:path';
+
+/** Remove generated build metadata only from Forge's staged dependency copy. */
+async function stripNativeBuildMetadata(buildPath: string) {
+  const stage = await realpath(buildPath);
+  if (stage.toLowerCase() === (await realpath('.')).toLowerCase()) throw new Error('Refusing to clean the source checkout.');
+  const expected = path.join(stage, 'node_modules', 'better-sqlite3', 'build');
+  const info = await lstat(expected).catch((error: NodeJS.ErrnoException) => { if (error.code === 'ENOENT') return undefined; throw error; });
+  if (!info) return;
+  if (info.isSymbolicLink() || !info.isDirectory() || (await realpath(expected)).toLowerCase() !== expected.toLowerCase()) throw new Error('Refusing a redirected native build directory.');
+  async function visit(directory: string) {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const file = path.resolve(directory, entry.name);
+      const relative = path.relative(expected, file);
+      if (!relative || path.isAbsolute(relative) || relative === '..' || relative.startsWith(`..${path.sep}`) || entry.isSymbolicLink()) throw new Error('Refusing an unsafe staged build entry.');
+      if (entry.isDirectory()) await visit(file);
+      // Keep runtime bindings if this dependency was built from source.
+      else if (entry.isFile() && !entry.name.endsWith('.node')) await unlink(file);
+    }
+  }
+  await visit(expected);
+}
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true, executableName: 'DevStation', icon: 'assets/icon.ico',
-    appCopyright: 'Copyright © 2026 Tyago Vitorino Ferreira', extraResource: ['docs/THIRD_PARTY_NOTICES.txt'],
+    appCopyright: 'Copyright © 2026 Tyago Vitorino Ferreira', extraResource: ['LICENSE', 'docs/THIRD_PARTY_NOTICES.txt'],
     // Vite bundles JS but SQLite remains a native runtime dependency.
     // Packager prunes development packages after copying node_modules.
-    ignore: file => Boolean(file) && !/^\/(?:\.vite(?:\/|$)|node_modules(?:\/|$)|package\.json$)/.test(file.replaceAll('\\', '/')),
+    ignore: file => {
+      const normalized = file.replaceAll('\\', '/');
+      // Development caches can contain source text and absolute machine paths.
+      // Pruning devDependencies alone does not remove these hidden directories.
+      if (/(?:^|\/)node_modules\/(?:\.vitest-cache|\.vite|\.cache|\.bin)(?:\/|$)/.test(normalized)) return true;
+      return Boolean(file) && !/^\/(?:\.vite(?:\/|$)|node_modules(?:\/|$)|package\.json$)/.test(normalized);
+    },
   },
   rebuildConfig: {},
+  hooks: {
+    // Forge rebuilds before pruning. Generated gyp/MSBuild files must be removed
+    // after that step, before ASAR and integrity fuses are generated.
+    packageAfterPrune: async (_config, buildPath) => stripNativeBuildMetadata(buildPath),
+  },
   makers: [new MakerZIP({}, ['win32'])],
   plugins: [
     new AutoUnpackNativesPlugin({}),

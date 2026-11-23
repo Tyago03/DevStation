@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LogLine } from '../../src/shared/contracts';
 import { boundLogLines, LogConsole } from '../../src/renderer/components/LogConsole';
@@ -11,6 +11,16 @@ beforeEach(() => { window.devstation = testApi(); });
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.restoreAllMocks(); });
 
 describe('bounded task console', () => {
+  it('distinguishes a failed read from waiting for output and recovers through an explicit retry', async () => {
+    vi.mocked(window.devstation.runs.logs).mockResolvedValueOnce({ ok: false, error: { code: 'LOGS_UNAVAILABLE', message: 'Output is temporarily unavailable.', retryable: true } }).mockResolvedValueOnce(success({ lines: [line(1, 'Recovered output')], truncated: false }));
+    render(<LogConsole runId="run-1" />);
+    await screen.findByRole('alert');
+    expect(screen.queryByText('Waiting for output…')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Try again' }));
+    expect(await screen.findByText('Recovered output')).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument());
+    expect(window.devstation.runs.logs).toHaveBeenCalledTimes(2);
+  });
   it('keeps the newest lines when either length or character cap is reached', () => {
     const byLines = boundLogLines(Array.from({ length: 5100 }, (_, index) => line(index)));
     expect(byLines.truncated).toBe(true);

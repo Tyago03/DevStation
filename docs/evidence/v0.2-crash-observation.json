@@ -1,0 +1,11 @@
+{
+  "abruptMainExitCode": 86,
+  "managedPid": 6548,
+  "survivingDescendantPid": 18236,
+  "taskAliveAfterExit": true,
+  "taskAliveAfterReopen": false,
+  "descendantAliveAfterExit": true,
+  "descendantAliveAfterRejectedStop": true,
+  "oldRunStopError": "RUN_NOT_FOUND",
+  "note": "A detached fixture-only descendant, distinct from the managed PID, survives the abrupt exit and reopening. It is never added to session ownership; cleanup uses its own nonce endpoint. Production spawning is unchanged."
+}

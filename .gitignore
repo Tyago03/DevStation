@@ -11,3 +11,12 @@ playwright-report/
 *.log
 tmp/
 .DS_Store
+*.zip
+*.exe
+*.msi
+*.pfx
+*.p12
+*.pem
+*.key
+*.dmp
+__pycache__/

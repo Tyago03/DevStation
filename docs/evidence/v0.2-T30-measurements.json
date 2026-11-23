@@ -1,0 +1,114 @@
+{
+  "producedBytes": 12582912,
+  "retainedBytes": 2096150,
+  "view": {
+    "lines": 978,
+    "characters": 999494
+  },
+  "maxNavigationMs": 267.83770000000004,
+  "ranges": {
+    "mainRss": {
+      "min": 115507200,
+      "max": 134705152
+    },
+    "mainHeap": {
+      "min": 7622548,
+      "max": 13077360
+    },
+    "rendererHeap": {
+      "min": 3733940,
+      "max": 22311036
+    }
+  },
+  "navigation": [
+    {
+      "page": "Runs",
+      "durationMs": 267.83770000000004,
+      "bytesProduced": 589824
+    },
+    {
+      "page": "Settings",
+      "durationMs": 39.584100000000035,
+      "bytesProduced": 655360
+    },
+    {
+      "page": "Projects",
+      "durationMs": 59.12199999999939,
+      "bytesProduced": 786432
+    },
+    {
+      "page": "Runs",
+      "durationMs": 27.993099999999686,
+      "bytesProduced": 851968
+    },
+    {
+      "page": "Settings",
+      "durationMs": 31.10269999999946,
+      "bytesProduced": 917504
+    },
+    {
+      "page": "Runs",
+      "durationMs": 26.916199999999662,
+      "bytesProduced": 983040
+    }
+  ],
+  "samples": [
+    {
+      "elapsedMs": 3.8867000000009284,
+      "bytesProduced": 0,
+      "mainRss": 115507200,
+      "mainHeap": 7622548,
+      "rendererHeap": 3733940
+    },
+    {
+      "elapsedMs": 414.1719000000012,
+      "bytesProduced": 589824,
+      "mainRss": 120111104,
+      "mainHeap": 8862264,
+      "rendererHeap": 4912744
+    },
+    {
+      "elapsedMs": 456.7570000000014,
+      "bytesProduced": 655360,
+      "mainRss": 120262656,
+      "mainHeap": 8666908,
+      "rendererHeap": 5359192
+    },
+    {
+      "elapsedMs": 520.2013000000006,
+      "bytesProduced": 786432,
+      "mainRss": 120561664,
+      "mainHeap": 8893796,
+      "rendererHeap": 4299252
+    },
+    {
+      "elapsedMs": 550.5562000000009,
+      "bytesProduced": 851968,
+      "mainRss": 120848384,
+      "mainHeap": 9090828,
+      "rendererHeap": 4567312
+    },
+    {
+      "elapsedMs": 584.3010000000013,
+      "bytesProduced": 917504,
+      "mainRss": 120344576,
+      "mainHeap": 8850968,
+      "rendererHeap": 4898364
+    },
+    {
+      "elapsedMs": 613.5012999999999,
+      "bytesProduced": 983040,
+      "mainRss": 120483840,
+      "mainHeap": 9018440,
+      "rendererHeap": 5594396
+    },
+    {
+      "elapsedMs": 7218.395300000002,
+      "bytesProduced": 12582912,
+      "mainRss": 134705152,
+      "mainHeap": 13077360,
+      "rendererHeap": 22311036
+    }
+  ],
+  "note": "Short-run samples, not a long-duration leak or absolute memory-budget proof."
+}

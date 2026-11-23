@@ -1,0 +1,71 @@
+{
+  "reviewedDate": "2026-11-23",
+  "sourceCommit": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+  "executable": "out/DevStation-win32-x64/DevStation.exe",
+  "executableSha256": "571d8dd217575915ba6312566a741c8ee94181ff69322693bd4205fe94dcfa6c",
+  "applicationZipSha256": "2e38b79ae2e5aa59d78bdd77370cc716db67cdfb71617c4ce3f7bad013e0a882",
+  "authenticode": "NotSigned",
+  "environment": {
+    "os": "Windows 11 Pro 10.0.26300",
+    "privileges": "unelevated",
+    "runtime": "actual hardened packaged executable, no dialog stubs",
+    "input": "Windows UI automation with observed native dialogs, mouse and keyboard",
+    "userData": "isolated synthetic fixture, separate from normal userData",
+    "network": "left connected",
+    "securityPolicy": "unchanged"
+  },
+  "fixture": {
+    "name": "Orion demo",
+    "root": "C:\\Users\\Public\\Documents\\DevStation-v02-native-70a4d5a8",
+    "git": "new synthetic main branch, no commits, one untracked server.py",
+    "task": "Python stdlib HTTPServer, 127.0.0.1, ephemeral port; no children or external requests"
+  },
+  "result": "PASS",
+  "observations": [
+    {
+      "step": "Launch",
+      "result": "App opened as v0.2.0 without host-policy block"
+    },
+    {
+      "step": "Import",
+      "result": "Real native folder chooser accepted the synthetic repository; actual Git showed main/unborn and one untracked file"
+    },
+    {
+      "step": "Guided Python configuration",
+      "result": "Real executable/script pickers selected installed Python and project script; exact program, argv and cwd reviewed; Save showed 0 active runs"
+    },
+    {
+      "step": "Start",
+      "result": "Real native confirmation defaulted to Cancel; Tab/Enter selected Start run; UI showed Running",
+      "pid": 27028
+    },
+    {
+      "step": "Output and Ports",
+      "result": "Live stdout reported ephemeral port; actual Ports inspection showed matching PID and This computer (loopback)",
+      "address": "127.0.0.1",
+      "port": 60903
+    },
+    {
+      "step": "Stop",
+      "result": "Native confirmation defaulted to Cancel; Tab/Enter selected Stop run; UI showed Exited (unknown), meaning exit code unavailable, with zero active runs and child-process caveat"
+    },
+    {
+      "step": "Port release",
+      "result": "New real Ports inspection, filtered by 60903, showed No matching listeners"
+    },
+    {
+      "step": "Restart",
+      "result": "Closed with no active runs; relaunched same packaged EXE/userData; project and exact saved configuration persisted; no prior active run was reclaimed"
+    },
+    {
+      "step": "Finish",
+      "result": "Closed final window; process inspection found no DevStation.exe and no test PID27028"
+    }
+  ],
+  "limitations": [
+    "Only the stated native workflow was exercised; not a complete keyboard-only or accessibility audit.",
+    "No Windows display-scaling changes, physical network disconnect, Windows 10 test or human study.",
+    "Unsigned local acceptance does not establish acceptance on other machines. The reason for the difference from the historical v0.1 Smart App Control block was not established.",
+    "Synthetic fixture files/data remain available locally for reproducibility; no user project was imported or changed."
+  ]
+}

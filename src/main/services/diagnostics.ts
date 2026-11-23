@@ -23,7 +23,7 @@ export class DiagnosticService {
       if (found) return { name: tool.name, status: 'error', detail: 'A tool was located but its version check failed or timed out.', checkedAt };
       return { name: tool.name, status: 'not-found', detail: 'No accessible installation was found on PATH.', checkedAt };
     }));
-    results.splice(2, 0, { name: 'npm', status: 'not-checked', detail: 'npm.cmd needs a command shell on Windows. Shell wrappers are not supported in v0.1.', checkedAt });
+    results.splice(2, 0, { name: 'npm', status: 'not-checked', detail: 'npm.cmd needs a command shell on Windows. Automatic shell wrappers are not supported in this preview.', checkedAt });
     return results;
   }
 }

@@ -53,6 +53,8 @@
 .data-table tr.selected-row td:first-child { box-shadow: inset 2px 0 var(--accent); }
 .back-link { color: var(--muted); margin-top: -10px; margin-bottom: 15px; gap: 8px; }
 .wrap-path { overflow-wrap: anywhere; }
+.sidebar { overflow-y: auto; }
+@media (max-height: 600px) { .sidebar .brand { padding-bottom: 20px; }.sidebar-bottom { padding-top: 12px; }.sidebar .help-link { margin-bottom: 12px; }.local-card, .sidebar-footer { display: none; } }
 @media (max-width: 1200px) { .sidebar { width: 195px; padding-left: 12px; padding-right: 12px; }.workspace-main { margin-left: 195px; width: calc(100% - 195px); }.page-content { padding: 28px; }.topbar { padding: 0 28px; }.brand { padding-left: 4px; }.section-title { padding: 19px; } }
 @media (max-width: 980px) { .sidebar { width: 76px; padding: 24px 11px 0; }.workspace-main { margin-left: 76px; width: calc(100% - 76px); }.brand { justify-content: center; padding: 0 0 35px; }.brand > div:last-child, .nav-caption, .nav-item > span, .local-card, .help-link > span, .help-link svg:last-child, .sidebar-footer { display: none; }.nav-item { justify-content: center; padding: 12px; }.help-link { justify-content: center; margin-bottom: 22px; }.nav-item { position: relative; }.nav-item > .nav-count { display: block; position: absolute; top: 2px; right: 2px; }.page-content { padding: 24px; }.topbar { padding: 0 24px; }.page-heading h1 { font-size: 26px; } }
 @media (max-width: 760px) { .topbar-status { display: none; }.page-heading { align-items: flex-start; }.page-heading p { max-width: 310px; }.page-heading .button { padding: 8px 11px; }.page-content { padding: 22px 18px; }.data-table td, .data-table th { padding-left: 16px; padding-right: 16px; } }

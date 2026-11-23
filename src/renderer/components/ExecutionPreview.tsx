@@ -1,0 +1,3 @@
+export function ExecutionPreview({ executable, args, workingDir }: { executable: string; args: string[]; workingDir: string }) {
+  return <div className="execution-preview" aria-label="Exact execution preview"><h3>Exact execution preview</h3><dl><dt>Program to launch</dt><dd><code>{executable || 'Choose a program first'}</code></dd><dt>Folder used when running</dt><dd><code>{workingDir}</code></dd><dt>Arguments — separate values, in order</dt><dd><pre>{JSON.stringify(args, null, 2)}</pre></dd></dl><p>These values are passed directly to the selected program. They are not a shell command. Saving does not run anything.</p></div>;
+}

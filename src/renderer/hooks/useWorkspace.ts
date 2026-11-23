@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { GitOverview, ManagedRun, Project, Result, Settings } from '../../shared/contracts';
+import type { GitOverview, ManagedRun, Project, Result, Settings, ShutdownAction, ShutdownStatus } from '../../shared/contracts';
 
 export function valueOf<T>(result: Result<T>): T {
   if (!result.ok) throw new Error(result.error.message);
@@ -20,11 +20,15 @@ export function useWorkspace() {
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState<string>();
   const [settings, setSettings] = useState<Settings>({ theme: 'dark' });
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [shutdown, setShutdown] = useState<ShutdownStatus>();
+  const [shutdownError, setShutdownError] = useState<string>();
   const [version, setVersion] = useState('');
   const live = useRef(true);
   const pendingGit = useRef(new Set<string>());
   const pendingRuns = useRef(false);
   const hasRunsSnapshot = useRef(false);
+  const pendingShutdown = useRef(false);
 
   const report = useCallback((problem: unknown) => setError(messageOf(problem)), []);
   const refreshGit = useCallback(async (projectId: string) => {
@@ -38,6 +42,19 @@ export function useWorkspace() {
       if (live.current) setGit(previous => ({ ...previous, [projectId]: { error: messageOf(problem), loading: false } }));
     } finally { pendingGit.current.delete(projectId); }
   }, []);
+
+  const refreshShutdown = useCallback(async () => {
+    if (pendingShutdown.current) return;
+    pendingShutdown.current = true;
+    try { const next = valueOf(await window.devstation.app.shutdownStatus()); if (live.current) { setShutdown(next); setShutdownError(undefined); } }
+    catch (problem) { if (live.current) setShutdownError(messageOf(problem)); }
+    finally { pendingShutdown.current = false; }
+  }, []);
+
+  async function shutdownAction(action: ShutdownAction) {
+    try { setShutdown(valueOf(await window.devstation.app.shutdownAction(action))); setShutdownError(undefined); }
+    catch (problem) { setShutdownError(messageOf(problem)); }
+  }
 
   const refreshRuns = useCallback(async (showLoading = false) => {
     if (pendingRuns.current) return;
@@ -71,11 +88,12 @@ export function useWorkspace() {
     live.current = true;
     void load();
     void refreshRuns();
-    void window.devstation.settings.get().then(result => { if (live.current) setSettings(valueOf(result)); }).catch(report);
+    void refreshShutdown();
+    void window.devstation.settings.get().then(result => { if (live.current) { setSettings(valueOf(result)); setSettingsLoaded(true); } }).catch(report);
     void window.devstation.app.info().then(result => { if (live.current) setVersion(valueOf(result).version); }).catch(report);
-    const timer = window.setInterval(() => { void refreshRuns(); }, 1500);
+    const timer = window.setInterval(() => { void refreshRuns(); void refreshShutdown(); }, 1500);
     return () => { live.current = false; window.clearInterval(timer); };
-  }, [load, refreshRuns, report]);
+  }, [load, refreshRuns, refreshShutdown, report]);
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-color-scheme: light)');
@@ -104,6 +122,6 @@ export function useWorkspace() {
     catch (problem) { report(problem); }
   }
 
-  return { projects, runs, runsLoading, runsLoaded, runsError, git, loading, projectsError, adding, error, setError, settings, version, report, refreshGit, refreshRuns, load, addProject, removeProject, updateSettings };
+  return { projects, runs, runsLoading, runsLoaded, runsError, git, loading, projectsError, adding, error, setError, settings, settingsLoaded, shutdown, shutdownError, refreshShutdown, shutdownAction, version, report, refreshGit, refreshRuns, load, addProject, removeProject, updateSettings };
 }
 export type Workspace = ReturnType<typeof useWorkspace>;

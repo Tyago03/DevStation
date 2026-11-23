@@ -1,0 +1,362 @@
+{
+  "reviewedAtUtc": "2026-11-23T18:16:08Z",
+  "scope": "Independent read-only GitHub Actions metadata/log review for this source commit. No tests, builds or application launches performed by this review.",
+  "repository": {
+    "fullName": "Tyago03/DevStation",
+    "privateAtReview": true
+  },
+  "sourceCommit": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+  "branch": "codex/v0.2-guided-workspace",
+  "workflow": {
+    "id": 426339331,
+    "runId": 45233998754,
+    "attempt": 1,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/Tyago03/DevStation/actions/runs/45233998754",
+    "startedAtUtc": "2026-11-23T18:01:59Z",
+    "lastUpdatedAtUtc": "2026-11-23T18:07:06Z",
+    "totalJobs": 1
+  },
+  "job": {
+    "id": 137900734248,
+    "name": "verify",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/Tyago03/DevStation/actions/runs/45233998754/job/137900734248",
+    "startedAtUtc": "2026-11-23T18:02:03Z",
+    "completedAtUtc": "2026-11-23T18:07:05Z",
+    "durationSeconds": 302,
+    "steps": [
+      {
+        "number": 1,
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:02:04Z",
+        "completedAtUtc": "2026-11-23T18:02:06Z",
+        "durationSeconds": 2
+      },
+      {
+        "number": 2,
+        "name": "Check out source",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:02:06Z",
+        "completedAtUtc": "2026-11-23T18:02:14Z",
+        "durationSeconds": 8
+      },
+      {
+        "number": 3,
+        "name": "Set up Node",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:02:14Z",
+        "completedAtUtc": "2026-11-23T18:02:24Z",
+        "durationSeconds": 10
+      },
+      {
+        "number": 4,
+        "name": "Install locked dependencies",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:02:24Z",
+        "completedAtUtc": "2026-11-23T18:03:43Z",
+        "durationSeconds": 79
+      },
+      {
+        "number": 5,
+        "name": "Type check",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:03:43Z",
+        "completedAtUtc": "2026-11-23T18:03:49Z",
+        "durationSeconds": 6
+      },
+      {
+        "number": 6,
+        "name": "Lint",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:03:49Z",
+        "completedAtUtc": "2026-11-23T18:03:55Z",
+        "durationSeconds": 6
+      },
+      {
+        "number": 7,
+        "name": "Unit tests",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:03:55Z",
+        "completedAtUtc": "2026-11-23T18:03:57Z",
+        "durationSeconds": 2
+      },
+      {
+        "number": 8,
+        "name": "Integration tests",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:03:57Z",
+        "completedAtUtc": "2026-11-23T18:04:15Z",
+        "durationSeconds": 18
+      },
+      {
+        "number": 9,
+        "name": "React UI tests",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:04:15Z",
+        "completedAtUtc": "2026-11-23T18:04:22Z",
+        "durationSeconds": 7
+      },
+      {
+        "number": 10,
+        "name": "Build unsigned Windows ZIP",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:04:22Z",
+        "completedAtUtc": "2026-11-23T18:05:06Z",
+        "durationSeconds": 44
+      },
+      {
+        "number": 11,
+        "name": "Desktop and packaged application checks",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:05:06Z",
+        "completedAtUtc": "2026-11-23T18:06:44Z",
+        "durationSeconds": 98
+      },
+      {
+        "number": 12,
+        "name": "Record artifact checksums",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:06:44Z",
+        "completedAtUtc": "2026-11-23T18:06:45Z",
+        "durationSeconds": 1
+      },
+      {
+        "number": 13,
+        "name": "Upload private build evidence",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:06:45Z",
+        "completedAtUtc": "2026-11-23T18:06:52Z",
+        "durationSeconds": 7
+      },
+      {
+        "number": 25,
+        "name": "Post Set up Node",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:06:52Z",
+        "completedAtUtc": "2026-11-23T18:07:01Z",
+        "durationSeconds": 9
+      },
+      {
+        "number": 26,
+        "name": "Post Check out source",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:07:01Z",
+        "completedAtUtc": "2026-11-23T18:07:03Z",
+        "durationSeconds": 2
+      },
+      {
+        "number": 27,
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "startedAtUtc": "2026-11-23T18:07:03Z",
+        "completedAtUtc": "2026-11-23T18:07:03Z",
+        "durationSeconds": 0
+      }
+    ]
+  },
+  "tests": {
+    "unit": {
+      "passed": 42,
+      "files": 4,
+      "runnerReportedDuration": "906ms"
+    },
+    "integration": {
+      "passed": 28,
+      "files": 3,
+      "runnerReportedDuration": "17.08s"
+    },
+    "reactUi": {
+      "passed": 28,
+      "files": 4,
+      "runnerReportedDuration": "5.92s"
+    },
+    "nonDesktopTotal": 98,
+    "desktop": {
+      "passed": 11,
+      "workers": 1,
+      "runnerReportedDuration": "1.6m",
+      "stepDurationSeconds": 98,
+      "results": [
+        {
+          "number": 1,
+          "file": "tests/e2e/desktop.spec.ts",
+          "line": 9,
+          "name": "real desktop workflows, persistence and renderer isolation",
+          "status": "PASS",
+          "reportedDurationSeconds": 12
+        },
+        {
+          "number": 2,
+          "file": "tests/e2e/guided.spec.ts",
+          "line": 37,
+          "name": "guided Python, Node.js and loopback server run only after exact preview and confirmation",
+          "status": "PASS",
+          "reportedDurationSeconds": 4.3
+        },
+        {
+          "number": 3,
+          "file": "tests/e2e/guided.spec.ts",
+          "line": 105,
+          "name": "offline help, persistent optional tour, isolated demo and keyboard navigation at minimum size",
+          "status": "PASS",
+          "reportedDurationSeconds": 3.7
+        },
+        {
+          "number": 4,
+          "file": "tests/e2e/lifecycle.spec.ts",
+          "line": 209,
+          "name": "P0-01 partial stop keeps a persistent warning and Retry stops only the owned survivor",
+          "status": "PASS",
+          "reportedDurationSeconds": 3.3
+        },
+        {
+          "number": 5,
+          "file": "tests/e2e/lifecycle.spec.ts",
+          "line": 238,
+          "name": "P0-01 Quit anyway requires a second confirmation and makes no additional stop request",
+          "status": "PASS",
+          "reportedDurationSeconds": 12
+        },
+        {
+          "number": 6,
+          "file": "tests/e2e/lifecycle.spec.ts",
+          "line": 268,
+          "name": "T30 more than 3 MB of live stdout stays bounded while navigation remains responsive",
+          "status": "PASS",
+          "reportedDurationSeconds": 34.1
+        },
+        {
+          "number": 7,
+          "file": "tests/e2e/lifecycle.spec.ts",
+          "line": 314,
+          "name": "T35 abrupt main exit and reopen never reclaim or stop a surviving descendant",
+          "status": "PASS",
+          "reportedDurationSeconds": 3.1
+        },
+        {
+          "number": 8,
+          "file": "tests/e2e/packaged.spec.ts",
+          "line": 103,
+          "name": "hardened Windows package boots without external Node and persists SQLite preferences",
+          "status": "PASS",
+          "reportedDurationSeconds": 2.2
+        },
+        {
+          "number": 9,
+          "file": "tests/e2e/removal.spec.ts",
+          "line": 78,
+          "name": "removing an extracted ZIP copy preserves project files and separate SQLite userData (T47)",
+          "status": "PASS",
+          "reportedDurationSeconds": 7.7
+        },
+        {
+          "number": 10,
+          "file": "tests/e2e/security.spec.ts",
+          "line": 13,
+          "name": "production document enforces CSP, permissions, IPC sender and local-only navigation",
+          "status": "PASS",
+          "reportedDurationSeconds": 1.7
+        },
+        {
+          "number": 11,
+          "file": "tests/e2e/system-faults.spec.ts",
+          "line": 14,
+          "name": "T21/T39/T40: real stalled Git and failed netstat keep the desktop usable and recover on retry",
+          "status": "PASS",
+          "reportedDurationSeconds": 12.3
+        }
+      ]
+    }
+  },
+  "dependencyInstall": {
+    "addedPackages": 321,
+    "auditedPackages": 322,
+    "reportedVulnerabilities": 0,
+    "stepDurationSeconds": 79,
+    "warning": "npm emitted an allowScripts review warning for better-sqlite3@13.2.0. Install, native packaging and all checks still completed successfully."
+  },
+  "artifactListing": {
+    "totalCount": 1,
+    "downloadedForThisReview": false,
+    "items": [
+      {
+        "id": 14848631749,
+        "name": "devstation-windows-x64-3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "sizeInBytes": 175456916,
+        "digest": "sha256:c74389937115d191ed1b728624c7a86df7cf31d8e08a61c0d645e47f08accedb",
+        "digestScope": "GitHub Actions artifact container, not the nested application ZIP and not the locally built ZIP.",
+        "createdAtUtc": "2026-11-23T18:06:52Z",
+        "expiresAtUtc": "2026-12-07T18:06:46Z",
+        "expired": false,
+        "metadataUrl": "https://api.github.com/repos/Tyago03/DevStation/actions/artifacts/14848631749",
+        "sourceCommit": "3092f81a37b575296e9e7afdef8d6e990cfe49c6",
+        "runId": 45233998754
+      }
+    ]
+  },
+  "logScan": {
+    "jobId": 137900734248,
+    "decodedCharacters": 40392,
+    "lines": 483,
+    "ansiRemovedBeforeScan": true,
+    "secretPatternCandidates": 0,
+    "countsByKind": {
+      "private_key": 0,
+      "github_token": 0,
+      "aws_access_key": 0,
+      "provider_token": 0,
+      "jwt": 0,
+      "credential_assignment": 0,
+      "credential_in_url": 0,
+      "authorization_header": 0,
+      "email_address": 0,
+      "user_home_path": 0
+    },
+    "findings": [],
+    "rawLogRetained": false,
+    "limitations": [
+      "Pattern matching is not proof of absence of secrets.",
+      "Only the decoded log for this workflow job was scanned; artifact file contents were not scanned in this review."
+    ]
+  },
+  "metadataPrivacy": {
+    "authorEmail": {
+      "present": true,
+      "classification": "owner_review_before_publication",
+      "value": "[REDACTED]"
+    },
+    "committerEmail": {
+      "present": true,
+      "classification": "owner_review_before_publication",
+      "value": "[REDACTED]"
+    }
+  },
+  "limitations": [
+    "CI runner durations are the values printed by Vitest/Playwright. The desktop runner rounds its total to 1.6m; the GitHub step timestamps span 98 seconds.",
+    "The 11 desktop checks are a mixture of compiled Electron tests and one hardened packaged-executable test. The T47 archive-removal test relaunches compiled Electron, not the extracted EXE.",
+    "Native file/confirmation dialogs in automated tests use fixture responses. Windows physical offline, real display scaling and human usability are not established by these results.",
+    "CI container bytes/digest are separate from any local ZIP or EXE identity. Artifact contents and the nested application ZIP checksum were not downloaded or independently verified in this review.",
+    "This review makes no inference about local signing-policy acceptance. Historical v0.1 Smart App Control failures must not be silently transferred to v0.2."
+  ]
+}
